@@ -1,14 +1,13 @@
 package com.example.hippoplayer.play;
 
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,6 @@ import android.view.ViewGroup;
 import com.example.hippoplayer.R;
 
 public class PlayFragment extends Fragment {
-
-    private final String TAG = "PlayFragment";
-    private final String SONG_ID = "0001";
 
 
     private PlayViewModel mViewModel;
@@ -32,9 +28,8 @@ public class PlayFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
 
-        return inflater.inflate(R.layout.play_fragment, container, false);
-    }
-
+        return inflater.inflate(R.layout.fragment_play, container, false);
+     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
