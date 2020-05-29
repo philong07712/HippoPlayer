@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 
 public interface SongAPI {
     @GET("data.json")
-    public Observable<SongRespone> getSongList(
+    Observable<SongRespone> getSongList(
             @Query("fbclid") String endpoint
     );
 }
