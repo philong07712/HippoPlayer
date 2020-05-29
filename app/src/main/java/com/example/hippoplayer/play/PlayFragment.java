@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+
 import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
@@ -34,10 +35,6 @@ public class PlayFragment extends Fragment {
 
     private PlayViewModel mViewModel;
 
-    public static PlayFragment newInstance() {
-        return new PlayFragment();
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -45,13 +42,13 @@ public class PlayFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_play, container, false);
         initView(view);
         return view;
+
      }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(PlayViewModel.class);
-
         mViewModel.init();
 
         Observer<List<Song>> list = new Observer<List<Song>>() {
@@ -88,5 +85,7 @@ public class PlayFragment extends Fragment {
         tvArtist = view.findViewById(R.id.text_artist_song);
         imgBg = view.findViewById(R.id.image_bg_play);
         imgSong = view.findViewById(R.id.image_song);
+
     }
+
 }
