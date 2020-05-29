@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongRespone;
+import com.example.hippoplayer.utils.Constants;
 
 import java.util.List;
 
@@ -21,7 +22,6 @@ public class PlayViewModel extends ViewModel {
 
     private SongService service = new SongService();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private MutableLiveData<SongRespone> songResponeMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<Song>> songsMutableLiveData = new MutableLiveData<>();
 
     public PlayViewModel() {
@@ -35,16 +35,16 @@ public class PlayViewModel extends ViewModel {
                 .subscribe(new Consumer<SongRespone>() {
                     @Override
                     public void accept(SongRespone songRespone) throws Throwable {
-                        songResponeMutableLiveData.setValue(songRespone);
                         songsMutableLiveData.setValue(songRespone.getSongList());
                     }
                 })
         );
     }
 
-    public LiveData<SongRespone> getSongResponeLiveData() {
-        return songResponeMutableLiveData;
+    public String getFullUrl(String endpoint) {
+        return Constants.SONG_BASE_URL + endpoint;
     }
+
 
     public LiveData<List<Song>> getSongsLiveData() {
         return songsMutableLiveData;

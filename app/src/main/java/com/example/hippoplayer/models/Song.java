@@ -70,4 +70,12 @@ public class Song {
     public void setArtist(String artist) {
         this.artist = artist;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }
