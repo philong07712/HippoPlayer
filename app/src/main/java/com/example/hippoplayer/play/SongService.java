@@ -23,7 +23,6 @@ public class SongService {
     private static final String TAG = "SongService";
     private Retrofit retrofit;
     private SongAPI api;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public SongService() {
         this.retrofit = RetrofitHandler.getInstance().getSongRetrofit();
