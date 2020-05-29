@@ -18,10 +18,11 @@
         tools:context=".play.PlayFragment">
 
         <ImageView
-            android:id="@+id/iamge_bg_song"
+            android:id="@+id/image_bg_song"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/anh3"
+            android:scaleType="centerCrop"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp" />
 
@@ -49,18 +50,20 @@
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.783" />
+                app:layout_constraintVertical_bias="0.5" />
 
             <TextView
                 android:id="@+id/text_title_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:fontFamily="@font/roboto_mono"
                 android:maxLines="1"
                 android:paddingHorizontal="30dp"
                 android:text="@string/text_title_song"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="@android:color/white"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@+id/text_artist_song"
                 app:layout_constraintEnd_toEndOf="@+id/image_song"
                 app:layout_constraintStart_toStartOf="@+id/image_song" />
@@ -70,6 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
+                android:fontFamily="@font/roboto_mono"
                 android:text="@string/text_artist_song"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textColor="@android:color/white"
@@ -120,17 +124,16 @@
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/floatingActionButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:src="@drawable/ic_pause_black_24dp"
                 app:borderWidth="0dp"
                 app:fabSize="normal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/seekbar"
-                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="@+id/seekbar"
-                app:layout_constraintTop_toTopOf="@+id/guideline"
                 app:tint="@android:color/white" />
 
 

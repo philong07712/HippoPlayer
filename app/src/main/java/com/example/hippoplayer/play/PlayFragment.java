@@ -89,7 +89,7 @@ public class PlayFragment extends Fragment {
     private void initView(View view) {
         tvTitle = view.findViewById(R.id.text_title_song);
         tvArtist = view.findViewById(R.id.text_artist_song);
-        imgBg = view.findViewById(R.id.image_bg_play);
+        imgBg = view.findViewById(R.id.image_bg_song);
         imgSong = view.findViewById(R.id.image_song);
     }
 }
