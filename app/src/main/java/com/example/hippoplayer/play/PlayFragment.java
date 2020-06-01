@@ -1,6 +1,9 @@
 package com.example.hippoplayer.play;
 
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +14,8 @@ import androidx.lifecycle.Observer;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import android.os.IBinder;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,26 +32,26 @@ import java.util.List;
 
 
 public class PlayFragment extends Fragment {
-
     private static final String TAG = PlayFragment.class.getSimpleName();
 
     // View
     private TextView tvTitle, tvArtist;
     private ImageView imgBg, imgSong;
-    private String title, artist, thumbnail;
+    private String title, artist, thumbnail, mediaUrl;
     private View view;
 
+    //
     private PlayViewModel mViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         view = inflater.inflate(R.layout.fragment_play, container, false);
         initView(view);
         return view;
 
      }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -63,14 +68,16 @@ public class PlayFragment extends Fragment {
                 title = songs.get(0).getName();
                 artist = songs.get(0).getArtist();
                 thumbnail = songs.get(0).getThumbnail();
-                // This will get the full url for the song
-
-                thumbnail = mViewModel.getFullUrl(thumbnail);
+                thumbnail = mViewModel.getFullUrl(songs.get(0).getThumbnail());
+                mediaUrl = mViewModel.getFullUrl(songs.get(0).getUrl());
+                mViewModel.setListSong(songs);
                 updateUi();
             }
         };
         mViewModel.getSongsLiveData().observe(getViewLifecycleOwner(), list);
+        // This will be testing mediaPlayer Service
     }
+
 
     private void updateUi() {
         tvArtist.setText(artist);
@@ -83,7 +90,6 @@ public class PlayFragment extends Fragment {
                 .load(thumbnail)
                 .into(imgSong)
                 ;
-
     }
 
     private void initView(View view) {

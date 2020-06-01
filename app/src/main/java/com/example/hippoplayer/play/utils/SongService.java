@@ -1,4 +1,4 @@
-package com.example.hippoplayer.play;
+package com.example.hippoplayer.play.utils;
 
 import com.example.hippoplayer.RetrofitHandler;
 import com.example.hippoplayer.models.SongRespone;
