@@ -1,11 +1,14 @@
 package com.example.hippoplayer.play;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -13,12 +16,16 @@ import java.io.IOException;
 
 public class MediaPlayerService extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener,
-        MediaPlayer.OnErrorListener {
+        MediaPlayer.OnErrorListener, MediaPlayer.OnSeekCompleteListener,
+        MediaPlayer.OnInfoListener, AudioManager.OnAudioFocusChangeListener {
+
 
     private final IBinder iBinder = new LocalBinder();
-
+    // Todo: CONSTANTS
+    private final String TAG = MediaPlayerService.class.getSimpleName();
     // MediaPlayer init
     private MediaPlayer mediaPlayer;
+    private AudioManager audioManager;
     private String mediaFile;
     private int resumePoint;
 
@@ -26,18 +33,19 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     public void onCreate() {
         super.onCreate();
         // init mediaPlayer
-        mediaPlayer = new MediaPlayer();
-        initMediaPlayer();
     }
 
     private void initMediaPlayer() {
+        Log.d(TAG, "init media player called");
         // still loading the media source
+        mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnBufferingUpdateListener(this);
         // when load the media source complete
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnPreparedListener(this);
         // if it has some error
         mediaPlayer.setOnErrorListener(this);
+        mediaPlayer.setOnSeekCompleteListener(this);
         mediaPlayer.reset();
     }
 
@@ -61,7 +69,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         this.mediaFile = mediaFile;
     }
 
-    public void stopMedia() {
+    private void stopMedia() {
         if (mediaPlayer == null) return;
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
@@ -72,6 +80,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
             resumePoint = mediaPlayer.getCurrentPosition();
+        }
+    }
+
+    public void resumeMedia() {
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.seekTo(resumePoint);
+            mediaPlayer.start();
         }
     }
     @Nullable
@@ -87,7 +102,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
+        stopMedia();
+        stopSelf();
     }
 
     @Override
@@ -97,8 +113,99 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        switch (what) {
+            case MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:
+                Log.d(TAG, "MEDIA ERROR NOT VALID FOR PROGRESSIVE PLAYBACK");
+                break;
+            case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
+                Log.d(TAG, "MEDIA ERROR SERVER DIED");
+                break;
+            case MediaPlayer.MEDIA_ERROR_UNKNOWN:
+                Log.d(TAG, "MEDIA ERROR UNKNOWN");
+                break;
+        }
         return false;
     }
+
+    @Override
+    public void onSeekComplete(MediaPlayer mp) {
+
+    }
+
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_GAIN:
+                // the service gained audio focus, so it needs to start playing
+                if (mediaPlayer == null) initMediaPlayer();
+                else if (!mediaPlayer.isPlaying()) mediaPlayer.start();
+                mediaPlayer.setVolume(1.0f, 1.0f);
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS:
+                // the service lost audio focus, the user probably moved to playing
+                // media on other app, so release the media player
+                if (mediaPlayer == null) mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                // Focus lost for a short time, pause the Media player
+                if (mediaPlayer.isPlaying()) mediaPlayer.pause();
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                // Lost focus for a short of time, lower the volume of the player
+                // maybe there is a notification
+                if (mediaPlayer.isPlaying()) mediaPlayer.setVolume(0.1f, 0.1f);
+                break;
+        }
+    }
+
+    @Override
+    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        return false;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (requestAudioFocus() == false) {
+            stopSelf();
+        }
+        Log.d(TAG,"onStartCommand called");
+        initMediaPlayer();
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroy");
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            Log.d(TAG, "onDestroy called");
+            stopMedia();
+            mediaPlayer.release();
+        }
+        removeAudioFocus();
+    }
+
+    private boolean requestAudioFocus() {
+        Log.d(TAG, "request Focus called");
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean removeAudioFocus() {
+        Log.d(TAG, "remove focus called");
+        return AudioManager.AUDIOFOCUS_REQUEST_GRANTED ==
+                audioManager.abandonAudioFocus(this);
+    }
+
+
 
     public class LocalBinder extends Binder {
         public MediaPlayerService getService() {
