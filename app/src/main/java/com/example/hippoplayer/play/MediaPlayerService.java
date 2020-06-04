@@ -29,7 +29,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         initMediaPlayer();
     }
 
-    public void initMediaPlayer() {
+    private void initMediaPlayer() {
         // still loading the media source
         mediaPlayer.setOnBufferingUpdateListener(this);
         // when load the media source complete

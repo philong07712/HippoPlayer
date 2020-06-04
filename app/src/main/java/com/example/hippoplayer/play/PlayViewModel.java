@@ -1,10 +1,10 @@
 package com.example.hippoplayer.play;
 
-import android.util.Log;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.hippoplayer.models.Song;
@@ -15,57 +15,81 @@ import com.example.hippoplayer.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class PlayViewModel extends ViewModel {
 
+    // Todo: Constant
     private final String TAG = PlayViewModel.class.getSimpleName();
 
-    private SongService service = new SongService();
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private MutableLiveData<List<Song>> songsMutableLiveData = new MutableLiveData<>();
+    // Todo: Fields
+    // Song service to get data
+    private SongService mService = new SongService();
+    // media service to play the song
+    private MediaPlayerService mMediaService;
+    private boolean mServiceBound = false;
 
+    private CompositeDisposable mCompositeDisposal = new CompositeDisposable();
+    private Flowable<SongRespone> mSongResponeFlowable;
     // variables
-    private List<Song> songs = new ArrayList<>();
-
+    private List<Song> mSongs = new ArrayList<>();
+    // Todo: Constructor
     public PlayViewModel() {
 
     }
 
+    // Todo: Override method
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        mCompositeDisposal.clear();
+    }
+
+    // Todo: public method
     public void init() {
-        compositeDisposable.add(service.getSongRespone()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<SongRespone>() {
-                    @Override
-                    public void accept(SongRespone songRespone) throws Throwable {
-                        songsMutableLiveData.setValue(songRespone.getSongList());
-                    }
-                })
-        );
+        mMediaService = new MediaPlayerService();
+        mSongResponeFlowable = mService.getSongRespone();
     }
 
-    public void setListSong(List<Song> songs) {
-        this.songs = songs;
+    // Todo: getter and setter
+    public void setMediaSong(String url) {
+        mMediaService.setMediaFile(url);
     }
 
+    public void playMediaSong() {
+        mMediaService.loadMediaSource();
+        mMediaService.playMedia();
+    }
 
+    public ServiceConnection getMusicConnection() {
+        return musicConnection;
+    }
 
     public String getFullUrl(String endpoint) {
         return Constants.SONG_BASE_URL + endpoint;
     }
 
-    public LiveData<List<Song>> getSongsLiveData() {
-        return songsMutableLiveData;
+    public Flowable<SongRespone> getSongs() {
+        return mSongResponeFlowable;
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        compositeDisposable.clear();
-    }
+    // Todo: private method
 
+    // Todo: inner classes + interface
+
+    private ServiceConnection musicConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MediaPlayerService.LocalBinder binder = (MediaPlayerService.LocalBinder) service;
+            // get service
+            mMediaService = binder.getService();
+            mServiceBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mServiceBound = false;
+        }
+    };
 }
