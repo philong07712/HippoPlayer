@@ -1,53 +1,64 @@
 package com.example.hippoplayer.play;
 
-import android.util.Log;
+import android.content.Context;
+import android.widget.ImageView;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.ViewModel;
 
-import com.example.hippoplayer.models.Song;
-import com.example.hippoplayer.models.SongRespone;
+import com.bumptech.glide.Glide;
+import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.utils.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class PlayViewModel extends ViewModel {
 
-    private SongService service = new SongService();
+    //
+
+    private SongService songService = new SongService();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private MutableLiveData<List<Song>> songsMutableLiveData = new MutableLiveData<>();
+
+    public Song song; // nhận song từ fragment
+    public static Context mContext;
+    List<SongResponse> songList = new ArrayList<>();
 
     public PlayViewModel() {
 
     }
 
-    public void init() {
-        compositeDisposable.add(service.getSongRespone()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<SongRespone>() {
-                    @Override
-                    public void accept(SongRespone songRespone) throws Throwable {
-                        songsMutableLiveData.setValue(songRespone.getSongList());
-                    }
-                })
-        );
+    public void setContext(Context context) {
+        this.mContext = context;
     }
+
+    public SongResponse getSong(int songIndex) {
+        songList = songService.getSongs();
+        return songList.get(songIndex);
+    }
+
+    public void setSong(SongResponse songResponse) { // nhận song từ fragment (Nhận bài hát từ fragment)
+        this.song = new Song(songResponse, songResponse.artist); // nhận song từ fragment
+    }
+
+    // Get one song
+   /* public LiveData<Song> getSongLiveData() {
+        return songService.getFirstSong();
+    }*/
 
     public String getFullUrl(String endpoint) {
         return Constants.SONG_BASE_URL + endpoint;
     }
 
-
-    public LiveData<List<Song>> getSongsLiveData() {
-        return songsMutableLiveData;
+    @BindingAdapter("app:imageCenter")
+    public static void setImage(ImageView image, String url) {
+        String finalurl = Constants.SONG_BASE_URL + url;
+        Glide.with(mContext)
+                .load(finalurl).centerCrop()
+                .fitCenter().into(image);
     }
 
     @Override
@@ -55,5 +66,4 @@ public class PlayViewModel extends ViewModel {
         super.onCleared();
         compositeDisposable.clear();
     }
-
 }
