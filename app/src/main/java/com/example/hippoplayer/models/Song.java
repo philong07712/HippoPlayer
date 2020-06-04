@@ -1,4 +1,4 @@
-package com.example.hippoplayer.play;
+package com.example.hippoplayer.models;
 
 import com.example.hippoplayer.models.Artist;
 import com.example.hippoplayer.models.SongResponse;

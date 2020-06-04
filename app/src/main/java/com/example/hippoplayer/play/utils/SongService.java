@@ -1,4 +1,4 @@
-package com.example.hippoplayer.play;
+package com.example.hippoplayer.play.utils;
 
 import android.util.Log;
 
@@ -8,8 +8,12 @@ import com.example.hippoplayer.models.SongResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< HEAD:app/src/main/java/com/example/hippoplayer/play/SongService.java
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
+=======
+import io.reactivex.rxjava3.core.Flowable;
+>>>>>>> 85e0b43f615214fc00736dc7e4328bbb3be23190:app/src/main/java/com/example/hippoplayer/play/utils/SongService.java
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableSource;
 import io.reactivex.rxjava3.core.Observer;
@@ -47,6 +51,8 @@ public class SongService {
                                 .subscribeOn(Schedulers.io());
                     }
                 }).observeOn(AndroidSchedulers.mainThread());
+    public Flowable<SongRespone> getSongRespone() {
+        return api.getSongList("IwAR07nN-lOIn2Ewd1rrsl2WeHG6jUQ6diZOoPQDpiE8jP7tR7a3tyc67YXmk");
     }
 
     public List<SongResponse> getSongs() {
