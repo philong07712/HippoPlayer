@@ -49,10 +49,10 @@ public class PlayViewModel extends ViewModel {
     public void setContext(Context context) {
         this.mContext = context;
     }
-
+/*
     public void setSong(SongResponse songResponse) { // nhận song từ fragment (Nhận bài hát từ fragment)
         song.setSongResponse(songResponse);
-    }
+    }*/
 
     public Flowable<List<SongResponse>> getmSongResponeFlowable() {
         return mSongResponeFlowable;

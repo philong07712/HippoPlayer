@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
 
@@ -43,7 +44,7 @@ public class PlayFragment extends Fragment {
 
     // Todo: Fields
     private String mTitle, mArtist, mThumbnail, mMediaUrl;
-    private List<SongResponse> mSongResponses = new ArrayList<>();
+    private List<Song> mSong = new ArrayList<>();
 
     private PlayViewModel mViewModel;
 
@@ -59,7 +60,9 @@ public class PlayFragment extends Fragment {
         @Override
         public void onNext(List<SongResponse> songResponses) {
             for(SongResponse songResponse : songResponses){
-                mSongResponses.add(songResponse);
+                Song song = new Song();
+                song.setSongResponse(songResponse);
+                mSong.add(song);
             }
             setSong();
         }
@@ -76,9 +79,11 @@ public class PlayFragment extends Fragment {
     };
 
     private void setSong() {
-        Log.d("TAG", Integer.toString(mSongResponses.size()));
-        mViewModel.setSong(mSongResponses.get(0));
-        fragmentPlayBinding.setPlayViewModel(mViewModel);
+        Log.d("TAG", Integer.toString(mSong.size()));
+        ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter();
+        itemPlayAdapter.setmSongList(mSong);
+        fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
+        fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
     }
 
     @Override
