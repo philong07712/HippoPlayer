@@ -20,6 +20,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     // MediaPlayer init
     private MediaPlayer mediaPlayer;
     private String mediaFile;
+    private int resumePoint;
 
     @Override
     public void onCreate() {
@@ -37,6 +38,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         mediaPlayer.setOnPreparedListener(this);
         // if it has some error
         mediaPlayer.setOnErrorListener(this);
+        mediaPlayer.reset();
     }
 
     public void loadMediaSource() {
@@ -59,7 +61,19 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         this.mediaFile = mediaFile;
     }
 
+    public void stopMedia() {
+        if (mediaPlayer == null) return;
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
+    }
 
+    public void pauseMedia() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            resumePoint = mediaPlayer.getCurrentPosition();
+        }
+    }
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
