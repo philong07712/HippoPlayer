@@ -1,10 +1,7 @@
 package com.example.hippoplayer.play;
 
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,11 +10,16 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.example.hippoplayer.R;
+import com.example.hippoplayer.models.Song;
+import com.example.hippoplayer.models.SongResponse;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -38,117 +40,81 @@ public class PlayFragment extends Fragment {
     private FragmentPlayBinding fragmentPlayBinding;
     private TextView tvTitle, tvArtist;
     private ImageView imgBg, imgSong;
-    private View view;
 
     // Todo: Fields
     private String mTitle, mArtist, mThumbnail, mMediaUrl;
-    private List<Song> mSongs = new ArrayList<>();
+    private List<SongResponse> mSongResponses = new ArrayList<>();
 
     private PlayViewModel mViewModel;
 
     // media service
     Intent mediaIntent;
 
-    private Subscriber<SongRespone> respone = new Subscriber<SongRespone>() {
+    private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
         public void onSubscribe(Subscription s) {
             s.request(Long.MAX_VALUE);
         }
 
         @Override
-        public void onNext(SongRespone songRespone) {
-            mSongs = songRespone.getSongList();
-            mTitle = mSongs.get(0).getName();
-            mArtist = mSongs.get(0).getArtist();
-            mThumbnail = mSongs.get(0).getThumbnail();
-            mThumbnail = mViewModel.getFullUrl(mSongs.get(0).getThumbnail());
-            mMediaUrl = mViewModel.getFullUrl(mSongs.get(0).getUrl());
-            updateUi();
-            playSong();
+        public void onNext(List<SongResponse> songResponses) {
+            for(SongResponse songResponse : songResponses){
+                mSongResponses.add(songResponse);
+            }
+            setSong();
         }
 
         @Override
         public void onError(Throwable t) {
-            Log.d(TAG, "onError called " + t.getMessage());
+            Log.e("SongResponse Fragment", t.getMessage());
         }
 
         @Override
         public void onComplete() {
-            Log.d(TAG, "onComplete called");
+            Log.e("onComplete", "Complete");
         }
     };
 
-    // Todo: Override method
+    private void setSong() {
+        Log.d("TAG", Integer.toString(mSongResponses.size()));
+        mViewModel.setSong(mSongResponses.get(0));
+        fragmentPlayBinding.setPlayViewModel(mViewModel);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
         fragmentPlayBinding.setLifecycleOwner(this);
-        initView(view);
-        return view;
-
-     }
-
+        return fragmentPlayBinding.getRoot();
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(PlayViewModel.class);
-        fragmentPlayBinding.setPlayViewModel(mViewModel);
         mViewModel.setContext(getContext());
-        mViewModel.setSong(mViewModel.getSong(0));
-//        binding.setLifecycleOwner(getViewLifecycleOwner());
-//        binding.setPlayViewModel(mViewModel);
-        mViewModel = ViewModelProviders.of(this).get(PlayViewModel.class);
-        mViewModel.init();
-        mViewModel.getSongs()
+        mViewModel.getmSongResponeFlowable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(respone);
-        // This will be testing mediaPlayer Service
+                .subscribe(response);
     }
 
-    @Override
+    /*@Override
     public void onStart() {
         super.onStart();
         mediaIntent = new Intent(getActivity(), MediaPlayerService.class);
-        getActivity().bindService(mediaIntent, mViewModel.getMusicConnection(), Context.BIND_AUTO_CREATE);
+       // getActivity().bindService(mediaIntent, mViewModel.getMusicConnection(), Context.BIND_AUTO_CREATE);
         getActivity().startService(mediaIntent);
-    }
-
-    // Todo: public method
-
-    // Todo: private method
+    }*/
 
     private void playSong() {
         mViewModel.setMediaSong(mMediaUrl);
         mViewModel.playMediaSong();
     }
-
-    private void updateUi() {
-        tvArtist.setText(mArtist);
-        tvTitle.setText(mTitle);
-        Glide.with(this)
-                .load(mThumbnail)
-                .into(imgBg)
-                ;
-        Glide.with(this)
-                .load(mThumbnail)
-                .into(imgSong)
-                ;
-    }
-
-    private void initView(View view) {
-        tvTitle = view.findViewById(R.id.text_title_song);
-        tvArtist = view.findViewById(R.id.text_artist_song);
-        imgBg = view.findViewById(R.id.image_bg_song);
-        imgSong = view.findViewById(R.id.image_song);
-    }
-
-    // Todo: inner classes + interfaces
 }
