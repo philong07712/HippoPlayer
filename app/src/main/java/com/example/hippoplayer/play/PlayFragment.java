@@ -163,7 +163,7 @@ public class PlayFragment extends Fragment {
         seekBarDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (mediaService.getMediaPlayer().isPlaying() && fromUser) {
+                if (fromUser) {
                    mediaService.seekTo(progress * 100);
                 }
             }

@@ -64,6 +64,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
     }
 
     public void seekTo(int progress) {
+        resumePoint = progress;
         mMediaPlayer.seekTo(progress);
     }
 
