@@ -23,18 +23,14 @@ public class PlayViewModel extends ViewModel {
 
     // Todo: Constant
     private final String TAG = PlayViewModel.class.getSimpleName();
-    private boolean FLAG_RUNNING = false;
 
     // Todo: Fields
     // Song service to get data
     private SongService mService = new SongService();
     // media service to play the song
-    private MediaPlayerService mMediaService;
-    private boolean mServiceBound = false;
     private CompositeDisposable mCompositeDisposal = new CompositeDisposable();
     private Flowable<SongRespone> mSongResponeFlowable;
     // variables
-    private List<Song> mSongs = new ArrayList<>();
     // Todo: Constructor
     public PlayViewModel() {
 
@@ -49,23 +45,10 @@ public class PlayViewModel extends ViewModel {
 
     // Todo: public method
     public void init() {
-        mMediaService = new MediaPlayerService();
         mSongResponeFlowable = mService.getSongRespone();
     }
 
     // Todo: getter and setter
-    public void setMediaSong(String url) {
-        mMediaService.setMediaFile(url);
-    }
-
-    public void playMediaSong() {
-        FLAG_RUNNING = true;
-        mMediaService.playMedia();
-    }
-
-    public ServiceConnection getMusicConnection() {
-        return musicConnection;
-    }
 
     public String getFullUrl(String endpoint) {
         return Constants.SONG_BASE_URL + endpoint;
@@ -75,48 +58,9 @@ public class PlayViewModel extends ViewModel {
         return mSongResponeFlowable;
     }
 
-    public MediaPlayerService getMediaService() {
-        return mMediaService;
-    }
 
     // Todo: private method
 
-    public void pauseButtonClicked() {
-        if (FLAG_RUNNING) {
-            pauseMedia();
-        }
-        else
-        {
-            resumeMedia();
-        }
-    }
-
-    public boolean isMediaRunning() {
-        return this.FLAG_RUNNING;
-    }
-    private void pauseMedia() {
-        mMediaService.pauseMedia();
-        FLAG_RUNNING = !FLAG_RUNNING;
-    }
-
-    private void resumeMedia() {
-        mMediaService.resumeMedia();
-        FLAG_RUNNING = !FLAG_RUNNING;
-    }
     // Todo: inner classes + interface
 
-    private ServiceConnection musicConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MediaPlayerService.LocalBinder binder = (MediaPlayerService.LocalBinder) service;
-            // get service
-            mMediaService = binder.getService();
-            mServiceBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mServiceBound = false;
-        }
-    };
 }

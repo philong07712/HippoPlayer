@@ -1,8 +1,6 @@
 package com.example.hippoplayer.play;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -48,12 +46,12 @@ public class PlayFragment extends Fragment {
     private FloatingActionButton btnPause;
     private SeekBar seekBarDuration;
     // Todo: Fields
+    private MediaService mediaService;
     private String mTitle, mArtist, mThumbnail, mMediaUrl;
     private List<Song> mSongs = new ArrayList<>();
     private PlayViewModel mViewModel;
 
     // media service
-    Intent mediaIntent;
 
     private Subscriber<SongRespone> respone = new Subscriber<SongRespone>() {
         @Override
@@ -90,6 +88,7 @@ public class PlayFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_play, container, false);
         initView(view);
+        mediaService = new MediaService();
         return view;
 
      }
@@ -115,9 +114,6 @@ public class PlayFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mediaIntent = new Intent(getActivity(), MediaPlayerService.class);
-        getActivity().bindService(mediaIntent, mViewModel.getMusicConnection(), Context.BIND_AUTO_CREATE);
-        getActivity().startService(mediaIntent);
     }
 
     // Todo: public method
@@ -125,8 +121,9 @@ public class PlayFragment extends Fragment {
     // Todo: private method
 
     private void playSong() {
-        mViewModel.setMediaSong(mMediaUrl);
-        mViewModel.playMediaSong();
+        mediaService.setMediaFile(mMediaUrl);
+        mediaService.loadMediaSource();
+//        playerService.playMedia();
     }
 
     private void updateUi() {
@@ -157,7 +154,7 @@ public class PlayFragment extends Fragment {
         btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewModel.pauseButtonClicked();
+                mediaService.pauseButtonClicked();
             }
         });
 
@@ -166,8 +163,8 @@ public class PlayFragment extends Fragment {
         seekBarDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (mViewModel.isMediaRunning() && fromUser) {
-                    mViewModel.getMediaService().seekTo(progress * 100);
+                if (mediaService.getMediaPlayer().isPlaying() && fromUser) {
+                   mediaService.seekTo(progress * 100);
                 }
             }
 
@@ -190,9 +187,9 @@ public class PlayFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mViewModel.isMediaRunning()) {
-                    int currentPosition = mViewModel.getMediaService().getCurrentPosition();
-                    int maxDuration = mViewModel.getMediaService().getMediaDuration();
+                if (mediaService.getMediaPlayer().isPlaying()) {
+                    int currentPosition = mediaService.getMediaPlayer().getCurrentPosition();
+                    int maxDuration = mediaService.getMediaPlayer().getDuration();
                     updateSeekBar(currentPosition, maxDuration);
                     updateTime(currentPosition, maxDuration);
                 }
