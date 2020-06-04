@@ -26,12 +26,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     // MediaPlayer init
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
-    private String mediaFile;
+    private String mediaFile = null;
     private int resumePoint;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        initMediaPlayer();
         // init mediaPlayer
     }
 
@@ -47,6 +48,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         mediaPlayer.setOnErrorListener(this);
         mediaPlayer.setOnSeekCompleteListener(this);
         mediaPlayer.reset();
+        if (mediaFile != null) loadMediaSource();
     }
 
     public void loadMediaSource() {
@@ -67,6 +69,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void setMediaFile(String mediaFile) {
         this.mediaFile = mediaFile;
+        loadMediaSource();
     }
 
     private void stopMedia() {
@@ -88,6 +91,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
             mediaPlayer.seekTo(resumePoint);
             mediaPlayer.start();
         }
+    }
+
+    public void seekTo(int progress) {
+        mediaPlayer.seekTo(progress);
     }
     @Nullable
     @Override
@@ -137,6 +144,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_GAIN:
                 // the service gained audio focus, so it needs to start playing
+                Log.d(TAG, "Focus is gained");
                 if (mediaPlayer == null) initMediaPlayer();
                 else if (!mediaPlayer.isPlaying()) mediaPlayer.start();
                 mediaPlayer.setVolume(1.0f, 1.0f);
@@ -145,6 +153,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
             case AudioManager.AUDIOFOCUS_LOSS:
                 // the service lost audio focus, the user probably moved to playing
                 // media on other app, so release the media player
+                Log.d(TAG, "Focus is loss");
                 if (mediaPlayer == null) mediaPlayer.stop();
                 mediaPlayer.release();
                 mediaPlayer = null;
@@ -152,11 +161,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 // Focus lost for a short time, pause the Media player
+                Log.d(TAG, "Focus loss transient");
                 if (mediaPlayer.isPlaying()) mediaPlayer.pause();
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                 // Lost focus for a short of time, lower the volume of the player
                 // maybe there is a notification
+                Log.d(TAG, "Focus loss transient can duck");
                 if (mediaPlayer.isPlaying()) mediaPlayer.setVolume(0.1f, 0.1f);
                 break;
         }
@@ -169,11 +180,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (requestAudioFocus() == false) {
+        if (!requestAudioFocus()) {
             stopSelf();
         }
-        Log.d(TAG,"onStartCommand called");
-        initMediaPlayer();
+        if (mediaPlayer == null) initMediaPlayer();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -205,7 +215,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
                 audioManager.abandonAudioFocus(this);
     }
 
+    public int getMediaDuration() {
+        return mediaPlayer.getDuration();
+    }
 
+    public int getCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
 
     public class LocalBinder extends Binder {
         public MediaPlayerService getService() {

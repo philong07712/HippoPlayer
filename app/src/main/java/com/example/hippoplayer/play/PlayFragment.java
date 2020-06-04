@@ -1,10 +1,8 @@
 package com.example.hippoplayer.play;
 
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,19 +12,21 @@ import androidx.lifecycle.ViewModelProvider;
 
 import androidx.lifecycle.ViewModelProviders;
 
-import android.os.IBinder;
-import android.provider.MediaStore;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongRespone;
+import com.example.hippoplayer.utils.ConvertHelper;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -41,16 +41,15 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class PlayFragment extends Fragment {
     // Todo: Constant
     private static final String TAG = PlayFragment.class.getSimpleName();
-
     // View
-    private TextView tvTitle, tvArtist;
+    private TextView tvTitle, tvArtist, tvStartSong, tvEndSong;
     private ImageView imgBg, imgSong;
     private View view;
-
+    private FloatingActionButton btnPause;
+    private SeekBar seekBarDuration;
     // Todo: Fields
     private String mTitle, mArtist, mThumbnail, mMediaUrl;
     private List<Song> mSongs = new ArrayList<>();
-
     private PlayViewModel mViewModel;
 
     // media service
@@ -108,6 +107,8 @@ public class PlayFragment extends Fragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(respone);
+        initListener();
+        initHandler();
         // This will be testing mediaPlayer Service
     }
 
@@ -146,7 +147,69 @@ public class PlayFragment extends Fragment {
         tvArtist = view.findViewById(R.id.text_artist_song);
         imgBg = view.findViewById(R.id.image_bg_song);
         imgSong = view.findViewById(R.id.image_song);
+        btnPause = view.findViewById(R.id.btn_pause_song);
+        seekBarDuration = view.findViewById(R.id.seekb_duration_song);
+        tvStartSong = view.findViewById(R.id.text_time_start_song);
+        tvEndSong = view.findViewById(R.id.text_time_end_song);
     }
 
+    private void initListener() {
+        btnPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.pauseButtonClicked();
+            }
+        });
+
+
+
+        seekBarDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (mViewModel.isMediaRunning() && fromUser) {
+                    mViewModel.getMediaService().seekTo(progress * 100);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+    }
+
+    private void initHandler() {
+        Handler mHandler = new Handler();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mViewModel.isMediaRunning()) {
+                    int currentPosition = mViewModel.getMediaService().getCurrentPosition();
+                    int maxDuration = mViewModel.getMediaService().getMediaDuration();
+                    updateSeekBar(currentPosition, maxDuration);
+                    updateTime(currentPosition, maxDuration);
+                }
+                mHandler.postDelayed(this, 1000);
+            }
+        });
+    }
+
+    private void updateSeekBar(int currentPosition, int maxDuration) {
+        seekBarDuration.setMax(maxDuration / 100);
+        int mCurrentPosition = currentPosition / 100;
+        seekBarDuration.setProgress(mCurrentPosition);
+    }
+
+    private void updateTime(int currentPosition, int maxDuration) {
+        tvStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
+        tvEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
+    }
     // Todo: inner classes + interfaces
 }
