@@ -11,6 +11,6 @@ import retrofit2.http.Headers;
 
 public interface SongAPI {
     @Headers("Content-Type: application/json")
-    @GET("songs")
+    @GET("api/songs")
     Flowable<List<SongResponse>> getSongList();
 }

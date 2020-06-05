@@ -13,18 +13,25 @@ public class Song {
     private String idArtist;
     private String nameArtist;
 
+    private SongResponse songResponse;
+
     public Song() {
     }
 
-    public Song(SongResponse songResponse, Artist artist) {
+    public void setUpSong(SongResponse songResponse) {
         this.thumbnail = songResponse.thumbnail;
         this.nameSong = songResponse.name;
         this.description = songResponse.description;
         this.idSong = songResponse.id;
         this.url = songResponse.url;
-        this.avatarArtist = artist.avatar;
-        this.idArtist = artist.id;
-        this.nameArtist = artist.name;
+        this.avatarArtist = songResponse.artist.avatar;
+        this.idArtist = songResponse.artist.id;
+        this.nameArtist = songResponse.artist.name;
+    }
+
+    public void setSongResponse(SongResponse songResponse) {
+        this.songResponse = songResponse;
+        setUpSong(songResponse);
     }
 
     public String getThumbnail() {
