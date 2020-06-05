@@ -5,6 +5,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,16 +19,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
+import com.example.hippoplayer.utils.ConvertHelper;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -33,7 +33,6 @@ import java.util.List;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-
 public class PlayFragment extends Fragment {
     // Todo: Constant
     private static final String TAG = PlayFragment.class.getSimpleName();
@@ -41,11 +40,12 @@ public class PlayFragment extends Fragment {
     // View
 
     private FragmentPlayBinding fragmentPlayBinding;
-    private TextView tvTitle, tvArtist;
-    private ImageView imgBg, imgSong;
 
+    private View view;
+    private FloatingActionButton btnPause;
+    private SeekBar seekBarDuration;
     // Todo: Fields
-    private String mTitle, mArtist, mThumbnail, mMediaUrl;
+    private MediaService mMediaService = new MediaService();
     private List<Song> mSong = new ArrayList<>();
 
     private PlayViewModel mViewModel;
@@ -63,7 +63,7 @@ public class PlayFragment extends Fragment {
 
         @Override
         public void onNext(List<SongResponse> songResponses) {
-            for(SongResponse songResponse : songResponses){
+            for (SongResponse songResponse : songResponses) {
                 Song song = new Song();
                 song.setSongResponse(songResponse);
                 mSong.add(song);
@@ -90,6 +90,76 @@ public class PlayFragment extends Fragment {
         fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
     }
 
+    // Todo: public method
+
+    // Todo: private method
+
+    //
+    private void initListener() {
+        fragmentPlayBinding.sbDurationSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    mMediaService.seekTo(progress * 100);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                Log.d(TAG, "current viewpager position is: " + position);
+                playCurrentSong(position);
+            }
+        });
+    }
+
+    private void playCurrentSong(int position) {
+        String fullFileUrl = mViewModel.getFullUrl(mSong.get(position).getUrl());
+        mMediaService.setMediaFile(fullFileUrl);
+        mMediaService.loadMediaSource();
+        mMediaService.playMedia();
+    }
+
+    private void initHandler() {
+        Handler mHandler = new Handler();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mMediaService.getMediaPlayer().isPlaying()) {
+                    int currentPosition = mMediaService.getMediaPlayer().getCurrentPosition();
+                    int maxDuration = mMediaService.getMediaPlayer().getDuration();
+                    updateSeekBar(currentPosition, maxDuration);
+                    updateTime(currentPosition, maxDuration);
+                }
+                mHandler.postDelayed(this, 1000);
+            }
+        });
+    }
+
+    private void updateSeekBar(int currentPosition, int maxDuration) {
+        fragmentPlayBinding.sbDurationSong.setMax(maxDuration / 100);
+        int mCurrentPosition = currentPosition / 100;
+        fragmentPlayBinding.sbDurationSong.setProgress(mCurrentPosition);
+    }
+
+    private void updateTime(int currentPosition, int maxDuration) {
+        fragmentPlayBinding.textTimeStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
+        fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
+    }
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,20 +171,22 @@ public class PlayFragment extends Fragment {
         fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
         fragmentPlayBinding.setLifecycleOwner(this);
         // Set up button play and pause
-        fragmentPlayBinding.buttonPlayAndPause.setProgress(1.0f);
         fragmentPlayBinding.buttonPlayAndPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPlay){ // if true // pause song
-                    isPlay = !isPlay;
+                if (mMediaService.getMediaPlayer().isPlaying()) { // if true // pause song
+                    mMediaService.pauseButtonClicked();
                     fragmentPlayBinding.buttonPlayAndPause.playAnimation();
                 } else { // if false // resume play song
-                    isPlay = !isPlay;
+                    mMediaService.resumeMedia();
                     fragmentPlayBinding.buttonPlayAndPause.cancelAnimation();
                     fragmentPlayBinding.buttonPlayAndPause.setProgress(0.0f);
                 }
             }
         });
+
+        initListener();
+        initHandler();
         return fragmentPlayBinding.getRoot();
     }
 
@@ -127,18 +199,15 @@ public class PlayFragment extends Fragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response);
+        // This will be testing mediaPlayer Service
     }
 
-    /*@Override
+
+    @Override
     public void onStart() {
         super.onStart();
-        mediaIntent = new Intent(getActivity(), MediaPlayerService.class);
-       // getActivity().bindService(mediaIntent, mViewModel.getMusicConnection(), Context.BIND_AUTO_CREATE);
-        getActivity().startService(mediaIntent);
-    }*/
-
-    private void playSong() {
-        mViewModel.setMediaSong(mMediaUrl);
-        mViewModel.playMediaSong();
+        mMediaService.requestAudioFocus(getContext());
     }
+
+    // Todo: inner classes + interfaces
 }

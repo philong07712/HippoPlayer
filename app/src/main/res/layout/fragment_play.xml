@@ -25,7 +25,22 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.55" />
 
+            <SeekBar
+                android:id="@+id/sb_duration_song"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                android:progressDrawable="@drawable/seek_bar"
+                android:thumb="@drawable/seek_thumb"
+                app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <RelativeLayout
+                android:id="@+id/relativeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/opacity_black"
@@ -33,38 +48,25 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <SeekBar
-                    android:id="@+id/seekbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="0dp"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="0dp"
-                    android:progressDrawable="@drawable/seek_bar"
-                    android:thumb="@drawable/seek_thumb"
-                    app:layout_constraintVertical_bias="0.814" />
-
                 <TextView
                     android:id="@+id/text_time_start_song"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/seekbar"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="8dp"
                     android:gravity="center"
-                    android:paddingHorizontal="10dp"
-                    android:text="0:00"
-                    android:textColor="@android:color/white" />
+                    android:paddingHorizontal="15dp"
+                    android:text="0:01"
+                    android:textColor="@android:color/white"
+                    app:layout_constraintTop_toTopOf="@+id/text_time_end_song"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
                     android:id="@+id/text_time_end_song"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/seekbar"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="8dp"
                     android:gravity="center"
-                    android:paddingHorizontal="10dp"
+                    android:paddingHorizontal="15dp"
                     android:text="3:30"
                     android:textColor="@android:color/white" />
 

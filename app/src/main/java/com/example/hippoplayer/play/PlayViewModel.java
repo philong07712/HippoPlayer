@@ -1,6 +1,10 @@
 package com.example.hippoplayer.play;
 
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.widget.ImageView;
 
 import androidx.databinding.BindingAdapter;
@@ -25,48 +29,38 @@ public class PlayViewModel extends ViewModel {
     private SongService songService = new SongService();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public Song song = new Song(); // nhận song từ fragment
+    public Song song = new Song();
     public static Context mContext;
-    List<SongResponse> songList = new ArrayList<>();
     private final String TAG = PlayViewModel.class.getSimpleName();
 
+    // Todo: Fields
+    // Song service to get data
     private SongService mService = new SongService();
 
     // media service to play the song
-    private MediaPlayerService mMediaService;
-    private boolean mServiceBound = false;
 
     private CompositeDisposable mCompositeDisposal = new CompositeDisposable();
     private Flowable<List<SongResponse>> mSongResponeFlowable;
     // variables
     private List<Song> mSongs = new ArrayList<>();
-
     // Todo: Constructor
     public PlayViewModel() {
-        mMediaService = new MediaPlayerService();
         mSongResponeFlowable = mService.getSongRespone();
+    }
+
+
+    // Todo: public method
+    public void init() {
     }
 
     public void setContext(Context context) {
         this.mContext = context;
     }
-/*
-    public void setSong(SongResponse songResponse) { // nhận song từ fragment (Nhận bài hát từ fragment)
-        song.setSongResponse(songResponse);
-    }*/
 
     public Flowable<List<SongResponse>> getmSongResponeFlowable() {
         return mSongResponeFlowable;
     }
 
-    public void setMediaSong(String url) {
-        mMediaService.setMediaFile(url);
-    }
-
-    public void playMediaSong() {
-        mMediaService.loadMediaSource();
-        mMediaService.playMedia();
-    }
 
     public String getFullUrl(String endpoint) {
         return RetrofitHandler.SONG_URL + endpoint;
