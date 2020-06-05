@@ -1,15 +1,8 @@
 package com.example.hippoplayer.play;
 
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +12,17 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.bumptech.glide.Glide;
 import com.example.hippoplayer.R;
+import com.example.hippoplayer.databinding.FragmentPlayBinding;
 import com.example.hippoplayer.models.Song;
-import com.example.hippoplayer.models.SongRespone;
+import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.utils.ConvertHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -35,79 +35,85 @@ import java.util.List;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-
 public class PlayFragment extends Fragment {
     // Todo: Constant
     private static final String TAG = PlayFragment.class.getSimpleName();
+
     // View
-    private TextView tvTitle, tvArtist, tvStartSong, tvEndSong;
-    private ImageView imgBg, imgSong;
+
+    private FragmentPlayBinding fragmentPlayBinding;
+
     private View view;
     private FloatingActionButton btnPause;
     private SeekBar seekBarDuration;
     // Todo: Fields
-    private MediaService mediaService;
-    private String mTitle, mArtist, mThumbnail, mMediaUrl;
-    private List<Song> mSongs = new ArrayList<>();
+    private MediaService mediaService = new MediaService();
+    private List<Song> mSong = new ArrayList<>();
+
     private PlayViewModel mViewModel;
 
     // media service
+    Intent mediaIntent;
 
-    private Subscriber<SongRespone> respone = new Subscriber<SongRespone>() {
+    private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
         public void onSubscribe(Subscription s) {
             s.request(Long.MAX_VALUE);
         }
 
         @Override
-        public void onNext(SongRespone songRespone) {
-            mSongs = songRespone.getSongList();
-            mTitle = mSongs.get(0).getName();
-            mArtist = mSongs.get(0).getArtist();
-            mThumbnail = mSongs.get(0).getThumbnail();
-            mThumbnail = mViewModel.getFullUrl(mSongs.get(0).getThumbnail());
-            mMediaUrl = mViewModel.getFullUrl(mSongs.get(0).getUrl());
-            updateUi();
-            playSong();
+        public void onNext(List<SongResponse> songResponses) {
+            for(SongResponse songResponse : songResponses){
+                Song song = new Song();
+                song.setSongResponse(songResponse);
+                mSong.add(song);
+            }
+            setSong();
         }
 
         @Override
         public void onError(Throwable t) {
-            Log.d(TAG, "onError called " + t.getMessage());
+            Log.e("SongResponse Fragment", t.getMessage());
         }
 
         @Override
         public void onComplete() {
-            Log.d(TAG, "onComplete called");
+            Log.e("onComplete", "Complete");
         }
     };
 
-    // Todo: Override method
+    private void setSong() {
+        Log.d("TAG", Integer.toString(mSong.size()));
+        ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter();
+        itemPlayAdapter.setmSongList(mSong);
+        fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
+        fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+    }
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_play, container, false);
-        initView(view);
-        mediaService = new MediaService();
-        return view;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
-     }
-
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
+        fragmentPlayBinding.setLifecycleOwner(this);
+        return fragmentPlayBinding.getRoot();
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(PlayViewModel.class);
-//        binding.setLifecycleOwner(getViewLifecycleOwner());
-//        binding.setPlayViewModel(mViewModel);
-        mViewModel = ViewModelProviders.of(this).get(PlayViewModel.class);
-        mViewModel.init();
-        mViewModel.getSongs()
+        mViewModel.setContext(getContext());
+        mViewModel.getmSongResponeFlowable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(respone);
-        initListener();
-        initHandler();
+                .subscribe(response);
+//        initListener();
+//        initHandler();
         // This will be testing mediaPlayer Service
     }
 
@@ -121,35 +127,7 @@ public class PlayFragment extends Fragment {
 
     // Todo: private method
 
-    private void playSong() {
-        mediaService.setMediaFile(mMediaUrl);
-        mediaService.loadMediaSource();
-//        playerService.playMedia();
-    }
 
-    private void updateUi() {
-        tvArtist.setText(mArtist);
-        tvTitle.setText(mTitle);
-        Glide.with(this)
-                .load(mThumbnail)
-                .into(imgBg)
-                ;
-        Glide.with(this)
-                .load(mThumbnail)
-                .into(imgSong)
-                ;
-    }
-
-    private void initView(View view) {
-        tvTitle = view.findViewById(R.id.text_title_song);
-        tvArtist = view.findViewById(R.id.text_artist_song);
-        imgBg = view.findViewById(R.id.image_bg_song);
-        imgSong = view.findViewById(R.id.image_song);
-        btnPause = view.findViewById(R.id.btn_pause_song);
-        seekBarDuration = view.findViewById(R.id.seekb_duration_song);
-        tvStartSong = view.findViewById(R.id.text_time_start_song);
-        tvEndSong = view.findViewById(R.id.text_time_end_song);
-    }
 
     private void initListener() {
         btnPause.setOnClickListener(new View.OnClickListener() {
@@ -158,8 +136,6 @@ public class PlayFragment extends Fragment {
                 mediaService.pauseButtonClicked();
             }
         });
-
-
 
         seekBarDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -206,8 +182,8 @@ public class PlayFragment extends Fragment {
     }
 
     private void updateTime(int currentPosition, int maxDuration) {
-        tvStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
-        tvEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
+//        tvStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
+//        tvEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
     }
 
 

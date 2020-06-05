@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitHandler {
     public static RetrofitHandler INSTANCE = null;
-    private static final String SONG_URL = "http://vn.dubulator.com/testHT/api/";
+    public static final String SONG_URL = "http://47.74.3.40/hippoplayer/";
     private Retrofit mSongRetrofit;
 
     private RetrofitHandler()
