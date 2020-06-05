@@ -51,6 +51,7 @@ public class PlayFragment extends Fragment {
     private PlayViewModel mViewModel;
 
     private boolean isPlay = false; // variable for button play and pause
+
     // media service
     Intent mediaIntent;
 
@@ -87,7 +88,6 @@ public class PlayFragment extends Fragment {
         itemPlayAdapter.setmSongList(mSong);
         fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
         fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-
     }
 
     @Override
@@ -100,6 +100,7 @@ public class PlayFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
         fragmentPlayBinding.setLifecycleOwner(this);
+        // Set up button play and pause
         fragmentPlayBinding.buttonPlayAndPause.setProgress(1.0f);
         fragmentPlayBinding.buttonPlayAndPause.setOnClickListener(new View.OnClickListener() {
             @Override
