@@ -31,6 +31,7 @@ public class PlayViewModel extends ViewModel {
     private final String TAG = PlayViewModel.class.getSimpleName();
 
     private SongService mService = new SongService();
+
     // media service to play the song
     private MediaPlayerService mMediaService;
     private boolean mServiceBound = false;

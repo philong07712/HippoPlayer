@@ -74,6 +74,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
             resumePoint = mediaPlayer.getCurrentPosition();
         }
     }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
