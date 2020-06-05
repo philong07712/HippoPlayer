@@ -31,6 +31,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
     }
 
     public void loadMediaSource() {
+        mMediaPlayer.reset();
         try {
             mMediaPlayer.setDataSource(mMediaFile);
         } catch (IOException e) {

@@ -8,9 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.bumptech.glide.Glide;
-import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
@@ -47,7 +43,7 @@ public class PlayFragment extends Fragment {
     private FloatingActionButton btnPause;
     private SeekBar seekBarDuration;
     // Todo: Fields
-    private MediaService mediaService = new MediaService();
+    private MediaService mMediaService = new MediaService();
     private List<Song> mSong = new ArrayList<>();
 
     private PlayViewModel mViewModel;
@@ -112,15 +108,17 @@ public class PlayFragment extends Fragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response);
-//        initListener();
-//        initHandler();
+        initListener();
+        initHandler();
         // This will be testing mediaPlayer Service
     }
+
+
 
     @Override
     public void onStart() {
         super.onStart();
-        mediaService.requestAudioFocus(getContext());
+        mMediaService.requestAudioFocus(getContext());
     }
 
     // Todo: public method
@@ -130,18 +128,18 @@ public class PlayFragment extends Fragment {
 
 
     private void initListener() {
-        btnPause.setOnClickListener(new View.OnClickListener() {
+        fragmentPlayBinding.buttonPlayAndPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mediaService.pauseButtonClicked();
+                mMediaService.pauseButtonClicked();
             }
         });
 
-        seekBarDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        fragmentPlayBinding.sbDurationSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                   mediaService.seekTo(progress * 100);
+                   mMediaService.seekTo(progress * 100);
                 }
             }
 
@@ -156,7 +154,21 @@ public class PlayFragment extends Fragment {
             }
         });
 
+        fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                Log.d(TAG, "current viewpager position is: " + position);
+                playCurrentSong(position);
+            }
+        });
+    }
 
+    private void playCurrentSong(int position) {
+        String fullFileUrl = mViewModel.getFullUrl(mSong.get(position).getUrl());
+        mMediaService.setMediaFile(fullFileUrl);
+        mMediaService.loadMediaSource();
+        mMediaService.playMedia();
     }
 
     private void initHandler() {
@@ -164,9 +176,9 @@ public class PlayFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mediaService.getMediaPlayer().isPlaying()) {
-                    int currentPosition = mediaService.getMediaPlayer().getCurrentPosition();
-                    int maxDuration = mediaService.getMediaPlayer().getDuration();
+                if (mMediaService.getMediaPlayer().isPlaying()) {
+                    int currentPosition = mMediaService.getMediaPlayer().getCurrentPosition();
+                    int maxDuration = mMediaService.getMediaPlayer().getDuration();
                     updateSeekBar(currentPosition, maxDuration);
                     updateTime(currentPosition, maxDuration);
                 }
@@ -176,14 +188,14 @@ public class PlayFragment extends Fragment {
     }
 
     private void updateSeekBar(int currentPosition, int maxDuration) {
-        seekBarDuration.setMax(maxDuration / 100);
+        fragmentPlayBinding.sbDurationSong.setMax(maxDuration / 100);
         int mCurrentPosition = currentPosition / 100;
-        seekBarDuration.setProgress(mCurrentPosition);
+        fragmentPlayBinding.sbDurationSong.setProgress(mCurrentPosition);
     }
 
     private void updateTime(int currentPosition, int maxDuration) {
-//        tvStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
-//        tvEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
+        fragmentPlayBinding.textTimeStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
+        fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
     }
 
 

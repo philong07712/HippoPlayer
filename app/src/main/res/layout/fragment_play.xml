@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".play.PlayFragment">
@@ -12,11 +12,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_play"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
+                android:layout_height="match_parent"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"
@@ -26,7 +28,7 @@
                 app:layout_constraintGuide_percent="0.55" />
 
             <SeekBar
-                android:id="@+id/seekbar"
+                android:id="@+id/sb_duration_song"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -44,8 +46,8 @@
                 android:layout_height="wrap_content"
                 android:text="0:01"
                 android:textColor="@android:color/white"
-                app:layout_constraintBottom_toTopOf="@+id/seekbar"
-                app:layout_constraintStart_toStartOf="@+id/seekbar"
+                app:layout_constraintBottom_toTopOf="@+id/sb_duration_song"
+                app:layout_constraintStart_toStartOf="@+id/sb_duration_song"
                 app:layout_constraintTop_toTopOf="@+id/text_time_end_song"
                 app:layout_constraintVertical_bias="0.0" />
 
@@ -56,8 +58,8 @@
                 android:layout_marginBottom="8dp"
                 android:text="3:30"
                 android:textColor="@android:color/white"
-                app:layout_constraintBottom_toTopOf="@+id/seekbar"
-                app:layout_constraintEnd_toEndOf="@+id/seekbar" />
+                app:layout_constraintBottom_toTopOf="@+id/sb_duration_song"
+                app:layout_constraintEnd_toEndOf="@+id/sb_duration_song" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:background="?colorPrimary"
@@ -71,8 +73,8 @@
                 app:borderWidth="0dp"
                 app:fabSize="normal"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/seekbar"
-                app:layout_constraintStart_toStartOf="@+id/seekbar"/>
+                app:layout_constraintEnd_toEndOf="@+id/sb_duration_song"
+                app:layout_constraintStart_toStartOf="@+id/sb_duration_song"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
