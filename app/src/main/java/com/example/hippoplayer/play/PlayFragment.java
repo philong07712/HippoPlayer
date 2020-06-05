@@ -100,7 +100,7 @@ public class PlayFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
         fragmentPlayBinding.setLifecycleOwner(this);
-        fragmentPlayBinding.buttonPlayAndPause.playAnimation();
+        fragmentPlayBinding.buttonPlayAndPause.setProgress(1.0f);
         fragmentPlayBinding.buttonPlayAndPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
