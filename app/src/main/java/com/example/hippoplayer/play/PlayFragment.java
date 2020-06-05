@@ -1,6 +1,8 @@
 package com.example.hippoplayer.play;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -48,6 +50,7 @@ public class PlayFragment extends Fragment {
 
     private PlayViewModel mViewModel;
 
+    private boolean isPlay = false; // variable for button play and pause
     // media service
     Intent mediaIntent;
 
@@ -84,6 +87,7 @@ public class PlayFragment extends Fragment {
         itemPlayAdapter.setmSongList(mSong);
         fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
         fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+
     }
 
     @Override
@@ -96,6 +100,20 @@ public class PlayFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
         fragmentPlayBinding.setLifecycleOwner(this);
+        fragmentPlayBinding.buttonPlayAndPause.playAnimation();
+        fragmentPlayBinding.buttonPlayAndPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isPlay){ // if true // pause song
+                    isPlay = !isPlay;
+                    fragmentPlayBinding.buttonPlayAndPause.playAnimation();
+                } else { // if false // resume play song
+                    isPlay = !isPlay;
+                    fragmentPlayBinding.buttonPlayAndPause.cancelAnimation();
+                    fragmentPlayBinding.buttonPlayAndPause.setProgress(0.0f);
+                }
+            }
+        });
         return fragmentPlayBinding.getRoot();
     }
 
