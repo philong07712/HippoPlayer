@@ -114,6 +114,7 @@ public class PlayFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        mediaService.requestAudioFocus(getContext());
     }
 
     // Todo: public method
@@ -208,5 +209,7 @@ public class PlayFragment extends Fragment {
         tvStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
         tvEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
     }
+
+
     // Todo: inner classes + interfaces
 }
