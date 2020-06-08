@@ -5,7 +5,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Path;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.media.session.MediaSessionCompat;
 
 import androidx.annotation.NonNull;
@@ -14,7 +16,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.models.Song;
@@ -55,10 +59,8 @@ public class CreateNotification {
         mPosition = pos;
         mSize = size;
         drw_play = drawable;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // convert url image to bitmap
-
             Glide.with(mContext)
                     .asBitmap()
                     .load(PathHelper.getFullUrl(song.getThumbnail()))

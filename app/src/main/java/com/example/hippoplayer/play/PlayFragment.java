@@ -126,6 +126,7 @@ public class PlayFragment extends Fragment {
     public void onStart() {
         super.onStart();
         mMediaManager.getService().requestAudioFocus(getContext());
+        fragmentPlayBinding.vpPlay.setCurrentItem(mMediaManager.getCurrentPos());
     }
 
     private void initListener() {
@@ -175,6 +176,7 @@ public class PlayFragment extends Fragment {
             public void run() {
                 int currentPosition = mMediaManager.getPlayer().getCurrentPosition();
                 int maxDuration =  mMediaManager.getPlayer().getDuration();
+                Log.d(TAG, currentPosition + ":" + maxDuration);
                 if (mMediaManager.getService().getMediaPlayer().isPlaying()) {
                     updateSeekBar(currentPosition, maxDuration);
                     updateTime(currentPosition, maxDuration);
