@@ -22,8 +22,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
         
-        <receiver android:name=".play.utils.NotificationActionService"/>
-        <service android:name=".play.utils.OnClearFromRecentService"/>
+        <receiver android:name=".play.notification.NotificationActionService"/>
+        <service android:name=".play.notification.OnClearFromRecentService"/>
     </application>
 
 </manifest>

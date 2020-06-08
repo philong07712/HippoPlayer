@@ -21,6 +21,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
     private MediaPlayer mMediaPlayer;
     private String mMediaFile;
     private int resumePoint;
+
     public MediaService() {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
@@ -148,11 +149,6 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
     public boolean removeAudioFocus() {
         return AudioManager.AUDIOFOCUS_REQUEST_GRANTED ==
                 mAudioManager.abandonAudioFocus(this);
-    }
-
-    public boolean isSongCompleted() {
-        return mMediaPlayer.getDuration() != 0
-                && mMediaPlayer.getCurrentPosition() > mMediaPlayer.getDuration() - 1000;
     }
 
     @Override

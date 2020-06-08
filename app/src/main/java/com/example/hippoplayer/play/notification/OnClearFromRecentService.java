@@ -1,4 +1,4 @@
-package com.example.hippoplayer.play.utils;
+package com.example.hippoplayer.play.notification;
 
 import android.app.Service;
 import android.content.Intent;

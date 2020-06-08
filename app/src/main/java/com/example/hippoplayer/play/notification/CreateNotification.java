@@ -1,4 +1,4 @@
-package com.example.hippoplayer.play.utils;
+package com.example.hippoplayer.play.notification;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -26,9 +26,9 @@ public class CreateNotification {
     public static final String ACTION_ID = "Create Notification 1";
     public static final String ACTION_NAME = "action name";
 
-    public static final String ACTION_PREVIOUS = TAG + "action previous";
-    public static final String ACTION_PLAY = TAG + "action play";
-    public static final String ACTION_NEXT = TAG + "action next";
+    public static final String ACTION_PREVIOUS = "action previous";
+    public static final String ACTION_PLAY = "action play";
+    public static final String ACTION_NEXT = "action next";
 
     // Fields
     Context mContext;
@@ -49,11 +49,12 @@ public class CreateNotification {
     public static Notification notification;
 
 
-    public CreateNotification(Context context, Song song, int pos, int size) {
+    public CreateNotification(Context context, Song song, int drawable, int pos, int size) {
         mContext = context;
         mSong = song;
         mPosition = pos;
         mSize = size;
+        drw_play = drawable;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // convert url image to bitmap
@@ -116,7 +117,6 @@ public class CreateNotification {
     }
 
     private void createIntentPlay() {
-        drw_play = R.drawable.ic_baseline_play_arrow_24;
         // Intent play
         Intent intentPlay = new Intent(mContext, NotificationActionService.class)
                 .setAction(ACTION_PLAY);
@@ -126,12 +126,12 @@ public class CreateNotification {
     }
 
     private void createIntentNext() {
-        if (mPosition == mSize) {
+        if (mPosition == mSize - 1) {
             pendingIntentNext = null;
             drw_next = 0;
         } else {
             Intent intentNext = new Intent(mContext, NotificationActionService.class)
-                    .setAction(ACTION_PREVIOUS);
+                    .setAction(ACTION_NEXT);
             pendingIntentNext = PendingIntent.getBroadcast(mContext, 0,
                     intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
             drw_next = R.drawable.ic_baseline_skip_next_24;

@@ -1,4 +1,4 @@
-package com.example.hippoplayer.play.utils;
+package com.example.hippoplayer.play.notification;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Build;
 
 import com.example.hippoplayer.models.Song;
+import com.example.hippoplayer.play.notification.CreateNotification;
 
 public class SongNotificationManager {
 
@@ -30,7 +31,8 @@ public class SongNotificationManager {
         }
     }
 
-    public void createNotification(Song song, int pos, int size) {
-        mNotificationCreator = new CreateNotification(mContext, song, pos, size);
+    public void createNotification(Song song, int drawable, int pos, int size) {
+        mNotificationCreator = new CreateNotification(mContext, song, drawable, pos, size);
     }
+
 }
