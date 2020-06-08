@@ -39,17 +39,13 @@ public class PlayFragment extends Fragment {
 
     private FragmentPlayBinding fragmentPlayBinding;
 
-    private View view;
-    private FloatingActionButton btnPause;
-    private SeekBar seekBarDuration;
     // Todo: Fields
     private MediaService mMediaService = new MediaService();
     private List<Song> mSong = new ArrayList<>();
 
+    private int currentPos;
     private PlayViewModel mViewModel;
 
-    // media service
-    Intent mediaIntent;
 
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
@@ -158,7 +154,7 @@ public class PlayFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Log.d(TAG, "current viewpager position is: " + position);
+                currentPos = position;
                 playCurrentSong(position);
             }
         });
@@ -176,15 +172,29 @@ public class PlayFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                int currentPosition = mMediaService.getMediaPlayer().getCurrentPosition();
+                int maxDuration = mMediaService.getMediaPlayer().getDuration();
                 if (mMediaService.getMediaPlayer().isPlaying()) {
-                    int currentPosition = mMediaService.getMediaPlayer().getCurrentPosition();
-                    int maxDuration = mMediaService.getMediaPlayer().getDuration();
+                    currentPosition = mMediaService.getMediaPlayer().getCurrentPosition();
+                    maxDuration = mMediaService.getMediaPlayer().getDuration();
                     updateSeekBar(currentPosition, maxDuration);
                     updateTime(currentPosition, maxDuration);
+                }
+                // if the song is loaded
+                // and the current position is lower than duration with 1s
+                if (mMediaService.isSongCompleted()) {
+                    playNextSong();
                 }
                 mHandler.postDelayed(this, 1000);
             }
         });
+    }
+
+    private void playNextSong() {
+        if (currentPos < mSong.size() - 1) {
+            currentPos++;
+            fragmentPlayBinding.vpPlay.setCurrentItem(currentPos);
+        }
     }
 
     private void updateSeekBar(int currentPosition, int maxDuration) {

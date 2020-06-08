@@ -21,11 +21,9 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
     private MediaPlayer mMediaPlayer;
     private String mMediaFile;
     private int resumePoint;
-
     public MediaService() {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
-        mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     }
@@ -43,6 +41,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
     public void playMedia() {
         if (!mMediaPlayer.isPlaying()) {
             mMediaPlayer.start();
+            mMediaPlayer.setOnCompletionListener(this);
         }
     }
 
@@ -151,6 +150,11 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
                 mAudioManager.abandonAudioFocus(this);
     }
 
+    public boolean isSongCompleted() {
+        return mMediaPlayer.getDuration() != 0
+                && mMediaPlayer.getCurrentPosition() > mMediaPlayer.getDuration() - 1000;
+    }
+
     @Override
     public void onCompletion(MediaPlayer mp) {
         stopMedia();
@@ -159,5 +163,6 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
     @Override
     public void onPrepared(MediaPlayer mp) {
         playMedia();
+        Log.d(TAG, "onPrepared called");
     }
 }
