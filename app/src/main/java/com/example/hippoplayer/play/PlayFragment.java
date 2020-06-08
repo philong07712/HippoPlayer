@@ -1,7 +1,6 @@
 package com.example.hippoplayer.play;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,12 +15,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.hippoplayer.SongNotificationManager;
+import com.example.hippoplayer.play.utils.SongNotificationManager;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.utils.ConvertHelper;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
