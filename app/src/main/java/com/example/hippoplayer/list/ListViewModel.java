@@ -61,6 +61,6 @@ public class ListViewModel extends ViewModel {
                 .load(finalurl)
                 .centerCrop()
                 .fitCenter()
-                .into(image);   
+                .into(image);
     }
 }
