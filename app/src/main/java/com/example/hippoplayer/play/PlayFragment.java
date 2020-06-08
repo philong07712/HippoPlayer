@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.hippoplayer.SongNotificationManager;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
@@ -39,10 +40,10 @@ public class PlayFragment extends Fragment {
 
     private FragmentPlayBinding fragmentPlayBinding;
 
+    private SongNotificationManager notificationManager;
     // Todo: Fields
     private MediaService mMediaService = new MediaService();
     private List<Song> mSong = new ArrayList<>();
-
     private int currentPos;
     private PlayViewModel mViewModel;
 
@@ -106,6 +107,9 @@ public class PlayFragment extends Fragment {
                 .subscribe(response);
         initListener();
         initHandler();
+        // this will create notification Manager
+        notificationManager = new SongNotificationManager(getContext());
+        notificationManager.init();
         // This will be testing mediaPlayer Service
     }
 
@@ -165,6 +169,8 @@ public class PlayFragment extends Fragment {
         mMediaService.setMediaFile(fullFileUrl);
         mMediaService.loadMediaSource();
         mMediaService.playMedia();
+        // This will change the music notification
+        notificationManager.createNotification(mSong.get(position), position, mSong.size());
     }
 
     private void initHandler() {
@@ -175,8 +181,6 @@ public class PlayFragment extends Fragment {
                 int currentPosition = mMediaService.getMediaPlayer().getCurrentPosition();
                 int maxDuration = mMediaService.getMediaPlayer().getDuration();
                 if (mMediaService.getMediaPlayer().isPlaying()) {
-                    currentPosition = mMediaService.getMediaPlayer().getCurrentPosition();
-                    maxDuration = mMediaService.getMediaPlayer().getDuration();
                     updateSeekBar(currentPosition, maxDuration);
                     updateTime(currentPosition, maxDuration);
                 }
@@ -207,7 +211,6 @@ public class PlayFragment extends Fragment {
         fragmentPlayBinding.textTimeStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
         fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
     }
-
 
     // Todo: inner classes + interfaces
 }
