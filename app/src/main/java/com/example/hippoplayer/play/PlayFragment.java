@@ -38,22 +38,16 @@ public class PlayFragment extends Fragment {
     private static final String TAG = PlayFragment.class.getSimpleName();
 
     // View
-
     private FragmentPlayBinding fragmentPlayBinding;
-
-    private View view;
-    private FloatingActionButton btnPause;
-    private SeekBar seekBarDuration;
     // Todo: Fields
     private MediaService mMediaService = new MediaService();
-    private List<Song> mSong = new ArrayList<>();
+    public static final List<Song> mSong = new ArrayList<>();
 
     private PlayViewModel mViewModel;
 
-    private boolean isPlay = false; // variable for button play and pause
-
-    // media service
-    Intent mediaIntent;
+    public List<Song> getmSong() {
+        return mSong;
+    }
 
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
@@ -130,6 +124,7 @@ public class PlayFragment extends Fragment {
         mMediaService.setMediaFile(fullFileUrl);
         mMediaService.loadMediaSource();
         mMediaService.playMedia();
+        setButtonToPlayStatus();
     }
 
     private void initHandler() {
@@ -159,6 +154,14 @@ public class PlayFragment extends Fragment {
         fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
     }
 
+    private void setButtonToPlayStatus(){
+        fragmentPlayBinding.buttonPlayAndPause.cancelAnimation();
+        fragmentPlayBinding.buttonPlayAndPause.setProgress(0.0f);
+    }
+
+    private void setButtonToPauseStatus(){
+        fragmentPlayBinding.buttonPlayAndPause.playAnimation();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -176,11 +179,10 @@ public class PlayFragment extends Fragment {
             public void onClick(View v) {
                 if (mMediaService.getMediaPlayer().isPlaying()) { // if true // pause song
                     mMediaService.pauseButtonClicked();
-                    fragmentPlayBinding.buttonPlayAndPause.playAnimation();
+                    setButtonToPauseStatus();
                 } else { // if false // resume play song
                     mMediaService.resumeMedia();
-                    fragmentPlayBinding.buttonPlayAndPause.cancelAnimation();
-                    fragmentPlayBinding.buttonPlayAndPause.setProgress(0.0f);
+                    setButtonToPlayStatus();
                 }
             }
         });
@@ -207,6 +209,12 @@ public class PlayFragment extends Fragment {
     public void onStart() {
         super.onStart();
         mMediaService.requestAudioFocus(getContext());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("TAG PLAY", "PAUSE");
     }
 
     // Todo: inner classes + interfaces

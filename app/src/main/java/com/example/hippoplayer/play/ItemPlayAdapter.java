@@ -21,6 +21,7 @@ public class ItemPlayAdapter extends RecyclerView.Adapter<ItemPlayAdapter.ViewHo
 
     public void setmSongList(List<Song> mSongList) {
         this.mSongList = mSongList;
+        notifyDataSetChanged();
     }
 
     @NonNull
