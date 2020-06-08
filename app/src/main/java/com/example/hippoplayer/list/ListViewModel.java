@@ -1,12 +1,20 @@
 package com.example.hippoplayer.list;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.widget.ImageView;
 
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.ViewModel;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterInside;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.example.hippoplayer.R;
 import com.example.hippoplayer.RetrofitHandler;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
@@ -18,6 +26,7 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class ListViewModel extends ViewModel {
+
 
     public Song song = new Song();
     public static Context mContext;
@@ -49,7 +58,9 @@ public class ListViewModel extends ViewModel {
     public static void setImage(ImageView image, String url){
         String finalurl = RetrofitHandler.SONG_URL + url;
         Glide.with(mContext)
-                .load(finalurl).centerCrop()
-                .fitCenter().into(image);
+                .load(finalurl)
+                .centerCrop()
+                .fitCenter()
+                .into(image);   
     }
 }
