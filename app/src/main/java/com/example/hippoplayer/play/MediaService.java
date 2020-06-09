@@ -1,5 +1,6 @@
 package com.example.hippoplayer.play;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
@@ -9,6 +10,8 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+
+import com.example.hippoplayer.play.notification.SongNotificationManager;
 
 import java.io.IOException;
 
@@ -21,12 +24,15 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
     private MediaPlayer mMediaPlayer;
     private String mMediaFile;
     private int resumePoint;
+    private int mPosition = 0;
 
+    SongNotificationManager notificationManager;
     public MediaService() {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
     }
 
     public void loadMediaSource() {
@@ -39,9 +45,12 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
         mMediaPlayer.prepareAsync();
     }
 
-    public void playMedia() {
+    public void playMedia(int position) {
         if (!mMediaPlayer.isPlaying()) {
+            mPosition = position;
             mMediaPlayer.start();
+            // if the service play then the notificate will create pause notification
+            SongNotificationManager.getInstance().createNotification(mPosition, true);
             mMediaPlayer.setOnCompletionListener(this);
         }
     }
@@ -50,6 +59,8 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
         if (mMediaPlayer == null) return;
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
+            // if the service stop then the notificate will create play notification
+            SongNotificationManager.getInstance().createNotification(mPosition, false);
         }
     }
 
@@ -57,6 +68,8 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
             resumePoint = mMediaPlayer.getCurrentPosition();
+            // if the service pause then the notificate will create play notification
+            SongNotificationManager.getInstance().createNotification(mPosition, false);
         }
     }
 
@@ -64,14 +77,9 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
         if (!mMediaPlayer.isPlaying()) {
             mMediaPlayer.seekTo(resumePoint);
             mMediaPlayer.start();
+            // if the service resume then the notificate will create pause notification
+            SongNotificationManager.getInstance().createNotification(mPosition, true);
         }
-    }
-
-    public void pauseButtonClicked() {
-        if (mMediaPlayer.isPlaying()) {
-            pauseMedia();
-        }
-        else resumeMedia();
     }
 
     public void seekTo(int progress) {
@@ -109,9 +117,6 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
             case AudioManager.AUDIOFOCUS_GAIN:
                 // the service gained audio focus, so it needs to start playing
                 Log.d(TAG, "Audio focus gained");
-                if (!mMediaPlayer.isPlaying()) {
-                    mMediaPlayer.start();
-                }
                 mMediaPlayer.setVolume(1.0f, 1.0f);
                 break;
 
@@ -158,7 +163,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        playMedia();
+        playMedia(mPosition);
         Log.d(TAG, "onPrepared called");
     }
 }

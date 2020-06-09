@@ -69,6 +69,8 @@ public class PlayFragment extends Fragment {
             // create manager
             mMediaManager.setSongs(mSong);
             setSong();
+            // this will init the singleton class notification manager
+            SongNotificationManager.getInstance().init(getContext(), mSong);
         }
 
         @Override
@@ -161,6 +163,8 @@ public class PlayFragment extends Fragment {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 playCurrentSong(position);
+                updateTime(0, 0);
+                updateSeekBar(0, 0);
             }
         });
     }
