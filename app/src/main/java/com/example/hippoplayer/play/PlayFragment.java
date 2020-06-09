@@ -149,7 +149,7 @@ public class PlayFragment extends Fragment {
             }
         });
 
-        mMediaManager.posLiveData.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+        mMediaManager.posLiveData.observeForever(new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 fragmentPlayBinding.vpPlay.setCurrentItem(integer);
@@ -174,10 +174,9 @@ public class PlayFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                int currentPosition = mMediaManager.getPlayer().getCurrentPosition();
-                int maxDuration =  mMediaManager.getPlayer().getDuration();
-                Log.d(TAG, currentPosition + ":" + maxDuration);
                 if (mMediaManager.getService().getMediaPlayer().isPlaying()) {
+                    int currentPosition = mMediaManager.getPlayer().getCurrentPosition();
+                    int maxDuration =  mMediaManager.getPlayer().getDuration();
                     updateSeekBar(currentPosition, maxDuration);
                     updateTime(currentPosition, maxDuration);
                 }
@@ -193,8 +192,7 @@ public class PlayFragment extends Fragment {
 
 
     private void playNextSong() {
-        int nextPos = mMediaManager.getNextPos();
-        fragmentPlayBinding.vpPlay.setCurrentItem(nextPos);
+        mMediaManager.onNext();
     }
 
     private void updateSeekBar(int currentPosition, int maxDuration) {

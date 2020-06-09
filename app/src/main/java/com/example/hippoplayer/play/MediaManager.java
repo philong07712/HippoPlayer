@@ -29,9 +29,9 @@ public class MediaManager implements Playable {
     private MediaPlayer mPlayer;
     private SongNotificationManager notificationManager;
     MutableLiveData<Integer> posLiveData = new MutableLiveData<>();
+    int position = 0;
 
     public MediaManager(Context context) {
-        posLiveData.setValue(0);
         mContext = context;
         mService = new MediaService();
         mPlayer = mService.getMediaPlayer();
@@ -74,7 +74,7 @@ public class MediaManager implements Playable {
         mService.setMediaFile(fullUrl);
         mService.loadMediaSource();
         mService.playMedia();
-        posLiveData.setValue(position);
+        this.position = position;
         // Change avatar in notification manager
 
         notificationManager.createNotification(mSongs.get(position), R.drawable.ic_pause_black_24dp, position, mSongs.size());
@@ -111,10 +111,10 @@ public class MediaManager implements Playable {
 
 
     public int getNextPos() {
-        if (posLiveData.getValue() < mSongs.size() - 1) {
-            posLiveData.setValue(posLiveData.getValue() + 1);
+        if (position < mSongs.size() - 1) {
+            position++;
         }
-        return posLiveData.getValue();
+        return position;
     }
 
 
@@ -124,31 +124,27 @@ public class MediaManager implements Playable {
 
     @Override
     public void onPrevious() {
-        int currentPos = posLiveData.getValue() - 1;
-        posLiveData.setValue(currentPos);
-        play(currentPos);
-        notificationManager.createNotification(mSongs.get(currentPos), R.drawable.ic_pause_black_24dp, currentPos, mSongs.size());
+        position--;
+        posLiveData.setValue(position);
+        notificationManager.createNotification(mSongs.get(position), R.drawable.ic_pause_black_24dp, position, mSongs.size());
     }
 
     @Override
     public void onPlay() {
-        int currentPos = posLiveData.getValue();
-        notificationManager.createNotification(mSongs.get(currentPos), R.drawable.ic_pause_black_24dp, currentPos, mSongs.size());
+        notificationManager.createNotification(mSongs.get(position), R.drawable.ic_pause_black_24dp, position, mSongs.size());
         mService.resumeMedia();
     }
 
     @Override
     public void onPause() {
-        int currentPos = posLiveData.getValue();
-        notificationManager.createNotification(mSongs.get(currentPos), R.drawable.ic_baseline_play_arrow_24, currentPos, mSongs.size());
+        notificationManager.createNotification(mSongs.get(position), R.drawable.ic_baseline_play_arrow_24, position, mSongs.size());
         mService.pauseMedia();
     }
 
     @Override
     public void onNext() {
-        int currentPos = posLiveData.getValue() + 1;
-        posLiveData.setValue(currentPos);
-        play(currentPos);
-        notificationManager.createNotification(mSongs.get(currentPos), R.drawable.ic_pause_black_24dp, currentPos, mSongs.size());
+        position++;
+        posLiveData.setValue(position);
+        notificationManager.createNotification(mSongs.get(position), R.drawable.ic_pause_black_24dp, position, mSongs.size());
     }
 }
