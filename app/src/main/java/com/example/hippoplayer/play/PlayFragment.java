@@ -1,6 +1,8 @@
 package com.example.hippoplayer.play;
 
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -217,9 +219,8 @@ public class PlayFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-        }
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(Constants.NOTIFICATION_ID);
         getActivity().unregisterReceiver(mMediaManager.broadcastReceiver);
     }
 

@@ -35,4 +35,8 @@ public class SongNotificationManager {
         mNotificationCreator = new CreateNotification(mContext, song, drawable, pos, size);
     }
 
+    public void onDestroy() {
+
+    }
+
 }

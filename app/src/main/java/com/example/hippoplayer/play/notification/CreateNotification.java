@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 
@@ -19,14 +20,19 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.models.Song;
+import com.example.hippoplayer.utils.Constants;
 import com.example.hippoplayer.utils.PathHelper;
 
+import java.util.SimpleTimeZone;
 import java.util.concurrent.ExecutionException;
+
+import static java.lang.System.load;
 
 public class CreateNotification  {
     private static final String TAG = "CreateNotification";
@@ -64,18 +70,22 @@ public class CreateNotification  {
         mSize = size;
         drw_play = drawable;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // convert url image to bitmap
-            Glide.with(mContext)
-                    .asBitmap()
-                    .load(PathHelper.getFullUrl(song.getThumbnail()))
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    Looper.prepare();
+                    Glide.with(mContext)
+                            .asBitmap()
+                            .load(PathHelper.getFullUrl(song.getThumbnail()))
+                            .into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             create(resource);
-                        }
-                    });
-            // create notification
-
+                                }
+                            });
+                }
+            };
+            new Thread(runnable).start();
         }
     }
 
@@ -104,7 +114,7 @@ public class CreateNotification  {
                 .build();
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(mContext);
-        notificationManagerCompat.notify(1, notification);
+        notificationManagerCompat.notify(Constants.NOTIFICATION_ID, notification);
 
     }
 
