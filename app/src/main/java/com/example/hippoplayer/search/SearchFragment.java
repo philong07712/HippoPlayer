@@ -36,7 +36,6 @@ public class SearchFragment extends Fragment {
 
     private SearchViewModel mViewModel;
     private BubblePicker bubblePicker;
-    private List<String> valueRequest = new ArrayList<>();
 
     private List<Artist> artistList = new ArrayList<>();
     private List<Artist> artistList_fake = new ArrayList<>();
@@ -105,6 +104,7 @@ public class SearchFragment extends Fragment {
                 return item;
             }
         });
+
         bubblePicker.setListener(new BubblePickerListener() {
             @Override
             public void onBubbleSelected(@NotNull PickerItem pickerItem) {
@@ -116,6 +116,7 @@ public class SearchFragment extends Fragment {
                 Log.e("BubblePicker", "Deselected");
             }
         });
+
         bubblePicker.setBubbleSize(10);
     }
 
