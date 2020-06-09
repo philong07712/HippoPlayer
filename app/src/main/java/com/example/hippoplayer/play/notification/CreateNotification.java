@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Path;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,8 +26,10 @@ import com.example.hippoplayer.R;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.utils.PathHelper;
 
-public class CreateNotification {
-    public static final String TAG = CreateNotification.class.getSimpleName();
+import java.util.concurrent.ExecutionException;
+
+public class CreateNotification  {
+    private static final String TAG = "CreateNotification";
 
     public static final String ACTION_ID = "Create Notification 1";
     public static final String ACTION_NAME = "action name";

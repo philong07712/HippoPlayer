@@ -16,6 +16,7 @@ import android.widget.SeekBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -112,21 +113,11 @@ public class PlayFragment extends Fragment {
                 .subscribe(response);
         initListener();
         initHandler();
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getActivity().registerReceiver(mMediaManager.broadcastReceiver, new IntentFilter(Constants.TRACK_CODE));
             Intent clearSerivce = new Intent(getActivity().getBaseContext(), OnClearFromRecentService.class);
             getActivity().startService(clearSerivce);
         }
-    }
-
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mMediaManager.getService().requestAudioFocus(getContext());
-        fragmentPlayBinding.vpPlay.setCurrentItem(mMediaManager.getCurrentPos());
     }
 
     private void initListener() {
@@ -153,6 +144,13 @@ public class PlayFragment extends Fragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+
+        mMediaManager.posLiveData.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                fragmentPlayBinding.vpPlay.setCurrentItem(integer);
             }
         });
 
@@ -210,6 +208,11 @@ public class PlayFragment extends Fragment {
 
     // Todo: inner classes + interfaces
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMediaManager.getService().requestAudioFocus(getContext());
+    }
 
     @Override
     public void onDestroy() {
@@ -219,4 +222,5 @@ public class PlayFragment extends Fragment {
         }
         getActivity().unregisterReceiver(mMediaManager.broadcastReceiver);
     }
+
 }

@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.play.notification.CreateNotification;
@@ -18,21 +20,23 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
+
 public class MediaManager implements Playable {
     Context mContext;
     List<Song> mSongs;
     private MediaService mService;
     private MediaPlayer mPlayer;
     private SongNotificationManager notificationManager;
-    private int currentPos = 0;
+    MutableLiveData<Integer> posLiveData = new MutableLiveData<>();
 
     public MediaManager(Context context) {
+        posLiveData.setValue(0);
         mContext = context;
         mService = new MediaService();
         mPlayer = mService.getMediaPlayer();
         notificationManager =  new SongNotificationManager(mContext);
         notificationManager.init();
-
     }
 
     public BroadcastReceiver broadcastReceiver = new NotificationActionService() {
@@ -70,7 +74,7 @@ public class MediaManager implements Playable {
         mService.setMediaFile(fullUrl);
         mService.loadMediaSource();
         mService.playMedia();
-        currentPos = position;
+        posLiveData.setValue(position);
         // Change avatar in notification manager
 
         notificationManager.createNotification(mSongs.get(position), R.drawable.ic_pause_black_24dp, position, mSongs.size());
@@ -107,14 +111,10 @@ public class MediaManager implements Playable {
 
 
     public int getNextPos() {
-        if (currentPos < mSongs.size() - 1) {
-            currentPos++;
+        if (posLiveData.getValue() < mSongs.size() - 1) {
+            posLiveData.setValue(posLiveData.getValue() + 1);
         }
-        return currentPos;
-    }
-
-    public int getCurrentPos() {
-        return currentPos;
+        return posLiveData.getValue();
     }
 
 
@@ -124,27 +124,31 @@ public class MediaManager implements Playable {
 
     @Override
     public void onPrevious() {
-        currentPos--;
-        notificationManager.createNotification(mSongs.get(currentPos), R.drawable.ic_pause_black_24dp, currentPos, mSongs.size());
+        int currentPos = posLiveData.getValue() - 1;
+        posLiveData.setValue(currentPos);
         play(currentPos);
+        notificationManager.createNotification(mSongs.get(currentPos), R.drawable.ic_pause_black_24dp, currentPos, mSongs.size());
     }
 
     @Override
     public void onPlay() {
+        int currentPos = posLiveData.getValue();
         notificationManager.createNotification(mSongs.get(currentPos), R.drawable.ic_pause_black_24dp, currentPos, mSongs.size());
         mService.resumeMedia();
     }
 
     @Override
     public void onPause() {
+        int currentPos = posLiveData.getValue();
         notificationManager.createNotification(mSongs.get(currentPos), R.drawable.ic_baseline_play_arrow_24, currentPos, mSongs.size());
         mService.pauseMedia();
     }
 
     @Override
     public void onNext() {
-        currentPos++;
-        notificationManager.createNotification(mSongs.get(currentPos), R.drawable.ic_pause_black_24dp, currentPos, mSongs.size());
+        int currentPos = posLiveData.getValue() + 1;
+        posLiveData.setValue(currentPos);
         play(currentPos);
+        notificationManager.createNotification(mSongs.get(currentPos), R.drawable.ic_pause_black_24dp, currentPos, mSongs.size());
     }
 }
