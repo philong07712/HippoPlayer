@@ -1,11 +1,11 @@
 package com.example.hippoplayer.play.utils;
 
+import com.example.hippoplayer.models.ArtistResponse;
 import com.example.hippoplayer.models.SongResponse;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 
@@ -16,4 +16,7 @@ public interface SongAPI {
 
     @GET("api/songs")
     Flowable<List<SongResponse>> getListSongList();
+
+    @GET("api/artists")
+    Flowable<List<ArtistResponse>> getListArtist();
 }

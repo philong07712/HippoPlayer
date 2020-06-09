@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".search.SearchFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/action_filter_top"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/button_reset_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|center_horizontal"
+                android:paddingHorizontal="20dp"
+                android:text="Cancel"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <com.igalata.bubblepicker.rendering.BubblePicker
+            android:id="@+id/bubble_picker"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/action_filter_bottom"
+            android:layout_below="@id/action_filter_top"
+            app:backgroundColor="@android:color/white" />
+
+        <RelativeLayout
+            android:id="@+id/action_filter_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@+id/button_next_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center|center_horizontal"
+                android:paddingHorizontal="20dp"
+                android:text="Reset"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</FrameLayout>

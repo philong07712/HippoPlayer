@@ -30,7 +30,6 @@ public class ListViewModel extends ViewModel {
 
     public Song song = new Song();
     public static Context mContext;
-    // User SongService of play fragment
     private SongService mService = new SongService();
 
     private CompositeDisposable mCompositeDisposal = new CompositeDisposable();

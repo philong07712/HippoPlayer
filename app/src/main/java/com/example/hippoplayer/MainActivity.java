@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import com.example.hippoplayer.list.ListFragment;
 import com.example.hippoplayer.play.PlayFragment;
 import com.example.hippoplayer.play.ViewPagerAdapter;
+import com.example.hippoplayer.search.SearchFragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPagerMain;
     private PlayFragment playFragment;
     private ListFragment listFragment;
-
+    private SearchFragment searchFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         // create new fragment
         playFragment = new PlayFragment();
         listFragment = new ListFragment();
-
+        searchFragment = new SearchFragment();
         // add new fragment in function setup view pager
         setupViewPager();
         tabLayoutMain.setupWithViewPager(viewPagerMain);
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         // add new fragment
         viewPagerAdapter.addFragment(playFragment, "Player Fragment");
         viewPagerAdapter.addFragment(listFragment, "List Fragment");
+        viewPagerAdapter.addFragment(searchFragment, "Search Fragment");
         viewPagerMain.setAdapter(viewPagerAdapter);
     }
 }

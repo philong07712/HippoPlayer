@@ -23,6 +23,7 @@ import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.play.ItemPlayAdapter;
 import com.example.hippoplayer.play.PlayViewModel;
+import com.example.hippoplayer.search.SearchFragment;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -63,7 +64,7 @@ public class ListFragment extends Fragment {
 
         @Override
         public void onComplete() {
-            Log.e("onComplete List", "Complete");
+            Log.e("onComplete List", "Complete List");
         }
     };
 

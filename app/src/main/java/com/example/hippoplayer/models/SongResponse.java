@@ -10,7 +10,7 @@ public class SongResponse {
 
     @SerializedName("artist")
     @Expose
-    public Artist artist;
+    public ArtistResponse artist;
 
     @SerializedName("name")
     @Expose

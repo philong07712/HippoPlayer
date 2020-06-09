@@ -30,11 +30,8 @@ public class PlayViewModel extends ViewModel {
     private SongService mService = new SongService();
 
     // media service to play the song
-
     private CompositeDisposable mCompositeDisposal = new CompositeDisposable();
     private Flowable<List<SongResponse>> mSongResponeFlowable;
-    // variables
-    private List<Song> mSongs = new ArrayList<>();
     // Todo: Constructor
     public PlayViewModel() {
         mSongResponeFlowable = mService.getListSongResponsePlay();

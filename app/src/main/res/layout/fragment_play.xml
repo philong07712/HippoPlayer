@@ -74,6 +74,7 @@
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/button_circle_background"
                     android:scaleType="centerCrop"
+                    android:elevation="15dp"
                     app:lottie_fileName="pause.json"
                     app:lottie_loop="false" />
 

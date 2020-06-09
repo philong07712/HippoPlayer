@@ -217,5 +217,4 @@ public class PlayFragment extends Fragment {
         Log.e("TAG PLAY", "PAUSE");
     }
 
-    // Todo: inner classes + interfaces
 }

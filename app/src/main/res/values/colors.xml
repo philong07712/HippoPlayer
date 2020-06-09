@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimary">#F8B739</color>
+    <color name="colorPrimaryDark">#F2A819</color>
     <color name="colorAccent">#03DAC5</color>
 
-    <color name="seek_bar_background">#ababab</color>
+    <color name="seek_bar_background">#F7D98B</color>
     <color name="seek_bar_progress">#ffb600</color>
     <color name="seek_bar_secondary_progress">#3399CC</color>
 </resources>

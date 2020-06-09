@@ -1,6 +1,7 @@
 package com.example.hippoplayer.play.utils;
 
 import com.example.hippoplayer.RetrofitHandler;
+import com.example.hippoplayer.models.ArtistResponse;
 import com.example.hippoplayer.models.SongResponse;
 
 import java.util.List;
@@ -27,5 +28,9 @@ public class SongService {
 
     public Flowable<List<SongResponse>> getListSongResponseList() {
         return api.getListSongList();
+    }
+
+    public Flowable<List<ArtistResponse>> getListArtistResponse(){
+        return api.getListArtist();
     }
 }

@@ -8,12 +8,20 @@
         android:layout_height="match_parent"
         tools:context=".list.ListFragment">
 
-        <androidx.recyclerview.widget.RecyclerView
-            tools:listitem="@layout/item_layout_list"
-            android:background="@android:color/transparent"
-            android:id="@+id/rv_list"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                tools:listitem="@layout/item_layout_list"
+                android:background="@android:color/transparent"
+                android:id="@+id/rv_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
 
     </FrameLayout>
 
