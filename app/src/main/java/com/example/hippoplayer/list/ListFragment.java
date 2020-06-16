@@ -1,5 +1,6 @@
 package com.example.hippoplayer.list;
 
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -9,13 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.widget.RelativeLayout;
 
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentListBinding;
@@ -76,6 +83,44 @@ public class ListFragment extends Fragment {
         recyclerView = fragmentListBinding.rvList;
         recyclerView.setAdapter(listSongAdapter);
         recyclerView.setLayoutManager(layoutManager);
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(recyclerView);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(0);
+                CardView cardView = viewHolder.itemView.findViewById(R.id.cardview_item_list);
+                cardView.animate().setDuration(200).scaleX(1f).scaleY(1f).setInterpolator(new OvershootInterpolator()).start();
+            }
+        }, 100);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                View view = snapHelper.findSnapView(layoutManager);
+                int pos = layoutManager.getPosition(view);
+
+                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(pos);
+                CardView cardView = viewHolder.itemView.findViewById(R.id.cardview_item_list);
+
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+
+                    cardView.animate().setDuration(200).scaleX(1f).scaleY(1f).setInterpolator(new OvershootInterpolator()).start();
+
+                }else {
+
+                    cardView.animate().setDuration(200).scaleX(0.95f).scaleY(0.95f).setInterpolator(new OvershootInterpolator()).start();
+
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     public static ListFragment newInstance() {

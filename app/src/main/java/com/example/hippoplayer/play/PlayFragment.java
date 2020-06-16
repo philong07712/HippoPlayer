@@ -197,6 +197,7 @@ public class PlayFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(PlayViewModel.class);
         mViewModel.setContext(getContext());
+        mSong.clear();
         mViewModel.getmSongResponeFlowable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -217,4 +218,9 @@ public class PlayFragment extends Fragment {
         Log.e("TAG PLAY", "PAUSE");
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.e("Destroy play", "Destroy play");
+    }
 }
