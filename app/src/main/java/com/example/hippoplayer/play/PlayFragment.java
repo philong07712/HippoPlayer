@@ -119,8 +119,8 @@ public class PlayFragment extends Fragment {
         initHandler();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getActivity().registerReceiver(mMediaManager.broadcastReceiver, new IntentFilter(Constants.TRACK_CODE));
-            Intent clearSerivce = new Intent(getActivity().getBaseContext(), OnClearFromRecentService.class);
-            getActivity().startService(clearSerivce);
+            Intent clearService = new Intent(getActivity().getBaseContext(), OnClearFromRecentService.class);
+            getActivity().startService(clearService);
         }
     }
 

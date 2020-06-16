@@ -76,7 +76,7 @@ public class CreateNotification  {
                     Looper.prepare();
                     Glide.with(mContext)
                             .asBitmap()
-                            .load(PathHelper.getFullUrl(song.getThumbnail()))
+                            .load(PathHelper.getFullUrl(song.getIdSong(), PathHelper.TYPE_IMAGE))
                             .into(new SimpleTarget<Bitmap>() {
                                 @Override
                                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {

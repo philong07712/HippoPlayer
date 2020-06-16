@@ -68,7 +68,7 @@ public class MediaManager implements Playable {
 
     public void play(int position) {
         this.position = position;
-        String fullUrl = PathHelper.getFullUrl(mSongs.get(position).getUrl());
+        String fullUrl = PathHelper.getFullUrl(mSongs.get(position).getIdSong(), PathHelper.TYPE_SONG);
         mService.setMediaFile(fullUrl);
         mService.loadMediaSource();
         mService.playMedia(position);
