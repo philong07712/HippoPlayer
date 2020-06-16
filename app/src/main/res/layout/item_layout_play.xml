@@ -8,7 +8,6 @@
         <variable
             name="song"
             type="com.example.hippoplayer.models.Song" />
-
     </data>
 
     <RelativeLayout
@@ -20,7 +19,7 @@
             android:id="@+id/image_bg_song"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:load_image="@{song.thumbnail}"
+            app:load_image="@{song.idSong}"
             android:scaleType="centerCrop"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp" />
@@ -45,7 +44,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/anh3"
                 app:layout_constraintBottom_toTopOf="@+id/text_title_song"
-                app:load_image="@{song.thumbnail}"
+                app:load_image="@{song.idSong}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"

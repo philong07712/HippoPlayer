@@ -1,9 +1,14 @@
 package com.example.hippoplayer.play;
 
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +18,23 @@ import android.widget.SeekBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.hippoplayer.play.notification.OnClearFromRecentService;
+import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
+import com.example.hippoplayer.utils.Constants;
 import com.example.hippoplayer.utils.ConvertHelper;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.hippoplayer.utils.PathHelper;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,18 +48,10 @@ public class PlayFragment extends Fragment {
     // View
 
     private FragmentPlayBinding fragmentPlayBinding;
-
-    private View view;
-    private FloatingActionButton btnPause;
-    private SeekBar seekBarDuration;
     // Todo: Fields
-    private MediaService mMediaService = new MediaService();
+    private MediaManager mMediaManager;
     private List<Song> mSong = new ArrayList<>();
-
     private PlayViewModel mViewModel;
-
-    // media service
-    Intent mediaIntent;
 
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
@@ -64,7 +66,11 @@ public class PlayFragment extends Fragment {
                 song.setSongResponse(songResponse);
                 mSong.add(song);
             }
+            // create manager
+            mMediaManager.setSongs(mSong);
             setSong();
+            // this will init the singleton class notification manager
+            SongNotificationManager.getInstance().init(getContext(), mSong);
         }
 
         @Override
@@ -102,6 +108,7 @@ public class PlayFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mMediaManager = new MediaManager(getContext());
         mViewModel = new ViewModelProvider(this).get(PlayViewModel.class);
         mViewModel.setContext(getContext());
         mViewModel.getmSongResponeFlowable()
@@ -110,28 +117,18 @@ public class PlayFragment extends Fragment {
                 .subscribe(response);
         initListener();
         initHandler();
-        // This will be testing mediaPlayer Service
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getActivity().registerReceiver(mMediaManager.broadcastReceiver, new IntentFilter(Constants.TRACK_CODE));
+            Intent clearService = new Intent(getActivity().getBaseContext(), OnClearFromRecentService.class);
+            getActivity().startService(clearService);
+        }
     }
-
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mMediaService.requestAudioFocus(getContext());
-    }
-
-    // Todo: public method
-
-    // Todo: private method
-
-
 
     private void initListener() {
         fragmentPlayBinding.buttonPlayAndPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMediaService.pauseButtonClicked();
+                mMediaManager.pauseButtonClicked();
             }
         });
 
@@ -139,7 +136,7 @@ public class PlayFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                   mMediaService.seekTo(progress * 100);
+                   mMediaManager.getPlayer().seekTo(progress * 100);
                 }
             }
 
@@ -154,21 +151,26 @@ public class PlayFragment extends Fragment {
             }
         });
 
+        mMediaManager.posLiveData.observeForever(new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                fragmentPlayBinding.vpPlay.setCurrentItem(integer);
+            }
+        });
+
         fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Log.d(TAG, "current viewpager position is: " + position);
                 playCurrentSong(position);
+                updateTime(0, 0);
+                updateSeekBar(0, 0);
             }
         });
     }
 
     private void playCurrentSong(int position) {
-        String fullFileUrl = mViewModel.getFullUrl(mSong.get(position).getUrl());
-        mMediaService.setMediaFile(fullFileUrl);
-        mMediaService.loadMediaSource();
-        mMediaService.playMedia();
+        mMediaManager.play(position);
     }
 
     private void initHandler() {
@@ -176,15 +178,25 @@ public class PlayFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mMediaService.getMediaPlayer().isPlaying()) {
-                    int currentPosition = mMediaService.getMediaPlayer().getCurrentPosition();
-                    int maxDuration = mMediaService.getMediaPlayer().getDuration();
+                if (mMediaManager.getService().getMediaPlayer().isPlaying()) {
+                    int currentPosition = mMediaManager.getPlayer().getCurrentPosition();
+                    int maxDuration =  mMediaManager.getPlayer().getDuration();
                     updateSeekBar(currentPosition, maxDuration);
                     updateTime(currentPosition, maxDuration);
+                }
+                // if the song is loaded
+                // and the current position is lower than duration with 1s
+                if (mMediaManager.isSongCompleted()) {
+                    playNextSong();
                 }
                 mHandler.postDelayed(this, 1000);
             }
         });
+    }
+
+
+    private void playNextSong() {
+        mMediaManager.onNext();
     }
 
     private void updateSeekBar(int currentPosition, int maxDuration) {
@@ -198,6 +210,20 @@ public class PlayFragment extends Fragment {
         fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
     }
 
-
     // Todo: inner classes + interfaces
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMediaManager.getService().requestAudioFocus(getContext());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(Constants.NOTIFICATION_ID);
+        getActivity().unregisterReceiver(mMediaManager.broadcastReceiver);
+    }
+
 }

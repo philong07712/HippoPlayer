@@ -16,6 +16,7 @@ import com.example.hippoplayer.models.SongResponse;
 
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.play.utils.SongService;
+import com.example.hippoplayer.utils.PathHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +61,6 @@ public class PlayViewModel extends ViewModel {
         return mSongResponeFlowable;
     }
 
-
-    public String getFullUrl(String endpoint) {
-        return RetrofitHandler.SONG_URL + endpoint;
-    }
-
     @Override
     protected void onCleared() {
         super.onCleared();
@@ -73,7 +69,7 @@ public class PlayViewModel extends ViewModel {
 
     @BindingAdapter("app:load_image")
     public static void setImage(ImageView image, String url) {
-        String finalurl = RetrofitHandler.SONG_URL + url;
+        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
         Glide.with(mContext)
                 .load(finalurl).centerCrop()
                 .fitCenter().into(image);

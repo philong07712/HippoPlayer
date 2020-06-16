@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.hippoplayer"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -56,6 +56,9 @@ dependencies {
 
     // Viewapger2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
+
+    // media
+    implementation "androidx.media:media:1.1.0"
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
