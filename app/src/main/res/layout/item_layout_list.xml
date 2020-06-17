@@ -8,6 +8,10 @@
             name="song"
             type="com.example.hippoplayer.models.Song" />
 
+        <variable
+            name="listViewModel"
+            type="com.example.hippoplayer.list.ListViewModel" />
+
     </data>
 
     <androidx.cardview.widget.CardView
@@ -15,13 +19,13 @@
         android:layout_width="match_parent"
         android:layout_height="450dp"
         android:layout_marginHorizontal="15dp"
-        app:cardCornerRadius="15dp"
+        android:layout_marginVertical="10dp"
+        android:background="@android:color/white"
         android:scaleX="0.95"
         android:scaleY="0.95"
-        android:layout_marginVertical="10dp"
+        app:cardCornerRadius="15dp"
         app:cardElevation="10dp"
-        app:load_background_color="@{song.thumbnail}"
-        android:background="@android:color/white">
+        app:load_background_color="@{song.thumbnail}">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -29,47 +33,47 @@
 
             <RelativeLayout
                 android:id="@+id/header_item_artist_list"
-                android:padding="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="5dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    app:load_image_list="@{song.avatarArtist}"
                     android:id="@+id/image_avatar_artist"
                     android:layout_width="50dp"
-                    app:civ_border_width="2dp"
+                    android:layout_height="50dp"
                     app:civ_border_color="#FF000000"
-                    android:layout_height="50dp"/>
+                    app:civ_border_width="2dp"
+                    app:load_image_list="@{song.avatarArtist}" />
 
                 <TextView
-                    android:textStyle="bold"
-                    android:paddingLeft="5dp"
-                    android:textColor="@android:color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/image_avatar_artist"
-                    android:layout_width="match_parent"
+                    android:paddingLeft="5dp"
                     android:text="@{song.nameArtist}"
-                    android:layout_height="wrap_content"/>
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
             </RelativeLayout>
 
             <TextView
-                android:layout_below="@+id/header_item_artist_list"
                 android:id="@+id/text_title_song_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/text_description_song_list"
-                android:text="@{song.nameSong}"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:layout_below="@+id/header_item_artist_list"
                 android:gravity="center"
-                android:textColor="@android:color/white" />
+                android:text="@{song.nameSong}"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/text_description_song_list"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/image_song_list"
+                android:gravity="center"
                 android:text="@{song.description}"
                 android:textColor="@android:color/white" />
 
@@ -86,9 +90,9 @@
                 android:id="@+id/button_play_and_pause"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginTop="10dp"
                 android:layout_below="@id/image_song_list"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/button_circle_background"
                 android:elevation="15dp"
                 android:scaleType="centerCrop"

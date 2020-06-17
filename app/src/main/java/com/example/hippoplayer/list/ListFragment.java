@@ -121,6 +121,8 @@ public class ListFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
+
+
     }
 
     public static ListFragment newInstance() {
