@@ -5,12 +5,9 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.hippoplayer.play.MediaService;
+import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.LoadControl;
-import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -23,8 +20,11 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
     private final int loadControlStartBufferMs = 1500;
     private AudioManager mAudioManager;
     private Context mContext;
-    private SimpleExoPlayer player = null;
+    private SimpleExoPlayer mPlayer = null;
     private Uri mMediaFile;
+    private int mPosition;
+    private long resumePoint;
+
     public ExoPlayerService(Context context) {
         mContext = context;
         initPlayer();
@@ -32,7 +32,7 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
 
     public void initPlayer() {
         // if the player is not exist then we will create one
-        if (player == null) {
+        if (mPlayer == null) {
             DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder().setBufferDurationsMs(
                     DefaultLoadControl.DEFAULT_MIN_BUFFER_MS,
                     DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
@@ -40,13 +40,49 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
                     DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
             );
             DefaultLoadControl defaultLoadControl = builder.createDefaultLoadControl();
-            player = ExoPlayerFactory.newSimpleInstance(mContext, new DefaultTrackSelector(), defaultLoadControl);
+            mPlayer = ExoPlayerFactory.newSimpleInstance(mContext, new DefaultTrackSelector(), defaultLoadControl);
         }
     }
 
+    public void playMedia(int position) {
+        mPlayer.setPlayWhenReady(true);
+        mPosition = position;
+        SongNotificationManager.getInstance().createNotification(mPosition, true);
+    }
+
+    public void stopMedia() {
+        if (mPlayer == null) return;
+        mPlayer.setPlayWhenReady(false);
+        SongNotificationManager.getInstance().createNotification(mPosition, false);
+    }
+
+    public void pauseMedia() {
+        if (isPlaying()) {
+            // this mean pause
+            mPlayer.setPlayWhenReady(false);
+            resumePoint = mPlayer.getCurrentPosition();
+            // if the service pause then the notificate will create play notification
+            SongNotificationManager.getInstance().createNotification(mPosition, false);
+        }
+    }
+
+    public void resumeMedia() {
+        if (!isPlaying()) {
+            mPlayer.seekTo(resumePoint);
+            mPlayer.setPlayWhenReady(true);
+            // if the service resume then the notificate will create pause notification
+            SongNotificationManager.getInstance().createNotification(mPosition, true);
+        }
+    }
+
+    public void seekTo(int progress) {
+        resumePoint = progress;
+        mPlayer.seekTo(progress);
+    }
+
     private void loadMediaSource(Uri uri) {
-        player.prepare(buildMediaSource(uri));
-        player.setPlayWhenReady(true);
+        mPlayer.prepare(buildMediaSource(uri));
+        mPlayer.setPlayWhenReady(true);
     }
 
     public void setMediaFile(String url) {
@@ -61,8 +97,12 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
         return mediaSource;
     }
 
+    public boolean isPlaying() {
+        return mPlayer.getPlayWhenReady();
+    }
+
     public SimpleExoPlayer getPlayer() {
-        return player;
+        return mPlayer;
     }
 
     @Override
@@ -71,19 +111,25 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
             case AudioManager.AUDIOFOCUS_GAIN:
                 // the service gained audio focus, so it needs to start playing
                 Log.d(TAG, "Audio focus gained");
+                mPlayer.setVolume(1.0f);
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
                 // the service lost audio focus, the user probably moved to playing
                 // media on other app, so release the media player
+                if (mPlayer != null) {
+                    pauseMedia();
+                }
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 // Focus lost for a short time, pause the Media player
+                if (isPlaying()) pauseMedia();
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                 // Lost focus for a short of time, lower the volume of the player
                 // maybe there is a notification
+                if (isPlaying()) mPlayer.setVolume(0.1f);
                 break;
         }
     }

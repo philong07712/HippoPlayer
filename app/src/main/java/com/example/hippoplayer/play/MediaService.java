@@ -25,7 +25,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
     private String mMediaFile;
     private int resumePoint;
     private int mPosition = 0;
-
+    // Todo:
     public MediaService() {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
@@ -33,7 +33,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
     }
-
+    // Todo:
     public void loadMediaSource() {
         mMediaPlayer.reset();
         try {
@@ -44,6 +44,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
         mMediaPlayer.prepareAsync();
     }
 
+    // Todo:
     public void playMedia(int position) {
         if (!mMediaPlayer.isPlaying()) {
             mPosition = position;
@@ -53,6 +54,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
             mMediaPlayer.setOnCompletionListener(this);
         }
     }
+    // Todo:
 
     public void stopMedia() {
         if (mMediaPlayer == null) return;
@@ -62,6 +64,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
             SongNotificationManager.getInstance().createNotification(mPosition, false);
         }
     }
+    // Todo:
 
     public void pauseMedia() {
         if (mMediaPlayer.isPlaying()) {
@@ -71,6 +74,7 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
             SongNotificationManager.getInstance().createNotification(mPosition, false);
         }
     }
+    // Todo:
 
     public void resumeMedia() {
         if (!mMediaPlayer.isPlaying()) {

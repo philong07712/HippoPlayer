@@ -136,7 +136,7 @@ public class PlayFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                   mMediaManager.getPlayer().seekTo(progress * 100);
+                   mMediaManager.seekTo(progress * 100);
                 }
             }
 
