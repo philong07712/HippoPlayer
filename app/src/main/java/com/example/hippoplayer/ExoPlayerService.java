@@ -9,6 +9,7 @@ import com.example.hippoplayer.play.MediaService;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -19,7 +20,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
 public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener {
     private static final String TAG = ExoPlayerService.class.getSimpleName();
-
+    private final int loadControlStartBufferMs = 1500;
     private AudioManager mAudioManager;
     private Context mContext;
     private SimpleExoPlayer player = null;
@@ -32,7 +33,14 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
     public void initPlayer() {
         // if the player is not exist then we will create one
         if (player == null) {
-            player = ExoPlayerFactory.newSimpleInstance(mContext, new DefaultTrackSelector());
+            DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder().setBufferDurationsMs(
+                    DefaultLoadControl.DEFAULT_MIN_BUFFER_MS,
+                    DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
+                    loadControlStartBufferMs,
+                    DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
+            );
+            DefaultLoadControl defaultLoadControl = builder.createDefaultLoadControl();
+            player = ExoPlayerFactory.newSimpleInstance(mContext, new DefaultTrackSelector(), defaultLoadControl);
         }
     }
 

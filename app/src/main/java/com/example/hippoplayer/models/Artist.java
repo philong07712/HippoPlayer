@@ -9,10 +9,6 @@ public class Artist{
 	@Expose
 	public String name;
 
-	@SerializedName("avatar")
-	@Expose
-	public String avatar;
-
 	@SerializedName("id")
 	@Expose
 	public String id;
