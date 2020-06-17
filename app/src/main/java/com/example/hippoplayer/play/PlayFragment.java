@@ -178,9 +178,9 @@ public class PlayFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mMediaManager.getService().getMediaPlayer().isPlaying()) {
-                    int currentPosition = mMediaManager.getPlayer().getCurrentPosition();
-                    int maxDuration =  mMediaManager.getPlayer().getDuration();
+                if (mMediaManager.isPlaying()) {
+                    long currentPosition = mMediaManager.getCurrentPosition();
+                    long maxDuration = mMediaManager.getDuration();
                     updateSeekBar(currentPosition, maxDuration);
                     updateTime(currentPosition, maxDuration);
                 }
@@ -199,15 +199,16 @@ public class PlayFragment extends Fragment {
         mMediaManager.onNext();
     }
 
-    private void updateSeekBar(int currentPosition, int maxDuration) {
-        fragmentPlayBinding.sbDurationSong.setMax(maxDuration / 100);
-        int mCurrentPosition = currentPosition / 100;
+    private void updateSeekBar(long currentPosition, long maxDuration) {
+        fragmentPlayBinding.sbDurationSong.setMax((int)maxDuration / 100);
+        int mCurrentPosition = (int) currentPosition / 100;
         fragmentPlayBinding.sbDurationSong.setProgress(mCurrentPosition);
     }
 
-    private void updateTime(int currentPosition, int maxDuration) {
+    private void updateTime(long currentPosition, long maxDuration) {
         fragmentPlayBinding.textTimeStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
-        fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
+        if (maxDuration >= 0) fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
+
     }
 
     // Todo: inner classes + interfaces

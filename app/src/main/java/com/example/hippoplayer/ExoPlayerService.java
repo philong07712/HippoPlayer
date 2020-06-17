@@ -7,7 +7,9 @@ import android.util.Log;
 
 import com.example.hippoplayer.play.MediaService;
 import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -24,6 +26,7 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
     private Uri mMediaFile;
     public ExoPlayerService(Context context) {
         mContext = context;
+        initPlayer();
     }
 
     public void initPlayer() {
@@ -48,6 +51,10 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
         DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_media");
         MediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory, new DefaultExtractorsFactory(), null, null);
         return mediaSource;
+    }
+
+    public SimpleExoPlayer getPlayer() {
+        return player;
     }
 
     @Override
