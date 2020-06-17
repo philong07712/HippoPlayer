@@ -26,7 +26,6 @@ public class MediaService implements MediaPlayer.OnErrorListener, MediaPlayer.On
     private int resumePoint;
     private int mPosition = 0;
 
-    SongNotificationManager notificationManager;
     public MediaService() {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
