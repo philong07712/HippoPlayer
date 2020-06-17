@@ -191,7 +191,7 @@ public class PlayFragment extends Fragment {
                 if (mMediaManager.isSongCompleted()) {
                     playNextSong();
                 }
-                mHandler.postDelayed(this, 1000);
+                mHandler.postDelayed(this, 100);
             }
         });
     }
@@ -210,9 +210,6 @@ public class PlayFragment extends Fragment {
     private void updateTime(long currentPosition, long maxDuration) {
         fragmentPlayBinding.textTimeStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
         if (maxDuration >= 0) fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
-        long bufferPosition = (mMediaManager.getService().getPlayer().getBufferedPosition() / 60);
-        Log.d(TAG, "updateTime: " + bufferPosition);
-
     }
 
     // Todo: inner classes + interfaces
