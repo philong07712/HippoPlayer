@@ -191,7 +191,7 @@ public class PlayFragment extends Fragment {
                 if (mMediaManager.isSongCompleted()) {
                     playNextSong();
                 }
-                mHandler.postDelayed(this, 100);
+                mHandler.postDelayed(this, 1000);
             }
         });
     }
