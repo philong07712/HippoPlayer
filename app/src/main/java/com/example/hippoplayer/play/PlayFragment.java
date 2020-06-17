@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,6 +23,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.util.LogTime;
 import com.example.hippoplayer.play.notification.OnClearFromRecentService;
 import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
@@ -208,6 +210,8 @@ public class PlayFragment extends Fragment {
     private void updateTime(long currentPosition, long maxDuration) {
         fragmentPlayBinding.textTimeStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
         if (maxDuration >= 0) fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
+        long bufferPosition = (mMediaManager.getService().getPlayer().getBufferedPosition() / 60);
+        Log.d(TAG, "updateTime: " + bufferPosition);
 
     }
 
@@ -220,11 +224,22 @@ public class PlayFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(Constants.NOTIFICATION_ID);
         getActivity().unregisterReceiver(mMediaManager.broadcastReceiver);
+        mMediaManager.getService().releasePlayer();
     }
 
 }

@@ -75,7 +75,7 @@ public class MediaManager implements Playable {
     }
 
     public void seekTo(int progress) {
-        mService.getPlayer().seekTo(progress);
+        mService.seekTo(progress);
     }
     public boolean isSongCompleted() {
         return getDuration() != 0
@@ -91,10 +91,12 @@ public class MediaManager implements Playable {
     }
 
     public long getDuration() {
+        if (mService.getPlayer() == null) return 0;
         return mService.getPlayer().getDuration();
     }
 
     public long getCurrentPosition() {
+        if (mService.getPlayer() == null) return 0;
         return mService.getPlayer().getCurrentPosition();
     }
 
