@@ -1,39 +1,30 @@
 package com.example.hippoplayer.play;
 
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.hippoplayer.R;
+import com.example.hippoplayer.ExoPlayerService;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.play.notification.CreateNotification;
 import com.example.hippoplayer.play.notification.NotificationActionService;
-import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.example.hippoplayer.utils.PathHelper;
+import com.google.android.exoplayer2.ExoPlayer;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.rxjava3.core.Observable;
 
 public class MediaManager implements Playable {
     Context mContext;
     List<Song> mSongs;
-    private MediaService mService;
-    private MediaPlayer mPlayer;
+    private ExoPlayerService mService;
     MutableLiveData<Integer> posLiveData = new MutableLiveData<>();
     int position = 0;
 
     public MediaManager(Context context) {
         mContext = context;
-        mService = new MediaService();
-        mPlayer = mService.getMediaPlayer();
+        mService = new ExoPlayerService(context);
     }
 
     public BroadcastReceiver broadcastReceiver = new NotificationActionService() {
@@ -46,7 +37,7 @@ public class MediaManager implements Playable {
                     onPrevious();
                     break;
                 case CreateNotification.ACTION_PLAY:
-                    if (mPlayer.isPlaying()) {
+                    if (mService.isPlaying()) {
                         onPause();
                     } else {
                         onPlay();
@@ -60,7 +51,7 @@ public class MediaManager implements Playable {
     };
 
     public void pauseButtonClicked() {
-        if (mPlayer.isPlaying()) {
+        if (mService.isPlaying()) {
             pauseMedia();
         }
         else resumeMedia();
@@ -70,7 +61,6 @@ public class MediaManager implements Playable {
         this.position = position;
         String fullUrl = PathHelper.getFullUrl(mSongs.get(position).getIdSong(), PathHelper.TYPE_SONG);
         mService.setMediaFile(fullUrl);
-        mService.loadMediaSource();
         mService.playMedia(position);
         // Change avatar in notification manager
 
@@ -84,21 +74,34 @@ public class MediaManager implements Playable {
         mService.resumeMedia();
     }
 
+    public void seekTo(int progress) {
+        mService.seekTo(progress);
+    }
     public boolean isSongCompleted() {
-        return mPlayer.getDuration() != 0
-                && mPlayer.getCurrentPosition() > mPlayer.getDuration() - 1000;
+        return getDuration() != 0
+                && getCurrentPosition() > getDuration() - 1000;
     }
 
     public void setSongs(List<Song> mSongs) {
         this.mSongs = mSongs;
     }
 
-    public MediaService getService() {
+    public ExoPlayerService getService() {
         return mService;
     }
 
-    public MediaPlayer getPlayer() {
-        return mPlayer;
+    public long getDuration() {
+        if (mService.getPlayer() == null) return 0;
+        return mService.getPlayer().getDuration();
+    }
+
+    public long getCurrentPosition() {
+        if (mService.getPlayer() == null) return 0;
+        return mService.getPlayer().getCurrentPosition();
+    }
+
+    public boolean isPlaying() {
+        return true;
     }
 
     @Override

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,6 +23,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.util.LogTime;
 import com.example.hippoplayer.play.notification.OnClearFromRecentService;
 import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
@@ -136,7 +138,7 @@ public class PlayFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                   mMediaManager.getPlayer().seekTo(progress * 100);
+                   mMediaManager.seekTo(progress * 100);
                 }
             }
 
@@ -178,9 +180,9 @@ public class PlayFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mMediaManager.getService().getMediaPlayer().isPlaying()) {
-                    int currentPosition = mMediaManager.getPlayer().getCurrentPosition();
-                    int maxDuration =  mMediaManager.getPlayer().getDuration();
+                if (mMediaManager.isPlaying()) {
+                    long currentPosition = mMediaManager.getCurrentPosition();
+                    long maxDuration = mMediaManager.getDuration();
                     updateSeekBar(currentPosition, maxDuration);
                     updateTime(currentPosition, maxDuration);
                 }
@@ -189,7 +191,7 @@ public class PlayFragment extends Fragment {
                 if (mMediaManager.isSongCompleted()) {
                     playNextSong();
                 }
-                mHandler.postDelayed(this, 1000);
+                mHandler.postDelayed(this, 100);
             }
         });
     }
@@ -199,15 +201,15 @@ public class PlayFragment extends Fragment {
         mMediaManager.onNext();
     }
 
-    private void updateSeekBar(int currentPosition, int maxDuration) {
-        fragmentPlayBinding.sbDurationSong.setMax(maxDuration / 100);
-        int mCurrentPosition = currentPosition / 100;
+    private void updateSeekBar(long currentPosition, long maxDuration) {
+        fragmentPlayBinding.sbDurationSong.setMax((int)maxDuration / 100);
+        int mCurrentPosition = (int) currentPosition / 100;
         fragmentPlayBinding.sbDurationSong.setProgress(mCurrentPosition);
     }
 
-    private void updateTime(int currentPosition, int maxDuration) {
+    private void updateTime(long currentPosition, long maxDuration) {
         fragmentPlayBinding.textTimeStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
-        fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
+        if (maxDuration >= 0) fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
     }
 
     // Todo: inner classes + interfaces
@@ -219,11 +221,22 @@ public class PlayFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(Constants.NOTIFICATION_ID);
         getActivity().unregisterReceiver(mMediaManager.broadcastReceiver);
+        mMediaManager.getService().releasePlayer();
     }
 
 }
