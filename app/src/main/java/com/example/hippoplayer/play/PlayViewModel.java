@@ -43,6 +43,7 @@ public class PlayViewModel extends ViewModel {
     private Flowable<List<SongResponse>> mSongResponeFlowable;
     // variables
     private List<Song> mSongs = new ArrayList<>();
+
     // Todo: Constructor
     public PlayViewModel() {
         mSongResponeFlowable = mService.getListSongResponsePlay();
@@ -60,16 +61,30 @@ public class PlayViewModel extends ViewModel {
     public Flowable<List<SongResponse>> getmSongResponeFlowable() {
         return mSongResponeFlowable;
     }
+
     @Override
     protected void onCleared() {
         super.onCleared();
         mCompositeDisposal.clear();
     }
+
     @BindingAdapter("app:load_image_play")
-    public static void setImage(ImageView image, String url) {
+    public static void setImageSongPlay(ImageView image, String url) {
         String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
         Glide.with(mContext)
                 .load(finalurl).centerCrop()
                 .fitCenter().into(image);
     }
+
+    @BindingAdapter("app:load_image_background_play")
+    public static void setImageBackgroundPlay(ImageView image, String url) {
+        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
+        Glide.with(mContext)
+                .load(finalurl)
+                .override(18, 18)
+                .thumbnail(0.1f)
+                .centerCrop()
+                .into(image);
+    }
+
 }

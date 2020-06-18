@@ -20,7 +20,7 @@
             android:id="@+id/image_bg_song"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:load_image_play="@{song.idSong}"
+            app:load_image_background_play="@{song.idSong}"
             android:scaleType="centerCrop"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp" />
@@ -38,19 +38,19 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:elevation="10dp"
                 android:id="@+id/image_song"
-                android:layout_width="180dp"
-                android:layout_height="180dp"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:elevation="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/anh3"
                 app:layout_constraintBottom_toTopOf="@+id/text_title_song"
-                app:load_image_play="@{song.idSong}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5" />
+                app:layout_constraintVertical_bias="0.678"
+                app:load_image_play="@{song.idSong}" />
 
             <TextView
                 android:id="@+id/text_title_song"
@@ -59,11 +59,12 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/roboto_mono"
                 android:maxLines="1"
+                android:textStyle="bold"
                 android:paddingHorizontal="30dp"
                 android:text="@{song.nameSong}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/text_artist_song"
                 app:layout_constraintEnd_toEndOf="@+id/image_song"
                 app:layout_constraintStart_toStartOf="@+id/image_song" />
@@ -74,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:text="@{song.nameArtist}"
+                android:textSize="17sp"
                 android:fontFamily="@font/roboto_mono"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textColor="@android:color/white"
@@ -86,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.55" />
+                app:layout_constraintGuide_percent="0.64" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
