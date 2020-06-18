@@ -4,10 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class SongResponse {
-    @SerializedName("thumbnail")
-    @Expose
-    public String thumbnail;
-
     @SerializedName("artist")
     @Expose
     public ArtistResponse artist;
@@ -24,7 +20,4 @@ public class SongResponse {
     @Expose
     public String id;
 
-    @SerializedName("url")
-    @Expose
-    public String url;
 }

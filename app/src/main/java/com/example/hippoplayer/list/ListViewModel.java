@@ -2,6 +2,7 @@ package com.example.hippoplayer.list;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +36,7 @@ import com.example.hippoplayer.RetrofitHandler;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.play.utils.SongService;
+import com.example.hippoplayer.utils.PathHelper;
 
 import java.util.List;
 
@@ -69,9 +71,19 @@ public class ListViewModel extends ViewModel {
         mCompositeDisposal.clear();
     }
 
-    @BindingAdapter("app:load_image_list")
-    public static void setImage(ImageView image, String url) {
-        String finalurl = RetrofitHandler.SONG_URL + url;
+    @BindingAdapter("app:load_image_list_artist")
+    public static void setImageArtist(ImageView image, String url) {
+        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_ARTIST);
+        Glide.with(mContext)
+                .load(finalurl)
+                .centerCrop()
+                .fitCenter()
+                .into(image);
+    }
+
+    @BindingAdapter("app:load_image_list_song")
+    public static void setImageSong(ImageView image, String url) {
+        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
         Glide.with(mContext)
                 .load(finalurl)
                 .centerCrop()
@@ -81,7 +93,7 @@ public class ListViewModel extends ViewModel {
 
     @BindingAdapter("app:load_background_color")
     public static void setBackgroundColor(CardView view, String url) {
-        String finalurl = RetrofitHandler.SONG_URL + url;
+        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
         Glide.with(mContext)
                 .asBitmap()
                 .load(finalurl)

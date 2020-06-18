@@ -25,7 +25,7 @@
         android:scaleY="0.95"
         app:cardCornerRadius="15dp"
         app:cardElevation="10dp"
-        app:load_background_color="@{song.thumbnail}">
+        app:load_background_color="@{song.idSong}">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                     android:layout_height="50dp"
                     app:civ_border_color="#FF000000"
                     app:civ_border_width="2dp"
-                    app:load_image_list="@{song.avatarArtist}" />
+                    app:load_image_list_artist="@{song.idArtist}" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -84,7 +84,7 @@
                 android:layout_centerInParent="true"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
-                app:load_image_list="@{song.thumbnail}" />
+                app:load_image_list_song="@{song.idSong}" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/button_play_and_pause"

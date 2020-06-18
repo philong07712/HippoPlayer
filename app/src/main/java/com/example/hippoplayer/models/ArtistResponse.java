@@ -19,10 +19,6 @@ public class ArtistResponse {
 	@Expose
 	public int year_of_birth;
 
-	@SerializedName("avatar")
-	@Expose
-	public String avatar;
-
 	@SerializedName("id")
 	@Expose
 	public String id;
