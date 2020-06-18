@@ -1,8 +1,5 @@
 package com.example.hippoplayer.models;
 
-import com.example.hippoplayer.models.Artist;
-import com.example.hippoplayer.models.SongResponse;
-
 public class Song {
     private String nameSong;
     private String description;

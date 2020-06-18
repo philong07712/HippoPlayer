@@ -45,7 +45,7 @@ public class PlayViewModel extends ViewModel {
     private List<Song> mSongs = new ArrayList<>();
     // Todo: Constructor
     public PlayViewModel() {
-        mSongResponeFlowable = mService.getSongRespone();
+        mSongResponeFlowable = mService.getListSongResponsePlay();
     }
 
 
@@ -60,14 +60,12 @@ public class PlayViewModel extends ViewModel {
     public Flowable<List<SongResponse>> getmSongResponeFlowable() {
         return mSongResponeFlowable;
     }
-
     @Override
     protected void onCleared() {
         super.onCleared();
         mCompositeDisposal.clear();
     }
-
-    @BindingAdapter("app:load_image")
+    @BindingAdapter("app:load_image_play")
     public static void setImage(ImageView image, String url) {
         String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
         Glide.with(mContext)

@@ -8,17 +8,14 @@
         android:layout_height="match_parent"
         tools:context=".play.PlayFragment">
 
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_play"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/vp_play"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="0dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"
@@ -27,54 +24,109 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.55" />
 
-            <SeekBar
-                android:id="@+id/sb_duration_song"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                app:layout_constraintBottom_toTopOf="@+id/button_play_and_pause"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline"
-                app:layout_constraintVertical_bias="0.814" />
-
             <TextView
                 android:id="@+id/text_time_start_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0:01"
+                android:gravity="center"
+                android:paddingHorizontal="15dp"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toTopOf="@+id/sb_duration_song"
-                app:layout_constraintStart_toStartOf="@+id/sb_duration_song"
-                app:layout_constraintTop_toTopOf="@+id/text_time_end_song"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintStart_toStartOf="@+id/sb_duration_song" />
 
             <TextView
                 android:id="@+id/text_time_end_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="3:30"
+                android:gravity="center"
+                android:paddingHorizontal="15dp"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toTopOf="@+id/sb_duration_song"
                 app:layout_constraintEnd_toEndOf="@+id/sb_duration_song" />
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:background="?colorPrimary"
-                android:id="@+id/button_play_and_pause"
-                app:lottie_fileName="pause.json"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:src="@drawable/ic_pause_black_24dp"
-                app:borderWidth="0dp"
-                app:fabSize="normal"
+            <SeekBar
+                android:id="@+id/sb_duration_song"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:progressDrawable="@drawable/seek_bar"
+                android:thumb="@drawable/seek_thumb"
+                app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:gravity="center_vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/sb_duration_song"
-                app:layout_constraintStart_toStartOf="@+id/sb_duration_song"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/button_play_and_pause"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/button_circle_background"
+                    android:scaleType="centerCrop"
+                    android:elevation="15dp"
+                    app:lottie_fileName="pause.json"
+                    app:lottie_loop="false" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/button_next_song"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/button_play_and_pause"
+                    android:background="@android:color/transparent"
+                    android:layout_marginHorizontal="15dp"
+                    android:src="@drawable/ic_baseline_skip_next_24"
+                    app:backgroundTint="@android:color/transparent"
+                    app:borderWidth="0dp"
+                    app:elevation="0dp"
+                    app:fabSize="normal" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/button_backward_song"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/button_play_and_pause"
+                    android:scaleX="-1"
+                    android:layout_marginHorizontal="15dp"
+                    android:src="@drawable/ic_baseline_skip_next_24"
+                    app:backgroundTint="@android:color/transparent"
+                    app:borderWidth="0dp"
+                    app:elevation="0dp"
+                    app:fabSize="normal" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/button_repeat_song"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/button_backward_song"
+                    android:scaleX="-1"
+                    android:src="@drawable/ic_icon_feather_repeat"
+                    app:backgroundTint="@android:color/transparent"
+                    app:borderWidth="0dp"
+                    app:elevation="0dp"
+                    app:fabSize="normal" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/button_random_song"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/button_next_song"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_icon_open_random"
+                    app:backgroundTint="@android:color/transparent"
+                    app:borderWidth="0dp"
+                    app:elevation="0dp"
+                    app:fabSize="normal" />
+
+            </RelativeLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
