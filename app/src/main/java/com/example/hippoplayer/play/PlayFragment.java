@@ -8,14 +8,12 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -23,20 +21,17 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.bumptech.glide.util.LogTime;
-import com.example.hippoplayer.play.notification.OnClearFromRecentService;
-import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
+import com.example.hippoplayer.play.notification.OnClearFromRecentService;
+import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.example.hippoplayer.utils.Constants;
 import com.example.hippoplayer.utils.ConvertHelper;
-import com.example.hippoplayer.utils.PathHelper;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +41,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class PlayFragment extends Fragment {
     // Todo: Constant
     private static final String TAG = PlayFragment.class.getSimpleName();
+    private static final float PAUSE_LOTTIE_SPEED = 3.0f;
 
     // View
 
@@ -63,6 +59,7 @@ public class PlayFragment extends Fragment {
 
         @Override
         public void onNext(List<SongResponse> songResponses) {
+            mSong = new ArrayList<>();
             for(SongResponse songResponse : songResponses){
                 Song song = new Song();
                 song.setSongResponse(songResponse);
@@ -127,12 +124,31 @@ public class PlayFragment extends Fragment {
     }
 
     private void initListener() {
+        // This is where we setting the lottery file
         fragmentPlayBinding.buttonPlayAndPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMediaManager.pauseButtonClicked();
             }
         });
+
+        mMediaManager.stateLiveData.observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                // if the song isPlaying, then we will display pause
+                if (aBoolean) {
+                    // play->pause
+                    fragmentPlayBinding.buttonPlayAndPause.setSpeed(-PAUSE_LOTTIE_SPEED);
+                    fragmentPlayBinding.buttonPlayAndPause.playAnimation();
+                }
+                else {
+                    // pause->play
+                    fragmentPlayBinding.buttonPlayAndPause.setSpeed(PAUSE_LOTTIE_SPEED);
+                    fragmentPlayBinding.buttonPlayAndPause.playAnimation();
+                }
+            }
+        });
+
 
         fragmentPlayBinding.sbDurationSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -199,6 +215,7 @@ public class PlayFragment extends Fragment {
 
     private void playNextSong() {
         mMediaManager.onNext();
+        Log.d(TAG, "playNextSong: " + mSong.size());
     }
 
     private void updateSeekBar(long currentPosition, long maxDuration) {
@@ -218,16 +235,6 @@ public class PlayFragment extends Fragment {
     public void onStart() {
         super.onStart();
         mMediaManager.getService().requestAudioFocus(getContext());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     @Override

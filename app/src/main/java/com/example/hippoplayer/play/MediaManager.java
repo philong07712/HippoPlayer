@@ -20,6 +20,7 @@ public class MediaManager implements Playable {
     List<Song> mSongs;
     private ExoPlayerService mService;
     MutableLiveData<Integer> posLiveData = new MutableLiveData<>();
+    MutableLiveData<Boolean> stateLiveData = new MutableLiveData<>();
     int position = 0;
 
     public MediaManager(Context context) {
@@ -62,16 +63,19 @@ public class MediaManager implements Playable {
         String fullUrl = PathHelper.getFullUrl(mSongs.get(position).getIdSong(), PathHelper.TYPE_SONG);
         mService.setMediaFile(fullUrl);
         mService.playMedia(position);
+        stateLiveData.setValue(isPlaying());
         // Change avatar in notification manager
 
     }
 
     public void pauseMedia() {
         mService.pauseMedia();
+        stateLiveData.setValue(isPlaying());
     }
 
     public void resumeMedia() {
         mService.resumeMedia();
+        stateLiveData.setValue(isPlaying());
     }
 
     public void seekTo(int progress) {
@@ -101,7 +105,7 @@ public class MediaManager implements Playable {
     }
 
     public boolean isPlaying() {
-        return true;
+        return mService.isPlaying();
     }
 
     @Override
@@ -112,12 +116,12 @@ public class MediaManager implements Playable {
 
     @Override
     public void onPlay() {
-        mService.resumeMedia();
+        resumeMedia();
     }
 
     @Override
     public void onPause() {
-        mService.pauseMedia();
+        pauseMedia();
     }
 
     @Override
