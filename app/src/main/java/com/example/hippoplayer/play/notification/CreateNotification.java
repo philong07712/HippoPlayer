@@ -119,17 +119,11 @@ public class CreateNotification  {
     }
 
     private void createIntentPrevious() {
-
-        if (mPosition == 0) {
-            pendingIntentPrevious = null;
-            drw_previous = 0;
-        } else {
-            Intent intentPrevious = new Intent(mContext, NotificationActionService.class)
-                    .setAction(ACTION_PREVIOUS);
-            pendingIntentPrevious = PendingIntent.getBroadcast(mContext, 0,
-                    intentPrevious, PendingIntent.FLAG_UPDATE_CURRENT);
-            drw_previous = R.drawable.ic_baseline_skip_previous_24;
-        }
+        Intent intentPrevious = new Intent(mContext, NotificationActionService.class)
+                .setAction(ACTION_PREVIOUS);
+        pendingIntentPrevious = PendingIntent.getBroadcast(mContext, 0,
+                intentPrevious, PendingIntent.FLAG_UPDATE_CURRENT);
+        drw_previous = R.drawable.ic_baseline_skip_previous_24;
     }
 
     private void createIntentPlay() {
@@ -142,15 +136,10 @@ public class CreateNotification  {
     }
 
     private void createIntentNext() {
-        if (mPosition == mSize - 1) {
-            pendingIntentNext = null;
-            drw_next = 0;
-        } else {
-            Intent intentNext = new Intent(mContext, NotificationActionService.class)
-                    .setAction(ACTION_NEXT);
-            pendingIntentNext = PendingIntent.getBroadcast(mContext, 0,
-                    intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
-            drw_next = R.drawable.ic_baseline_skip_next_24;
-        }
+        Intent intentNext = new Intent(mContext, NotificationActionService.class)
+                .setAction(ACTION_NEXT);
+        pendingIntentNext = PendingIntent.getBroadcast(mContext, 0,
+                intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
+        drw_next = R.drawable.ic_baseline_skip_next_24;
     }
 }

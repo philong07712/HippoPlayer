@@ -21,6 +21,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
@@ -42,7 +43,6 @@ public class PlayFragment extends Fragment {
     // Todo: Constant
     private static final String TAG = PlayFragment.class.getSimpleName();
     private static final float PAUSE_LOTTIE_SPEED = 3.0f;
-
     // View
 
     private FragmentPlayBinding fragmentPlayBinding;
@@ -149,7 +149,48 @@ public class PlayFragment extends Fragment {
             }
         });
 
+        // set next and previous button
+        fragmentPlayBinding.buttonBackwardSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaManager.onPrevious();
+            }
+        });
 
+        fragmentPlayBinding.buttonNextSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaManager.onNext();
+            }
+        });
+        // set repeat button
+        fragmentPlayBinding.buttonRepeatSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // update flag
+                mMediaManager.updateStateFlag();
+                switch (mMediaManager.getStateFlag()) {
+                    // update the status that the app is currently not repeat the song
+                    case MediaManager.STATE_NON_REPEAT:
+                        fragmentPlayBinding.buttonRepeatSong.setImageResource(R.drawable.ic_icon_feather_repeat_white);
+                        break;
+                    // update the status that the app is currently repeat the current song
+                    case MediaManager.STATE_REPEAT_ONE:
+                        fragmentPlayBinding.buttonRepeatSong.setImageResource(R.drawable.ic_baseline_repeat_one_24_orange);
+                        break;
+                    // update the status that the app is currently shuffle the song
+                    case MediaManager.STATE_SHUFFLE:
+                        fragmentPlayBinding.buttonRepeatSong.setImageResource(R.drawable.ic_icon_open_random_orange);
+                        break;
+                    // update the status that the app is currently repeat the song list
+                    case MediaManager.STATE_REPEAT:
+                        fragmentPlayBinding.buttonRepeatSong.setImageResource(R.drawable.ic_icon_feather_repeat_orange);
+                        break;
+                }
+                // if the repeat do not choose
+                // if the repeat has been choosen
+            }
+        });
         fragmentPlayBinding.sbDurationSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -205,17 +246,11 @@ public class PlayFragment extends Fragment {
                 // if the song is loaded
                 // and the current position is lower than duration with 1s
                 if (mMediaManager.isSongCompleted()) {
-                    playNextSong();
+                    mMediaManager.playNextSong();
                 }
                 mHandler.postDelayed(this, 1000);
             }
         });
-    }
-
-
-    private void playNextSong() {
-        mMediaManager.onNext();
-        Log.d(TAG, "playNextSong: " + mSong.size());
     }
 
     private void updateSeekBar(long currentPosition, long maxDuration) {
