@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.ItemLayoutListBinding;
+import com.example.hippoplayer.list.events.ItemEvent;
 import com.example.hippoplayer.models.Song;
 
 import java.util.ArrayList;
@@ -55,6 +56,8 @@ public class ListSongAdapter extends RecyclerView.Adapter<ListSongAdapter.ViewHo
         public void bind(Song item){
             itemLayoutListBinding.setSong(item);
             itemLayoutListBinding.executePendingBindings();
+            ItemEvent itemEvent = new ItemEvent();
+            itemLayoutListBinding.setButtonEvents(itemEvent);
         }
     }
 }

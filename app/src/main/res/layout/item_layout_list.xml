@@ -9,8 +9,8 @@
             type="com.example.hippoplayer.models.Song" />
 
         <variable
-            name="listViewModel"
-            type="com.example.hippoplayer.list.ListViewModel" />
+            name="buttonEvents"
+            type="com.example.hippoplayer.list.events.ItemEvent" />
 
     </data>
 
@@ -95,6 +95,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_circle_background"
                 android:elevation="15dp"
+                android:onClick="@{buttonEvents::buttonPlayItemList}"
                 android:scaleType="centerCrop"
                 app:lottie_fileName="pause.json"
                 app:lottie_loop="false" />

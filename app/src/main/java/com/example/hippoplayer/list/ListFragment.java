@@ -2,7 +2,6 @@ package com.example.hippoplayer.list;
 
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
@@ -13,24 +12,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
-import android.widget.RelativeLayout;
 
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentListBinding;
+import com.example.hippoplayer.list.events.ItemEvent;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
-import com.example.hippoplayer.play.ItemPlayAdapter;
-import com.example.hippoplayer.play.PlayViewModel;
-import com.example.hippoplayer.search.SearchFragment;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -47,6 +41,8 @@ public class ListFragment extends Fragment {
     private FragmentListBinding fragmentListBinding;
     private List<Song> mSong = new ArrayList<>();
     private RecyclerView recyclerView;
+
+    private ItemEvent buttonEvent;
 
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
