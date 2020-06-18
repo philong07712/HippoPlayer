@@ -7,8 +7,7 @@ import android.view.View;
 public class ItemEvent {
     private Context context;
 
-
-    public void buttonPlayItemList(View view){
-        Log.e("Button", "Click");
+    public void buttonPlayItemList(View view, String idSong){
+        Log.e("Button", "Click" + idSong);
     }
 }
