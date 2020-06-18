@@ -25,6 +25,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.bumptech.glide.util.LogTime;
 import com.example.hippoplayer.play.notification.OnClearFromRecentService;
 import com.example.hippoplayer.play.notification.SongNotificationManager;
@@ -171,16 +174,26 @@ public class PlayFragment extends Fragment {
                 updateSeekBar(0, 0);
                 setImageBackgroundPlay(fragmentPlayBinding.imageBgSong, mSong.get(position).getIdSong());
             }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                if(state == ViewPager2.SCROLL_STATE_DRAGGING){
+                    Log.e("TAG", "Dang lan");
+                }
+            }
         });
     }
 
     public void setImageBackgroundPlay(ImageView image, String idsong) {
+
         String finalurl = PathHelper.getFullUrl(idsong, PathHelper.TYPE_IMAGE);
         Glide.with(getContext())
                 .load(finalurl)
                 .override(18, 18)
-                .thumbnail(0.1f)
+                .thumbnail(0.7f)
                 .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(image);
     }
 
