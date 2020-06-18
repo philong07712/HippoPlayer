@@ -50,6 +50,7 @@ public class PlayFragment extends Fragment {
     private MediaManager mMediaManager;
     private List<Song> mSong = new ArrayList<>();
     private PlayViewModel mViewModel;
+    Handler mHandler;
 
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
@@ -233,7 +234,7 @@ public class PlayFragment extends Fragment {
     }
 
     private void initHandler() {
-        Handler mHandler = new Handler();
+        mHandler = new Handler();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -275,6 +276,8 @@ public class PlayFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // Remove the loop to update times and seekbar
+        mHandler.removeCallbacksAndMessages(null);
         NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(Constants.NOTIFICATION_ID);
         getActivity().unregisterReceiver(mMediaManager.broadcastReceiver);
