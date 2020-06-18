@@ -186,10 +186,12 @@ public class PlayFragment extends Fragment {
     }
 
     public void setImageBackgroundPlay(ImageView image, String idsong) {
+        DrawableCrossFadeFactory fadeFactory = new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
 
         String finalurl = PathHelper.getFullUrl(idsong, PathHelper.TYPE_IMAGE);
         Glide.with(getContext())
                 .load(finalurl)
+                .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
                 .override(18, 18)
                 .thumbnail(0.7f)
                 .centerCrop()
