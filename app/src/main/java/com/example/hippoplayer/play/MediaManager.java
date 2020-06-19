@@ -129,12 +129,6 @@ public class MediaManager implements Playable {
 
     @Override
     public void onPrevious() {
-//        if (position == 0) {
-//            return;
-//        }
-//
-//        position--;
-//        posLiveData.setValue(position);
         Log.d(TAG, "onPrevious: " + previousSongPos.toString());
         if (previousSongPos.isEmpty()) {
             return;

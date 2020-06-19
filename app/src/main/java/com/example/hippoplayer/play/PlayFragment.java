@@ -51,7 +51,7 @@ public class PlayFragment extends Fragment {
     private PlayViewModel mViewModel;
     private int FLAG_PAGE = -1;
     Handler mHandler;
-
+    private ViewPager2PageChangeCallBack pager2PageChangeCallBack;
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
         public void onSubscribe(Subscription s) {
@@ -83,14 +83,6 @@ public class PlayFragment extends Fragment {
             Log.e("onComplete", "Complete");
         }
     };
-
-    private void setSong() {
-        Log.d("TAG", Integer.toString(mSong.size()));
-        ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter();
-        itemPlayAdapter.setmSongList(mSong);
-        fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
-        fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -214,24 +206,13 @@ public class PlayFragment extends Fragment {
         mMediaManager.posLiveData.observeForever(new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                fragmentPlayBinding.vpPlay.setCurrentItem(integer);
+//                fragmentPlayBinding.vpPlay.setCurrentItem(integer);
+                pager2PageChangeCallBack.onPageSelected(integer);
             }
         });
-//        Log.d(TAG, "initListener: ");
-        fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                if (position == FLAG_PAGE) {
-                    return;
-                }
-                playCurrentSong(position);
-                FLAG_PAGE = position;
-                Log.d(TAG, "onPageSelected: " + position);
-                updateTime(0, 0);
-                updateSeekBar(0, 0);
-            }
-        });
+        // create pager 2 listener
+        pager2PageChangeCallBack = new ViewPager2PageChangeCallBack();
+        fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(pager2PageChangeCallBack);
     }
 
     private void playCurrentSong(int position) {
@@ -272,10 +253,20 @@ public class PlayFragment extends Fragment {
 
     // Todo: inner classes + interfaces
 
+    private void setSong() {
+        Log.d("TAG", Integer.toString(mSong.size()));
+        ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter();
+        itemPlayAdapter.setmSongList(mSong);
+        fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
+        fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
         mMediaManager.getService().requestAudioFocus(getContext());
+        // load current position song without scroll style
+        fragmentPlayBinding.vpPlay.setCurrentItem(FLAG_PAGE, false);
     }
 
     @Override
@@ -283,10 +274,36 @@ public class PlayFragment extends Fragment {
         super.onDestroy();
         // Remove the loop to update times and seekbar
         mHandler.removeCallbacksAndMessages(null);
+        fragmentPlayBinding.vpPlay.unregisterOnPageChangeCallback(pager2PageChangeCallBack);
         NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(Constants.NOTIFICATION_ID);
         getActivity().unregisterReceiver(mMediaManager.broadcastReceiver);
         mMediaManager.getService().releasePlayer();
+        mMediaManager.getService().removeAudioFocus();
     }
 
+    class ViewPager2PageChangeCallBack extends ViewPager2.OnPageChangeCallback {
+
+        public ViewPager2PageChangeCallBack() {
+            super();
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            if (position == FLAG_PAGE) {
+                return;
+            }
+            playCurrentSong(position);
+            FLAG_PAGE = position;
+
+            fragmentPlayBinding.vpPlay.setCurrentItem(FLAG_PAGE, false);
+
+            Log.d(TAG, "onPageSelected: " + position);
+
+            updateTime(0, 0);
+            updateSeekBar(0, 0);
+        }
+
+    }
 }
