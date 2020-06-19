@@ -44,12 +44,12 @@ public class PlayFragment extends Fragment {
     private static final String TAG = PlayFragment.class.getSimpleName();
     private static final float PAUSE_LOTTIE_SPEED = 3.0f;
     // View
-
     private FragmentPlayBinding fragmentPlayBinding;
     // Todo: Fields
     private MediaManager mMediaManager;
     private List<Song> mSong = new ArrayList<>();
     private PlayViewModel mViewModel;
+    private int FLAG_PAGE = -1;
     Handler mHandler;
 
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
@@ -217,12 +217,17 @@ public class PlayFragment extends Fragment {
                 fragmentPlayBinding.vpPlay.setCurrentItem(integer);
             }
         });
-
+//        Log.d(TAG, "initListener: ");
         fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+                if (position == FLAG_PAGE) {
+                    return;
+                }
                 playCurrentSong(position);
+                FLAG_PAGE = position;
+                Log.d(TAG, "onPageSelected: " + position);
                 updateTime(0, 0);
                 updateSeekBar(0, 0);
             }

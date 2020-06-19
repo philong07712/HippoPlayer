@@ -3,6 +3,7 @@ package com.example.hippoplayer.play;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -15,12 +16,14 @@ import com.google.android.exoplayer2.ExoPlayer;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 public class MediaManager implements Playable {
     public static final int STATE_NON_REPEAT = 0;
     public static final int STATE_REPEAT_ONE = 1;
     public static final int STATE_SHUFFLE = 2;
     public static final int STATE_REPEAT = 3;
+    private static final String TAG = MediaManager.class.getSimpleName();
 
     Context mContext;
     List<Song> mSongs;
@@ -29,7 +32,7 @@ public class MediaManager implements Playable {
     MutableLiveData<Boolean> stateLiveData = new MutableLiveData<>();
     int position = 0;
     private int stateFlag = 3;
-
+    private Stack<Integer> previousSongPos = new Stack<>();
     public MediaManager(Context context) {
         mContext = context;
         mService = new ExoPlayerService(context);
@@ -126,10 +129,18 @@ public class MediaManager implements Playable {
 
     @Override
     public void onPrevious() {
-        if (position == 0) {
+//        if (position == 0) {
+//            return;
+//        }
+//
+//        position--;
+//        posLiveData.setValue(position);
+        Log.d(TAG, "onPrevious: " + previousSongPos.toString());
+        if (previousSongPos.isEmpty()) {
             return;
         }
-        position--;
+        position = previousSongPos.pop();
+        Log.d(TAG, "onPrevious: " + previousSongPos.toString());
         posLiveData.setValue(position);
     }
 
@@ -149,8 +160,6 @@ public class MediaManager implements Playable {
         switch (stateFlag) {
             case STATE_NON_REPEAT:
             case STATE_REPEAT:
-                playNext();
-                break;
             case STATE_REPEAT_ONE:
                 playNext();
                 break;
@@ -180,7 +189,10 @@ public class MediaManager implements Playable {
     private void playShuffleSong() {
         int max = mSongs.size() - 1;
         int min = 0;
-        position = new Random().nextInt((max - min) + 1);
+        // push previous position to stack
+        previousSongPos.push(position);
+
+        position = generateRandomPos(min, max, position);
         posLiveData.setValue(position);
     }
 
@@ -189,13 +201,29 @@ public class MediaManager implements Playable {
         if (position == mSongs.size() - 1) {
             // if it can repeat then the position turn to 0 again
             if (stateFlag == STATE_REPEAT) {
+                // push previous position to stack
+                previousSongPos.push(position);
+
                 position = 0;
                 posLiveData.setValue(position);
             }
             return;
         }
+        // push previous position to stack
+        previousSongPos.push(position);
+
         // else we update the song like normal
         position++;
         posLiveData.setValue(position);
+    }
+
+    private int generateRandomPos(int min, int max, int current) {
+        if (max == min) return current;
+        int randomPos;
+        do {
+            randomPos = new Random().nextInt((max - min) + 1);
+        } while (randomPos == current);
+        return randomPos;
+
     }
 }
