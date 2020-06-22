@@ -1,5 +1,6 @@
 package com.example.hippoplayer.play;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import com.example.hippoplayer.ExoPlayerService;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.play.notification.CreateNotification;
 import com.example.hippoplayer.play.notification.NotificationActionService;
+import com.example.hippoplayer.utils.Constants;
 import com.example.hippoplayer.utils.PathHelper;
 import com.google.android.exoplayer2.ExoPlayer;
 
@@ -57,6 +59,9 @@ public class MediaManager implements Playable {
                 case CreateNotification.ACTION_NEXT:
                     onNext();
                     break;
+                case CreateNotification.ACTION_DELETE:
+                    onDelete();
+                    break;
             }
         }
     };
@@ -78,6 +83,11 @@ public class MediaManager implements Playable {
 
     }
 
+
+    public void stopMedia() {
+        mService.stopMedia();
+        stateLiveData.setValue(isPlaying());
+    }
     public void pauseMedia() {
         mService.pauseMedia();
         stateLiveData.setValue(isPlaying());
@@ -161,6 +171,17 @@ public class MediaManager implements Playable {
                 playShuffleSong();
                 break;
         }
+    }
+
+    @Override
+    public void onDelete() {
+        stopMedia();
+        deleteNotification();
+    }
+
+    public void deleteNotification() {
+        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(Constants.NOTIFICATION_ID);
     }
 
     public void playNextSong() {

@@ -275,8 +275,7 @@ public class PlayFragment extends Fragment {
         // Remove the loop to update times and seekbar
         mHandler.removeCallbacksAndMessages(null);
         fragmentPlayBinding.vpPlay.unregisterOnPageChangeCallback(pager2PageChangeCallBack);
-        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(Constants.NOTIFICATION_ID);
+        mMediaManager.deleteNotification();
         getActivity().unregisterReceiver(mMediaManager.broadcastReceiver);
         mMediaManager.getService().releasePlayer();
         mMediaManager.getService().removeAudioFocus();

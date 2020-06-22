@@ -76,7 +76,6 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
     public void stopMedia() {
         if (mPlayer == null) return;
         mPlayer.setPlayWhenReady(false);
-        SongNotificationManager.getInstance().createNotification(mPosition, false);
     }
 
     public void pauseMedia() {
