@@ -12,7 +12,6 @@ public class PathHelper {
     public static final int TYPE_IMAGE = 2;
     public static final int TYPE_ARTIST = 3;
 
-
     public static String getFullUrl(String endpoint, int type) {
         switch (type) {
             case TYPE_SONG:

@@ -27,7 +27,6 @@
                 android:layout_marginTop="60dp"
                 android:elevation="10dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/anh3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.496"
                 app:layout_constraintStart_toStartOf="parent"
