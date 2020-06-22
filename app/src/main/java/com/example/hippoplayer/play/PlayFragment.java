@@ -21,6 +21,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
 import com.example.hippoplayer.models.Song;
@@ -29,10 +30,13 @@ import com.example.hippoplayer.play.notification.OnClearFromRecentService;
 import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.example.hippoplayer.utils.Constants;
 import com.example.hippoplayer.utils.ConvertHelper;
+import com.example.hippoplayer.utils.PathHelper;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,14 +47,16 @@ public class PlayFragment extends Fragment {
     // Todo: Constant
     private static final String TAG = PlayFragment.class.getSimpleName();
     private static final float PAUSE_LOTTIE_SPEED = 3.0f;
+    Handler mHandler;
     // View
     private FragmentPlayBinding fragmentPlayBinding;
+    private SlidingUpPanelLayout panelLayout;
+
     // Todo: Fields
     private MediaManager mMediaManager;
     private List<Song> mSong = new ArrayList<>();
     private PlayViewModel mViewModel;
     private int FLAG_PAGE = -1;
-    Handler mHandler;
     private ViewPager2PageChangeCallBack pager2PageChangeCallBack;
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
@@ -61,7 +67,7 @@ public class PlayFragment extends Fragment {
         @Override
         public void onNext(List<SongResponse> songResponses) {
             mSong = new ArrayList<>();
-            for(SongResponse songResponse : songResponses){
+            for (SongResponse songResponse : songResponses) {
                 Song song = new Song();
                 song.setSongResponse(songResponse);
                 mSong.add(song);
@@ -94,6 +100,7 @@ public class PlayFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
         fragmentPlayBinding.setLifecycleOwner(this);
+
         return fragmentPlayBinding.getRoot();
     }
 
@@ -117,7 +124,24 @@ public class PlayFragment extends Fragment {
     }
 
     private void initListener() {
-        // This is where we setting the lottery file
+        panelLayout = getActivity().findViewById(R.id.sliding_up_panel_main);
+        panelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                Log.d(TAG, "onPanelSlide: " + slideOffset);
+                fragmentPlayBinding.miniContainerController.setAlpha(1f - slideOffset);
+                // set alpha of the fullscreen
+                fragmentPlayBinding.vpPlay.setAlpha(slideOffset);
+                fragmentPlayBinding.containerController.setAlpha(slideOffset);
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                Log.d(TAG, "onPanelStateChanged: Previous " + previousState.name());
+                Log.d(TAG, "onPanelStateChanged: New " + newState.name());
+            }
+        });
+
         fragmentPlayBinding.buttonPlayAndPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,8 +157,7 @@ public class PlayFragment extends Fragment {
                     // play->pause
                     fragmentPlayBinding.buttonPlayAndPause.setSpeed(-PAUSE_LOTTIE_SPEED);
                     fragmentPlayBinding.buttonPlayAndPause.playAnimation();
-                }
-                else {
+                } else {
                     // pause->play
                     fragmentPlayBinding.buttonPlayAndPause.setSpeed(PAUSE_LOTTIE_SPEED);
                     fragmentPlayBinding.buttonPlayAndPause.playAnimation();
@@ -188,7 +211,7 @@ public class PlayFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                   mMediaManager.seekTo(progress * 100);
+                    mMediaManager.seekTo(progress * 100);
                 }
             }
 
@@ -213,6 +236,7 @@ public class PlayFragment extends Fragment {
         // create pager 2 listener
         pager2PageChangeCallBack = new ViewPager2PageChangeCallBack();
         fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(pager2PageChangeCallBack);
+
     }
 
     private void playCurrentSong(int position) {
@@ -241,14 +265,15 @@ public class PlayFragment extends Fragment {
     }
 
     private void updateSeekBar(long currentPosition, long maxDuration) {
-        fragmentPlayBinding.sbDurationSong.setMax((int)maxDuration / 100);
+        fragmentPlayBinding.sbDurationSong.setMax((int) maxDuration / 100);
         int mCurrentPosition = (int) currentPosition / 100;
         fragmentPlayBinding.sbDurationSong.setProgress(mCurrentPosition);
     }
 
     private void updateTime(long currentPosition, long maxDuration) {
         fragmentPlayBinding.textTimeStartSong.setText(ConvertHelper.convertToMinutes(currentPosition));
-        if (maxDuration >= 0) fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
+        if (maxDuration >= 0)
+            fragmentPlayBinding.textTimeEndSong.setText(ConvertHelper.convertToMinutes(maxDuration));
     }
 
     // Todo: inner classes + interfaces
@@ -297,12 +322,23 @@ public class PlayFragment extends Fragment {
             FLAG_PAGE = position;
 
             fragmentPlayBinding.vpPlay.setCurrentItem(FLAG_PAGE, false);
-
+            // we will set the tittle and artist name to current song
+            fragmentPlayBinding.tvTitleController.setText(mSong.get(position).getNameSong());
+            fragmentPlayBinding.tvArtistController.setText(mSong.get(position).getNameArtist());
             Log.d(TAG, "onPageSelected: " + position);
-
+            updateController(mSong.get(position));
             updateTime(0, 0);
             updateSeekBar(0, 0);
         }
 
+        private void updateController(Song song) {
+            fragmentPlayBinding.tvTitleController.setText(song.getNameSong());
+            fragmentPlayBinding.tvArtistController.setText(song.getNameArtist());
+            String finalurl = PathHelper.getFullUrl(song.getIdSong(), PathHelper.TYPE_IMAGE);
+            Glide.with(getContext())
+                    .load(finalurl)
+                    .centerCrop()
+                    .into(fragmentPlayBinding.imgThumbnailController);
+        }
     }
 }
