@@ -45,6 +45,7 @@ public class CreateNotification  {
     public static final String ACTION_PLAY = "action play";
     public static final String ACTION_NEXT = "action next";
     public static final String ACTION_DELETE = "action delete";
+    public static final String ACTION_START = "action delete";
 
     // Fields
     Context mContext;
@@ -162,7 +163,8 @@ public class CreateNotification  {
     }
 
     private void createIntentStart() {
-        Intent notifyIntent = new Intent(mContext, MainActivity.class);
+        Intent notifyIntent = new Intent(mContext, MainActivity.class)
+                .setAction(ACTION_START);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notifyIntent.setAction(Intent.ACTION_MAIN);
         notifyIntent.addCategory(Intent.CATEGORY_LAUNCHER);

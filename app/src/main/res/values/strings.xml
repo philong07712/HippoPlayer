@@ -2,4 +2,6 @@
     <string name="app_name">HippoPlayer</string>
     <string name="text_title_song">Tittle of the song</string>
     <string name="text_artist_song">Artist song</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
