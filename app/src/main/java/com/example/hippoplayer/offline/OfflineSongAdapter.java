@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.ItemLayoutOfflineBinding;
 import com.example.hippoplayer.models.Song;
@@ -53,6 +54,13 @@ public class OfflineSongAdapter extends RecyclerView.Adapter<OfflineSongAdapter.
         public void bind(Song item) {
             itemLayoutOfflineBinding.setSong(item);
             itemLayoutOfflineBinding.executePendingBindings();
+            if (item.getThumbnailBitmap() != null) {
+                Glide.with(itemLayoutOfflineBinding.getRoot())
+                        .load(item.getThumbnailBitmap())
+                        .into(itemLayoutOfflineBinding.imgThumbnailItemOffline)
+                ;
+            }
+
         }
     }
 }

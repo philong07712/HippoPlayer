@@ -1,5 +1,7 @@
 package com.example.hippoplayer.models;
 
+import android.graphics.Bitmap;
+
 import com.example.hippoplayer.utils.PathHelper;
 
 import java.nio.file.Path;
@@ -13,18 +15,19 @@ public class Song {
     private String thumbnail;
     private String imgArtist;
     private String song;
+    private Bitmap thumbnailBitmap;
     private SongResponse songResponse;
 
     public Song() {
     }
 
-    public Song(String song, String nameSong, String idSong, String idArtist, String nameArtist, String thumbnail) {
+    public Song(String song, String nameSong, String idSong, String idArtist, String nameArtist, Bitmap thumbnailBitmap) {
         this.song = song;
         this.nameSong = nameSong;
         this.idSong = idSong;
         this.idArtist = idArtist;
         this.nameArtist = nameArtist;
-        this.thumbnail = thumbnail;
+        this.thumbnailBitmap = thumbnailBitmap;
     }
 
     public void setUpSong(SongResponse songResponse) {
@@ -74,5 +77,9 @@ public class Song {
 
     public String getSong() {
         return song;
+    }
+
+    public Bitmap getThumbnailBitmap() {
+        return thumbnailBitmap;
     }
 }

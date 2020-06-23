@@ -17,6 +17,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -25,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.hippoplayer.R;
+import com.example.hippoplayer.list.ListSongAdapter;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.utils.ConvertHelper;
 
@@ -37,6 +40,7 @@ public class OfflineFragment extends Fragment {
     private static final String TAG = OfflineFragment.class.getSimpleName();
     private OfflineViewModel mViewModel;
     private List<Song> songList;
+    private RecyclerView recyclerView;
     public static OfflineFragment newInstance() {
         return new OfflineFragment();
     }
@@ -44,25 +48,27 @@ public class OfflineFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_offline, container, false);
+        View view = inflater.inflate(R.layout.fragment_offline, container, false);
+        recyclerView = view.findViewById(R.id.rv_offline);
+        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(OfflineViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         if (checkPermissionForReadExternalStorage()) {
             loadAudio();
         }
         else {
             requestPermissionForReadExternalStorage();
         }
+        // TODO: Use the ViewModel
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     private void loadAudio() {
@@ -85,7 +91,7 @@ public class OfflineFragment extends Fragment {
 
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
                 byte[] rawArt;
-                Bitmap art;
+                Bitmap thumbnailBitmap = null;
                 BitmapFactory.Options bfo=new BitmapFactory.Options();
 
                 mmr.setDataSource(getContext(), Uri.parse(data));
@@ -94,21 +100,27 @@ public class OfflineFragment extends Fragment {
                 // if rawArt is null then no cover art is embedded in the file or is not
                 // recognized as such.
                 if (null != rawArt) {
-                    art = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
+                    thumbnailBitmap = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
                 }
-                else thumbnail = null;
 
-                songList.add(new Song(data, title, idSong, idArtist, artistName, thumbnail));
+                songList.add(new Song(data, title, idSong, idArtist, artistName, thumbnailBitmap));
             }
         }
 
         for (int i = 0; i < songList.size(); i++) {
             logSong(songList.get(i), i);
         }
+        setupRecylerView();
         cursor.close();
 
     }
 
+    private void setupRecylerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        OfflineSongAdapter offlineSongAdapter = new OfflineSongAdapter(songList);
+        recyclerView.setAdapter(offlineSongAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+    }
     private void logSong(Song song, int position) {
         Log.d(TAG, "logSong: -----------------------------");
         Log.d(TAG, "logSong: position " + position);
@@ -117,7 +129,6 @@ public class OfflineFragment extends Fragment {
         Log.d(TAG, "logSong: idSong " + song.getIdSong());
         Log.d(TAG, "logSong: idArtist " + song.getIdArtist());
         Log.d(TAG, "logSong: artistName " + song.getNameArtist());
-        Log.d(TAG, "logSong: thumbnail " + song.getThumbnail());
         Log.d(TAG, "logSong: -----------------------------");
     }
 
