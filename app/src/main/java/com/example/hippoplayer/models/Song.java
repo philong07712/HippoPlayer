@@ -12,6 +12,15 @@ public class Song {
     public Song() {
     }
 
+    public Song(String nameSong, String description, String idSong, String idArtist, String nameArtist, SongResponse songResponse) {
+        this.nameSong = nameSong;
+        this.description = description;
+        this.idSong = idSong;
+        this.idArtist = idArtist;
+        this.nameArtist = nameArtist;
+        this.songResponse = songResponse;
+    }
+
     public void setUpSong(SongResponse songResponse) {
         this.nameSong = songResponse.name;
         this.description = songResponse.description;

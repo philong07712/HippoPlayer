@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -17,7 +18,8 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
 import retrofit2.http.Url;
 
-public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener {
+public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener,
+        Player.EventListener {
     private static final String TAG = ExoPlayerService.class.getSimpleName();
     private final int DEFAULT_MIN_BUFFER_MS = 30000;
     private final int DEFAULT_MAX_BUFFER_MS = 60000;
@@ -74,8 +76,6 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
     public void stopMedia() {
         if (mPlayer == null) return;
         mPlayer.setPlayWhenReady(false);
-        mPlayer.stop();
-        SongNotificationManager.getInstance().createNotification(mPosition, false);
     }
 
     public void pauseMedia() {
@@ -134,7 +134,7 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
                 // the service lost audio focus, the user probably moved to playing
                 // media on other app, so release the media player
                 if (mPlayer != null) {
-                    stopMedia();
+                    pauseMedia();
                 }
                 break;
 

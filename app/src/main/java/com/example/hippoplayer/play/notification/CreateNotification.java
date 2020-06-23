@@ -24,6 +24,7 @@ import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.utils.Constants;
@@ -43,6 +44,8 @@ public class CreateNotification  {
     public static final String ACTION_PREVIOUS = "action previous";
     public static final String ACTION_PLAY = "action play";
     public static final String ACTION_NEXT = "action next";
+    public static final String ACTION_DELETE = "action delete";
+    public static final String ACTION_START = "action delete";
 
     // Fields
     Context mContext;
@@ -60,6 +63,10 @@ public class CreateNotification  {
     PendingIntent pendingIntentNext;
     int drw_next;
 
+    PendingIntent pendingIntentDelete;
+    int drw_delete;
+    // intent when click in the notification then open the app
+    PendingIntent notifyPendingIntent;
     public static Notification notification;
 
 
@@ -95,6 +102,8 @@ public class CreateNotification  {
         createIntentPrevious();
         createIntentPlay();
         createIntentNext();
+        createIntentDelete();
+        createIntentStart();
 
         MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(mContext, TAG);
         notification = new NotificationCompat.Builder(mContext, ACTION_ID)
@@ -107,6 +116,8 @@ public class CreateNotification  {
                 .addAction(drw_previous, "Previous", pendingIntentPrevious)
                 .addAction(drw_play, "Play", pendingIntentPlay)
                 .addAction(drw_next, "Next", pendingIntentNext)
+                .addAction(drw_delete, "Delete", pendingIntentDelete)
+                .setContentIntent(notifyPendingIntent)
                     .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mediaSessionCompat.getSessionToken())
                     .setShowActionsInCompactView(0, 1, 2))
@@ -119,17 +130,11 @@ public class CreateNotification  {
     }
 
     private void createIntentPrevious() {
-
-        if (mPosition == 0) {
-            pendingIntentPrevious = null;
-            drw_previous = 0;
-        } else {
-            Intent intentPrevious = new Intent(mContext, NotificationActionService.class)
-                    .setAction(ACTION_PREVIOUS);
-            pendingIntentPrevious = PendingIntent.getBroadcast(mContext, 0,
-                    intentPrevious, PendingIntent.FLAG_UPDATE_CURRENT);
-            drw_previous = R.drawable.ic_baseline_skip_previous_24;
-        }
+        Intent intentPrevious = new Intent(mContext, NotificationActionService.class)
+                .setAction(ACTION_PREVIOUS);
+        pendingIntentPrevious = PendingIntent.getBroadcast(mContext, 0,
+                intentPrevious, PendingIntent.FLAG_UPDATE_CURRENT);
+        drw_previous = R.drawable.ic_baseline_skip_previous_24;
     }
 
     private void createIntentPlay() {
@@ -142,15 +147,29 @@ public class CreateNotification  {
     }
 
     private void createIntentNext() {
-        if (mPosition == mSize - 1) {
-            pendingIntentNext = null;
-            drw_next = 0;
-        } else {
-            Intent intentNext = new Intent(mContext, NotificationActionService.class)
-                    .setAction(ACTION_NEXT);
-            pendingIntentNext = PendingIntent.getBroadcast(mContext, 0,
-                    intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
-            drw_next = R.drawable.ic_baseline_skip_next_24;
-        }
+        Intent intentNext = new Intent(mContext, NotificationActionService.class)
+                .setAction(ACTION_NEXT);
+        pendingIntentNext = PendingIntent.getBroadcast(mContext, 0,
+                intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
+        drw_next = R.drawable.ic_baseline_skip_next_24;
+    }
+
+    private void createIntentDelete() {
+        Intent intentDelete = new Intent(mContext, NotificationActionService.class)
+                .setAction(ACTION_DELETE);
+        pendingIntentDelete = PendingIntent.getBroadcast(mContext, 0,
+                intentDelete, PendingIntent.FLAG_UPDATE_CURRENT);
+        drw_delete = R.drawable.ic_baseline_close_24;
+    }
+
+    private void createIntentStart() {
+        Intent notifyIntent = new Intent(mContext, MainActivity.class)
+                .setAction(ACTION_START);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        notifyIntent.setAction(Intent.ACTION_MAIN);
+        notifyIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        notifyPendingIntent = PendingIntent.getActivity(
+                mContext, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
     }
 }
