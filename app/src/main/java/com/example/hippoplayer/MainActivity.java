@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
         // create new fragment
         listFragment = new ListFragment();
-        searchFragment = new SearchFragment();
         // add new fragment in function setup view pager
         setupViewPager();
         tabLayoutMain.setupWithViewPager(viewPagerMain);
@@ -44,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         // add new fragment
         viewPagerAdapter.addFragment(listFragment, "List Fragment");
-        viewPagerAdapter.addFragment(searchFragment, "Search Fragment");
         viewPagerMain.setAdapter(viewPagerAdapter);
     }
 }

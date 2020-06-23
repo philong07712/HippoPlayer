@@ -149,6 +149,13 @@ public class PlayFragment extends Fragment {
             }
         });
 
+        fragmentPlayBinding.btnPlayAndPauseController.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaManager.pauseButtonClicked();
+            }
+        });
+
         mMediaManager.stateLiveData.observeForever(new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -157,10 +164,12 @@ public class PlayFragment extends Fragment {
                     // play->pause
                     fragmentPlayBinding.buttonPlayAndPause.setSpeed(-PAUSE_LOTTIE_SPEED);
                     fragmentPlayBinding.buttonPlayAndPause.playAnimation();
+                    fragmentPlayBinding.btnPlayAndPauseController.setBackgroundResource(R.drawable.ic_baseline_pause_24_orange);
                 } else {
                     // pause->play
                     fragmentPlayBinding.buttonPlayAndPause.setSpeed(PAUSE_LOTTIE_SPEED);
                     fragmentPlayBinding.buttonPlayAndPause.playAnimation();
+                    fragmentPlayBinding.btnPlayAndPauseController.setBackgroundResource(R.drawable.ic_baseline_play_arrow_24_orange);
                 }
             }
         });
@@ -174,6 +183,13 @@ public class PlayFragment extends Fragment {
         });
 
         fragmentPlayBinding.buttonNextSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaManager.onNext();
+            }
+        });
+
+        fragmentPlayBinding.btnSkipNextController.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMediaManager.onNext();
