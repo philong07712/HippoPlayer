@@ -16,6 +16,8 @@ public class PathHelper {
     public static String getFullUrl(String endpoint, int type) {
         switch (type) {
             case TYPE_SONG:
+                StringBuilder url = new StringBuilder(SONG_BASE_URL);
+                url.append(endpoint);
                 return SONG_BASE_URL + endpoint;
             case TYPE_IMAGE:
                 return THUMBNAIL_BASE_URL + endpoint;
