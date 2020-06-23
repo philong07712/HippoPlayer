@@ -75,8 +75,8 @@ public class MediaManager implements Playable {
 
     public void play(int position) {
         this.position = position;
-        String fullUrl = PathHelper.getFullUrl(mSongs.get(position).getIdSong(), PathHelper.TYPE_SONG);
-        mService.setMediaFile(fullUrl);
+        String url = mSongs.get(position).getSong();
+        mService.setMediaFile(url);
         mService.playMedia(position);
         stateLiveData.setValue(isPlaying());
         // Change avatar in notification manager

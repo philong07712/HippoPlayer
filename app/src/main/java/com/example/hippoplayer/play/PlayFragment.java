@@ -350,9 +350,9 @@ public class PlayFragment extends Fragment {
         private void updateController(Song song) {
             fragmentPlayBinding.tvTitleController.setText(song.getNameSong());
             fragmentPlayBinding.tvArtistController.setText(song.getNameArtist());
-            String finalurl = PathHelper.getFullUrl(song.getIdSong(), PathHelper.TYPE_IMAGE);
+            String url = song.getThumbnail();
             Glide.with(getContext())
-                    .load(finalurl)
+                    .load(url)
                     .centerCrop()
                     .into(fragmentPlayBinding.imgThumbnailController);
         }

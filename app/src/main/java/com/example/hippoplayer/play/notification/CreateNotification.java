@@ -76,6 +76,7 @@ public class CreateNotification  {
         mPosition = pos;
         mSize = size;
         drw_play = drawable;
+        String url = song.getThumbnail();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Runnable runnable = new Runnable() {
                 @Override
@@ -83,7 +84,7 @@ public class CreateNotification  {
                     Looper.prepare();
                     Glide.with(mContext)
                             .asBitmap()
-                            .load(PathHelper.getFullUrl(song.getIdSong(), PathHelper.TYPE_IMAGE))
+                            .load(url)
                             .into(new SimpleTarget<Bitmap>() {
                                 @Override
                                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {

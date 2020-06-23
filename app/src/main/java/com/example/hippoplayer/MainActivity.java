@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.example.hippoplayer.list.ListFragment;
+import com.example.hippoplayer.offline.OfflineFragment;
 import com.example.hippoplayer.play.PlayFragment;
 import com.example.hippoplayer.play.ViewPagerAdapter;
 import com.example.hippoplayer.search.SearchFragment;
@@ -17,9 +18,8 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
     private TabLayout tabLayoutMain;
     private ViewPager viewPagerMain;
-    private PlayFragment playFragment;
     private ListFragment listFragment;
-    private SearchFragment searchFragment;
+    OfflineFragment offlineFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         // create new fragment
         listFragment = new ListFragment();
+        offlineFragment = new OfflineFragment();
         // add new fragment in function setup view pager
         setupViewPager();
         tabLayoutMain.setupWithViewPager(viewPagerMain);
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(){
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         // add new fragment
+        viewPagerAdapter.addFragment(offlineFragment, "Offline Fragment");
         viewPagerAdapter.addFragment(listFragment, "List Fragment");
         viewPagerMain.setAdapter(viewPagerAdapter);
     }

@@ -1,24 +1,30 @@
 package com.example.hippoplayer.models;
 
+import com.example.hippoplayer.utils.PathHelper;
+
+import java.nio.file.Path;
+
 public class Song {
     private String nameSong;
     private String description;
     private String idSong;
     private String idArtist;
     private String nameArtist;
-
+    private String thumbnail;
+    private String imgArtist;
+    private String song;
     private SongResponse songResponse;
 
     public Song() {
     }
 
-    public Song(String nameSong, String description, String idSong, String idArtist, String nameArtist, SongResponse songResponse) {
+    public Song(String song, String nameSong, String idSong, String idArtist, String nameArtist, String thumbnail) {
+        this.song = song;
         this.nameSong = nameSong;
-        this.description = description;
         this.idSong = idSong;
         this.idArtist = idArtist;
         this.nameArtist = nameArtist;
-        this.songResponse = songResponse;
+        this.thumbnail = thumbnail;
     }
 
     public void setUpSong(SongResponse songResponse) {
@@ -27,6 +33,9 @@ public class Song {
         this.idSong = songResponse.id;
         this.idArtist = songResponse.artist.id;
         this.nameArtist = songResponse.artist.name;
+        this.imgArtist = PathHelper.getFullUrl(idArtist, PathHelper.TYPE_ARTIST);
+        this.thumbnail = PathHelper.getFullUrl(idSong, PathHelper.TYPE_IMAGE);
+        this.song = PathHelper.getFullUrl(idSong, PathHelper.TYPE_SONG);
     }
 
     public void setSongResponse(SongResponse songResponse) {
@@ -53,5 +62,17 @@ public class Song {
 
     public String getNameArtist() {
         return nameArtist;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public String getImgArtist() {
+        return imgArtist;
+    }
+
+    public String getSong() {
+        return song;
     }
 }

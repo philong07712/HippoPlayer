@@ -67,9 +67,8 @@ public class PlayViewModel extends ViewModel {
     }
     @BindingAdapter("app:load_image_play")
     public static void setImage(ImageView image, String url) {
-        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
         Glide.with(mContext)
-                .load(finalurl).centerCrop()
+                .load(url).centerCrop()
                 .fitCenter().into(image);
     }
 }

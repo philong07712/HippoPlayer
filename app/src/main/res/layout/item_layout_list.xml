@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="song"
             type="com.example.hippoplayer.models.Song" />
@@ -25,7 +24,7 @@
         android:scaleY="0.95"
         app:cardCornerRadius="15dp"
         app:cardElevation="10dp"
-        app:load_background_color="@{song.idSong}">
+        app:load_background_color="@{song.thumbnail}">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -43,7 +42,7 @@
                     android:layout_height="50dp"
                     app:civ_border_color="#FF000000"
                     app:civ_border_width="2dp"
-                    app:load_image_list_artist="@{song.idArtist}" />
+                    app:load_image_list_artist="@{song.imgArtist}" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -84,7 +83,7 @@
                 android:layout_centerInParent="true"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
-                app:load_image_list_song="@{song.idSong}" />
+                app:load_image_list_song="@{song.thumbnail}" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/button_play_and_pause"
