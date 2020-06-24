@@ -11,6 +11,7 @@ import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.ViewModel;
 
 import com.bumptech.glide.Glide;
+import com.example.hippoplayer.R;
 import com.example.hippoplayer.RetrofitHandler;
 import com.example.hippoplayer.models.SongResponse;
 
@@ -66,9 +67,32 @@ public class PlayViewModel extends ViewModel {
         mCompositeDisposal.clear();
     }
     @BindingAdapter("app:load_image_play")
-    public static void setImage(ImageView image, String url) {
+    public static void setImage(ImageView image, Song song) {
+        if (song.getThumbnail() != null)
         Glide.with(mContext)
-                .load(url).centerCrop()
+                .load(song.getThumbnail()).centerCrop()
+                .placeholder(R.drawable.ic_baseline_music_note_orange)
                 .fitCenter().into(image);
+        else {
+            Glide.with(mContext)
+                    .load(song.getThumbnailBitmap()).centerCrop()
+                    .placeholder(R.drawable.ic_baseline_music_note_orange)
+                    .fitCenter().into(image);
+        }
+    }
+
+    @BindingAdapter("app:load_image_play_bg")
+    public static void setImageBackground(ImageView image, Song song) {
+        if (song.getThumbnail() != null)
+            Glide.with(mContext)
+                    .load(song.getThumbnail()).centerCrop()
+                    .placeholder(R.drawable.background_list)
+                    .fitCenter().into(image);
+        else {
+            Glide.with(mContext)
+                    .load(song.getThumbnailBitmap()).centerCrop()
+                    .placeholder(R.drawable.background_list)
+                    .fitCenter().into(image);
+        }
     }
 }

@@ -14,7 +14,11 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener,
         Player.EventListener {
@@ -106,8 +110,10 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
 
     private MediaSource buildMediaSource(Uri uri) {
         // build MediaSource from http data source
-        DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_media");
-        MediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory, new DefaultExtractorsFactory(), null, null);
+        DefaultDataSourceFactory dataSource = new DefaultDataSourceFactory(mContext, Util.getUserAgent(mContext, "HippoPlayer"),
+                new DefaultBandwidthMeter());
+//        DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_media");
+        MediaSource mediaSource = new ExtractorMediaSource(uri, dataSource, new DefaultExtractorsFactory(), null, null);
         return mediaSource;
     }
 

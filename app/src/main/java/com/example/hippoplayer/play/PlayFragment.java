@@ -67,17 +67,14 @@ public class PlayFragment extends Fragment {
 
         @Override
         public void onNext(List<SongResponse> songResponses) {
-            mSong = new ArrayList<>();
+            List<Song> songs = new ArrayList<>();
             for (SongResponse songResponse : songResponses) {
                 Song song = new Song();
                 song.setSongResponse(songResponse);
-                mSong.add(song);
+                songs.add(song);
             }
             // create manager
-            mMediaManager.setSongs(mSong);
-            setSong();
-            // this will init the singleton class notification manager
-            SongNotificationManager.getInstance().init(getContext(), mSong);
+            setSong(songs, 0);
         }
 
         @Override
@@ -106,6 +103,7 @@ public class PlayFragment extends Fragment {
             @Override
             public void onChange(List<Song> songs, int position) {
                 Log.d(TAG, "onChange: NameSong " + songs.get(position).getNameSong());
+                setSong(songs, position);
             }
         });
 
@@ -302,12 +300,16 @@ public class PlayFragment extends Fragment {
 
     // Todo: inner classes + interfaces
 
-    private void setSong() {
-        Log.d("TAG", Integer.toString(mSong.size()));
+    private void setSong(List<Song> songs, int position) {
+        mSong = songs;
         ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter();
-        itemPlayAdapter.setmSongList(mSong);
+        itemPlayAdapter.setmSongList(songs);
         fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
         fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        mMediaManager.setSongs(songs);
+        // this will init the singleton class notification manager
+        SongNotificationManager.getInstance().init(getContext(), songs);
+        pager2PageChangeCallBack.onPageSelected(position);
     }
 
     @Override
@@ -358,11 +360,22 @@ public class PlayFragment extends Fragment {
         private void updateController(Song song) {
             fragmentPlayBinding.tvTitleController.setText(song.getNameSong());
             fragmentPlayBinding.tvArtistController.setText(song.getNameArtist());
-            String url = song.getThumbnail();
-            Glide.with(getContext())
-                    .load(url)
-                    .centerCrop()
-                    .into(fragmentPlayBinding.imgThumbnailController);
+            if (song.getThumbnail() != null) {
+                String url = song.getThumbnail();
+                Glide.with(getContext())
+                        .load(url)
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_music_note_orange)
+                        .into(fragmentPlayBinding.imgThumbnailController);
+            }
+            else {
+                Glide.with(getContext())
+                        .load(song.getThumbnailBitmap())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_music_note_orange)
+                        .into(fragmentPlayBinding.imgThumbnailController);
+            }
+
         }
     }
 }

@@ -68,6 +68,7 @@ public class OfflineSongAdapter extends RecyclerView.Adapter<OfflineSongAdapter.
             if (item.getThumbnailBitmap() != null) {
                 Glide.with(itemLayoutOfflineBinding.getRoot())
                         .load(item.getThumbnailBitmap())
+                        .placeholder(R.drawable.ic_baseline_music_note_orange)
                         .into(itemLayoutOfflineBinding.imgThumbnailItemOffline)
                 ;
             }
