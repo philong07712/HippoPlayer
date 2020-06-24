@@ -8,13 +8,10 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.hippoplayer.ExoPlayerService;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.play.notification.CreateNotification;
 import com.example.hippoplayer.play.notification.NotificationActionService;
 import com.example.hippoplayer.utils.Constants;
-import com.example.hippoplayer.utils.PathHelper;
-import com.google.android.exoplayer2.ExoPlayer;
 
 import java.util.List;
 import java.util.Random;

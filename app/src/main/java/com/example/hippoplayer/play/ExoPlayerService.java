@@ -1,4 +1,4 @@
-package com.example.hippoplayer;
+package com.example.hippoplayer.play;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -15,8 +15,6 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-
-import retrofit2.http.Url;
 
 public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener,
         Player.EventListener {

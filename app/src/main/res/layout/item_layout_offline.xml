@@ -9,8 +9,10 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_item_offline"
         android:layout_width="match_parent"
-        android:layout_height="70dp">
+        android:layout_height="70dp"
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/img_thumbnail_item_offline"

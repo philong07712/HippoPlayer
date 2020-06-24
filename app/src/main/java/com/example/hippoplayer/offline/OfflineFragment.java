@@ -21,15 +21,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
-import com.example.hippoplayer.list.ListSongAdapter;
 import com.example.hippoplayer.models.Song;
-import com.example.hippoplayer.utils.ConvertHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +39,13 @@ public class OfflineFragment extends Fragment {
     private OfflineViewModel mViewModel;
     private List<Song> songList;
     private RecyclerView recyclerView;
+
+    OfflineItemListener offlineItemListener = new OfflineItemListener() {
+        @Override
+        public void onClick(List<Song> songs, int position) {
+            ((MainActivity) getActivity()).mPassData.onChange(songs, position);
+        }
+    };
     public static OfflineFragment newInstance() {
         return new OfflineFragment();
     }
@@ -106,10 +111,6 @@ public class OfflineFragment extends Fragment {
                 songList.add(new Song(data, title, idSong, idArtist, artistName, thumbnailBitmap));
             }
         }
-
-        for (int i = 0; i < songList.size(); i++) {
-            logSong(songList.get(i), i);
-        }
         setupRecylerView();
         cursor.close();
 
@@ -117,19 +118,10 @@ public class OfflineFragment extends Fragment {
 
     private void setupRecylerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        OfflineSongAdapter offlineSongAdapter = new OfflineSongAdapter(songList);
+        OfflineSongAdapter offlineSongAdapter = new OfflineSongAdapter(songList, offlineItemListener);
         recyclerView.setAdapter(offlineSongAdapter);
         recyclerView.setLayoutManager(layoutManager);
-    }
-    private void logSong(Song song, int position) {
-        Log.d(TAG, "logSong: -----------------------------");
-        Log.d(TAG, "logSong: position " + position);
-        Log.d(TAG, "loadAudio: song " + song.getSong());
-        Log.d(TAG, "loadAudio: title " + song.getNameSong());
-        Log.d(TAG, "logSong: idSong " + song.getIdSong());
-        Log.d(TAG, "logSong: idArtist " + song.getIdArtist());
-        Log.d(TAG, "logSong: artistName " + song.getNameArtist());
-        Log.d(TAG, "logSong: -----------------------------");
+        // this will indicate the onClick for the song
     }
 
     private boolean checkPermissionForReadExternalStorage() {

@@ -19,9 +19,10 @@ import java.util.List;
 public class OfflineSongAdapter extends RecyclerView.Adapter<OfflineSongAdapter.OfflineViewHolder> {
 
     private List<Song> mSongList = new ArrayList<>();
-
-    public OfflineSongAdapter(List<Song> mSongList) {
+    public OfflineItemListener itemListener;
+    public OfflineSongAdapter(List<Song> mSongList, OfflineItemListener itemListener) {
         this.mSongList = mSongList;
+        this.itemListener = itemListener;
     }
 
     @NonNull
@@ -37,6 +38,16 @@ public class OfflineSongAdapter extends RecyclerView.Adapter<OfflineSongAdapter.
     public void onBindViewHolder(@NonNull OfflineViewHolder holder, int position) {
         Song song = mSongList.get(position);
         holder.bind(song);
+        holder.itemLayoutOfflineBinding.containerItemOffline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClick(mSongList, position);
+            }
+        });
+    }
+
+    private void onItemClick(List<Song> songs, int position) {
+        itemListener.onClick(songs, position);
     }
 
     @Override
@@ -60,7 +71,6 @@ public class OfflineSongAdapter extends RecyclerView.Adapter<OfflineSongAdapter.
                         .into(itemLayoutOfflineBinding.imgThumbnailItemOffline)
                 ;
             }
-
         }
     }
 }

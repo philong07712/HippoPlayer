@@ -9,10 +9,13 @@ import android.view.WindowManager;
 
 import com.example.hippoplayer.list.ListFragment;
 import com.example.hippoplayer.offline.OfflineFragment;
+import com.example.hippoplayer.play.PassData;
 import com.example.hippoplayer.play.PlayFragment;
 import com.example.hippoplayer.play.ViewPagerAdapter;
 import com.example.hippoplayer.search.SearchFragment;
 import com.google.android.material.tabs.TabLayout;
+
+import io.reactivex.rxjava3.core.Flowable;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
@@ -20,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPagerMain;
     private ListFragment listFragment;
     OfflineFragment offlineFragment;
+    public PassData mPassData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +41,11 @@ public class MainActivity extends AppCompatActivity {
         // add new fragment in function setup view pager
         setupViewPager();
         tabLayoutMain.setupWithViewPager(viewPagerMain);
-        // seticon for fragment tabLayout.getTabAt(i).setIcon(....);
+        // section for fragment tabLayout.getTabAt(i).setIcon(....);
+    }
+
+    public void passVal(PassData passData) {
+        this.mPassData = passData;
     }
 
     private void setupViewPager(){

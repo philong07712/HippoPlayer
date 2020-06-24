@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
 import com.example.hippoplayer.models.Song;
@@ -100,6 +101,13 @@ public class PlayFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
         fragmentPlayBinding.setLifecycleOwner(this);
+
+        ((MainActivity) getActivity()).passVal(new PassData() {
+            @Override
+            public void onChange(List<Song> songs, int position) {
+                Log.d(TAG, "onChange: NameSong " + songs.get(position).getNameSong());
+            }
+        });
 
         return fragmentPlayBinding.getRoot();
     }
