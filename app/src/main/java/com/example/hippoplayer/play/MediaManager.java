@@ -28,13 +28,14 @@ public class MediaManager implements Playable {
     List<Song> mSongs;
     private ExoPlayerService mService;
     MutableLiveData<Integer> posLiveData = new MutableLiveData<>();
-    MutableLiveData<Boolean> stateLiveData = new MutableLiveData<>();
+    MutableLiveData<Boolean> stateLiveData;
     int position = 0;
     private int stateFlag = 3;
     private Stack<Integer> previousSongPos = new Stack<>();
     public MediaManager(Context context) {
         mContext = context;
         mService = new ExoPlayerService(context);
+        stateLiveData = mService.stateLiveData;
     }
 
     public BroadcastReceiver broadcastReceiver = new NotificationActionService() {
@@ -75,7 +76,6 @@ public class MediaManager implements Playable {
         String url = mSongs.get(position).getSong();
         mService.setMediaFile(url);
         mService.playMedia(position);
-        stateLiveData.setValue(isPlaying());
         // Change avatar in notification manager
 
     }
@@ -83,16 +83,13 @@ public class MediaManager implements Playable {
 
     public void stopMedia() {
         mService.stopMedia();
-        stateLiveData.setValue(isPlaying());
     }
     public void pauseMedia() {
         mService.pauseMedia();
-        stateLiveData.setValue(isPlaying());
     }
 
     public void resumeMedia() {
         mService.resumeMedia();
-        stateLiveData.setValue(isPlaying());
     }
 
     public void seekTo(int progress) {
