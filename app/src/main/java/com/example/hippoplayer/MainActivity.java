@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.view.DragEvent;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.example.hippoplayer.list.ListFragment;
@@ -30,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         // find view by id in activity_main
         tabLayoutMain = findViewById(R.id.tl_main);
         viewPagerMain = findViewById(R.id.vp_main);
-
         // create new fragment
         playFragment = new PlayFragment();
         listFragment = new ListFragment();

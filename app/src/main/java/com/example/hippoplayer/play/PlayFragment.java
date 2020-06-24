@@ -35,6 +35,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.bumptech.glide.util.LogTime;
 import com.example.hippoplayer.R;
@@ -56,6 +57,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class PlayFragment extends Fragment {
     // Todo: Constant
@@ -216,15 +218,12 @@ public class PlayFragment extends Fragment {
 
     public void setImageBackgroundPlay(ImageView image, String idsong) {
         DrawableCrossFadeFactory fadeFactory = new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
-
         String finalurl = PathHelper.getFullUrl(idsong, PathHelper.TYPE_IMAGE);
         Glide.with(getContext())
                 .load(finalurl)
-                .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
-                .override(18, 18)
-                .thumbnail(0.7f)
                 .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
+                .apply(RequestOptions.bitmapTransform(new BlurTransformation(50 , 5)))
                 .into(image);
     }
 
