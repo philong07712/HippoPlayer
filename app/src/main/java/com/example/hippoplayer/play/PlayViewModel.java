@@ -11,6 +11,9 @@ import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.ViewModel;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.RetrofitHandler;
 import com.example.hippoplayer.models.SongResponse;
@@ -83,16 +86,25 @@ public class PlayViewModel extends ViewModel {
 
     @BindingAdapter("app:load_image_play_bg")
     public static void setImageBackground(ImageView image, Song song) {
+        DrawableCrossFadeFactory fadeFactory = new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
         if (song.getThumbnail() != null)
             Glide.with(mContext)
-                    .load(song.getThumbnail()).centerCrop()
-                    .placeholder(R.drawable.background_list)
-                    .fitCenter().into(image);
+                    .load(song.getThumbnail())
+                    .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
+                    .override(18, 18)
+                    .thumbnail(0.7f)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(image);
         else {
             Glide.with(mContext)
-                    .load(song.getThumbnailBitmap()).centerCrop()
-                    .placeholder(R.drawable.background_list)
-                    .fitCenter().into(image);
+                    .load(song.getThumbnailBitmap())
+                    .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
+                    .override(18, 18)
+                    .thumbnail(0.7f)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(image);
         }
     }
 }

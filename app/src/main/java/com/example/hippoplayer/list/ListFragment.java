@@ -1,8 +1,11 @@
 package com.example.hippoplayer.list;
 
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.SharedElementCallback;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,12 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import android.os.Handler;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 
+import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentListBinding;
 import com.example.hippoplayer.list.events.ItemEvent;
@@ -31,6 +36,7 @@ import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -41,7 +47,8 @@ public class ListFragment extends Fragment {
     private FragmentListBinding fragmentListBinding;
     private List<Song> mSong = new ArrayList<>();
     private RecyclerView recyclerView;
-
+    private SnapHelper snapHelper = new LinearSnapHelper();
+    private LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
     private ItemEvent buttonEvent;
 
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
@@ -73,13 +80,11 @@ public class ListFragment extends Fragment {
 
     private void setSong() {
         Log.d("TAG", Integer.toString(mSong.size()));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         ListSongAdapter listSongAdapter = new ListSongAdapter();
         listSongAdapter.setmSongList(mSong);
         recyclerView = fragmentListBinding.rvList;
         recyclerView.setAdapter(listSongAdapter);
         recyclerView.setLayoutManager(layoutManager);
-        SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
 
         new Handler().postDelayed(new Runnable() {
@@ -125,6 +130,7 @@ public class ListFragment extends Fragment {
         return new ListFragment();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -137,6 +143,8 @@ public class ListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ListViewModel.class);
+        mSong.clear();
+        Log.e("List", "onActivityCreated");
         mViewModel.setContext(getContext());
         mViewModel.getmSongResponeFlowable()
                 .subscribeOn(Schedulers.io())

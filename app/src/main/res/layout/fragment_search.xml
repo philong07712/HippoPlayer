@@ -1,60 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context=".search.SearchFragment">
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/action_filter_top"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentTop="true"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/button_reset_search"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center|center_horizontal"
-                android:paddingHorizontal="20dp"
-                android:text="Cancel"
-                android:textSize="18sp" />
+                android:orientation="vertical">
 
-        </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-        <com.igalata.bubblepicker.rendering.BubblePicker
-            android:id="@+id/bubble_picker"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/action_filter_bottom"
-            android:layout_below="@id/action_filter_top"
-            app:backgroundColor="@android:color/white" />
+                    <TextView
+                        android:id="@+id/text_title_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="40dp"
+                        android:paddingHorizontal="20dp"
+                        android:text="Search"
+                        android:textSize="50sp"
+                        android:textStyle="bold" />
 
-        <RelativeLayout
-            android:id="@+id/action_filter_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentBottom="true">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_titlte_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        tools:listitem="@layout/item_layout_title_search" />
 
-            <TextView
-                android:id="@+id/button_next_search"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:gravity="center|center_horizontal"
-                android:paddingHorizontal="20dp"
-                android:text="Reset"
-                android:textSize="18sp" />
+                    <RelativeLayout
+                        android:id="@+id/container_context_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginVertical="20dp"
+                        android:visibility="gone"
+                        android:translationY="-80dp">
 
-        </RelativeLayout>
-    </RelativeLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_toLeftOf="@+id/button_search"
+                            android:hint="Input text to search"
+                            app:boxBackgroundMode="outline"
+                            app:endIconMode="clear_text">
 
-</FrameLayout>
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/text_context_search"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <ImageView
+                            android:id="@+id/button_search"
+                            android:layout_width="29dp"
+                            android:layout_height="29dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_baseline_search_24" />
+
+                    </RelativeLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/container_context_search"
+                        android:nestedScrollingEnabled="false" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </androidx.core.widget.NestedScrollView>
+    </FrameLayout>
+</layout>

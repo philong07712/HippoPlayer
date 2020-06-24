@@ -86,6 +86,7 @@ public class ListViewModel extends ViewModel {
                 .load(url)
                 .centerCrop()
                 .fitCenter()
+                .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
                 .into(image);
     }
 
