@@ -47,7 +47,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
     private  SearchAdapter searchAdapter = new SearchAdapter();
     private LinearLayoutManager layoutReyclerTitleSearch;
 
-    private final static int INDEXSEARCH = 4;
+    private final static int INDEXSEARCH = 2;
 
     public static SearchFragment newInstance() {
         return new SearchFragment();
@@ -132,8 +132,6 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         arrayListItemSearch.clear();
         arrayListItemSearch.add("Artists");
         arrayListItemSearch.add("Songs");
-        arrayListItemSearch.add("Feature");
-        arrayListItemSearch.add("For you");
         arrayListItemSearch.add("Search");
     }
 
@@ -143,7 +141,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
             public void onClick(View v) {
                 String contentTitle = fragmentSearchBinding.textContextSearch.getText().toString().trim();
                 if (contentTitle != null) {
-
+                    Log.e(getTag(), contentTitle);
                 }
             }
         });

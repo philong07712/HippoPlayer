@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:viewportWidth="690.0"
+    android:viewportHeight="690.0"
+    android:width="35dp"
+    android:height="35dp">
+
+    <path
+        android:fillColor="@color/seek_bar_background_opacity"
+        android:pathData="M 690 375 A 100 100 0 0 0 60 375 Z"/>
+
+    <path
+        android:fillColor="@color/seek_bar_background_opacity"
+        android:pathData="M 60 375 A 100 100 0 0 0 690 375 Z"/>
+
+    <path
+        android:fillColor="@color/seek_bar_progress"
+        android:pathData="M 525 375 A 100 100 0 0 0 225 375 Z"/>
+
+    <path
+        android:fillColor="@color/seek_bar_progress"
+        android:pathData="M 225 375 A 100 100 0 0 0 525 375 Z"/>
+
+</vector>

@@ -1,10 +1,17 @@
 package com.example.hippoplayer.play;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
@@ -29,6 +37,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.bumptech.glide.util.LogTime;
+import com.example.hippoplayer.R;
 import com.example.hippoplayer.play.notification.OnClearFromRecentService;
 import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
@@ -141,20 +150,40 @@ public class PlayFragment extends Fragment {
 
         fragmentPlayBinding.sbDurationSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                 if (fromUser) {
-                   mMediaManager.seekTo(progress * 100);
+                    mMediaManager.seekTo(progressValue * 100);
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                seekBar.animate()
+                        .setDuration(500)
+                        .setInterpolator(new AccelerateInterpolator())
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                super.onAnimationStart(animation);
+                                seekBar.setThumb(getResources().getDrawable(R.drawable.seek_thumb_zoom));
+                            }
+                        }).start();
+                seekBar.setTag(R.drawable.seek_thumb_zoom);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                seekBar.animate()
+                        .setDuration(500)
+                        .setInterpolator(new AccelerateInterpolator())
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                super.onAnimationStart(animation);
+                                seekBar.setThumb(getResources().getDrawable(R.drawable.seek_thumb));
+                            }
+                        }).start();
+                seekBar.setTag(R.drawable.seek_thumb);
             }
         });
 

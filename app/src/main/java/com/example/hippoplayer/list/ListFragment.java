@@ -136,17 +136,6 @@ public class ListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         fragmentListBinding = FragmentListBinding.inflate(inflater, container, false);
         fragmentListBinding.setLifecycleOwner(this);
-        /*setExitTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.exit_transition));
-        setExitSharedElementCallback(new SharedElementCallback() {
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                super.onMapSharedElements(names, sharedElements);
-                View view = snapHelper.findSnapView(layoutManager);
-                int pos = layoutManager.getPosition(view);
-                RecyclerView.ViewHolder selectedViewHolder = recyclerView.findViewHolderForAdapterPosition(pos);
-                sharedElements.put(names.get(0), selectedViewHolder.itemView.findViewById(R.id.cardview_item_list));
-            }
-        });*/
         return fragmentListBinding.getRoot();
     }
 
