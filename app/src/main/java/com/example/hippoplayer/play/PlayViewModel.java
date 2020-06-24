@@ -94,6 +94,7 @@ public class PlayViewModel extends ViewModel {
                     .override(18, 18)
                     .thumbnail(0.7f)
                     .centerCrop()
+                    .placeholder(R.drawable.background_list)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(image);
         else {
@@ -103,6 +104,7 @@ public class PlayViewModel extends ViewModel {
                     .override(18, 18)
                     .thumbnail(0.7f)
                     .centerCrop()
+                    .placeholder(R.drawable.background_list)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(image);
         }
