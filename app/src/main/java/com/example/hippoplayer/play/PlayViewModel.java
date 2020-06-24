@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.RetrofitHandler;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class PlayViewModel extends ViewModel {
 
@@ -91,21 +93,20 @@ public class PlayViewModel extends ViewModel {
             Glide.with(mContext)
                     .load(song.getThumbnail())
                     .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
-                    .override(18, 18)
-                    .thumbnail(0.7f)
                     .centerCrop()
                     .placeholder(R.drawable.background_list)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(50 , 5)))
                     .into(image);
         else {
             Glide.with(mContext)
                     .load(song.getThumbnailBitmap())
                     .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
-                    .override(18, 18)
                     .thumbnail(0.7f)
                     .centerCrop()
                     .placeholder(R.drawable.background_list)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(50 , 5)))
                     .into(image);
         }
     }

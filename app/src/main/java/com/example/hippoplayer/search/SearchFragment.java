@@ -38,7 +38,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
 
     private ArrayList<Artist> arrayList = new ArrayList<>();
     private ArrayList<Song> mSong = new ArrayList<>();
-
+    private ArrayList allData = new ArrayList();
     private ArrayList<String> arrayListItemSearch = new ArrayList<>();
 
     private FragmentSearchBinding fragmentSearchBinding;
