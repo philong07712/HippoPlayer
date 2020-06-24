@@ -249,6 +249,8 @@ public class PlayFragment extends Fragment {
                 // if the repeat has been choosen
             }
         });
+
+
         fragmentPlayBinding.sbDurationSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
