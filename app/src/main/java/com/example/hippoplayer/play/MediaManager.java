@@ -1,30 +1,41 @@
 package com.example.hippoplayer.play;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.hippoplayer.ExoPlayerService;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.play.notification.CreateNotification;
 import com.example.hippoplayer.play.notification.NotificationActionService;
-import com.example.hippoplayer.utils.PathHelper;
-import com.google.android.exoplayer2.ExoPlayer;
+import com.example.hippoplayer.utils.Constants;
 
 import java.util.List;
+import java.util.Random;
+import java.util.Stack;
 
 public class MediaManager implements Playable {
+    public static final int STATE_NON_REPEAT = 0;
+    public static final int STATE_REPEAT_ONE = 1;
+    public static final int STATE_SHUFFLE = 2;
+    public static final int STATE_REPEAT = 3;
+    private static final String TAG = MediaManager.class.getSimpleName();
+
     Context mContext;
     List<Song> mSongs;
     private ExoPlayerService mService;
     MutableLiveData<Integer> posLiveData = new MutableLiveData<>();
+    MutableLiveData<Boolean> stateLiveData;
     int position = 0;
-
+    private int stateFlag = 3;
+    private Stack<Integer> previousSongPos = new Stack<>();
     public MediaManager(Context context) {
         mContext = context;
         mService = new ExoPlayerService(context);
+        stateLiveData = mService.stateLiveData;
     }
 
     public BroadcastReceiver broadcastReceiver = new NotificationActionService() {
@@ -46,6 +57,9 @@ public class MediaManager implements Playable {
                 case CreateNotification.ACTION_NEXT:
                     onNext();
                     break;
+                case CreateNotification.ACTION_DELETE:
+                    onDelete();
+                    break;
             }
         }
     };
@@ -59,13 +73,17 @@ public class MediaManager implements Playable {
 
     public void play(int position) {
         this.position = position;
-        String fullUrl = PathHelper.getFullUrl(mSongs.get(position).getIdSong(), PathHelper.TYPE_SONG);
-        mService.setMediaFile(fullUrl);
+        String url = mSongs.get(position).getSong();
+        mService.setMediaFile(url);
         mService.playMedia(position);
         // Change avatar in notification manager
 
     }
 
+
+    public void stopMedia() {
+        mService.stopMedia();
+    }
     public void pauseMedia() {
         mService.pauseMedia();
     }
@@ -101,28 +119,120 @@ public class MediaManager implements Playable {
     }
 
     public boolean isPlaying() {
-        return true;
+        return mService.isPlaying();
+    }
+
+    public int getStateFlag() {
+        return stateFlag;
+    }
+
+    public void updateStateFlag() {
+        stateFlag++;
+        stateFlag %= 4;
     }
 
     @Override
     public void onPrevious() {
-        position--;
+        Log.d(TAG, "onPrevious: " + previousSongPos.toString());
+        if (previousSongPos.isEmpty()) {
+            return;
+        }
+        position = previousSongPos.pop();
+        Log.d(TAG, "onPrevious: " + previousSongPos.toString());
         posLiveData.setValue(position);
     }
 
     @Override
     public void onPlay() {
-        mService.resumeMedia();
+        resumeMedia();
     }
 
     @Override
     public void onPause() {
-        mService.pauseMedia();
+        pauseMedia();
     }
 
     @Override
     public void onNext() {
+        // when we press next
+        switch (stateFlag) {
+            case STATE_NON_REPEAT:
+            case STATE_REPEAT:
+            case STATE_REPEAT_ONE:
+                playNext();
+                break;
+            case STATE_SHUFFLE:
+                playShuffleSong();
+                break;
+        }
+    }
+
+    @Override
+    public void onDelete() {
+        stopMedia();
+        deleteNotification();
+    }
+
+    public void deleteNotification() {
+        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(Constants.NOTIFICATION_ID);
+    }
+
+    public void playNextSong() {
+        // when finish the song
+        switch (stateFlag) {
+            case STATE_NON_REPEAT:
+            case STATE_REPEAT:
+                playNext();
+                break;
+            case STATE_REPEAT_ONE:
+                mService.seekTo(0);
+                break;
+            case STATE_SHUFFLE:
+                playShuffleSong();
+                break;
+
+        }
+    }
+
+    private void playShuffleSong() {
+        int max = mSongs.size() - 1;
+        int min = 0;
+        // push previous position to stack
+        previousSongPos.push(position);
+
+        position = generateRandomPos(min, max, position);
+        posLiveData.setValue(position);
+    }
+
+    private void playNext() {
+        // if the song is at the end now
+        if (position == mSongs.size() - 1) {
+            // if it can repeat then the position turn to 0 again
+            if (stateFlag == STATE_REPEAT) {
+                // push previous position to stack
+                previousSongPos.push(position);
+
+                position = 0;
+                posLiveData.setValue(position);
+            }
+            return;
+        }
+        // push previous position to stack
+        previousSongPos.push(position);
+
+        // else we update the song like normal
         position++;
         posLiveData.setValue(position);
+    }
+
+    private int generateRandomPos(int min, int max, int current) {
+        if (max == min) return current;
+        int randomPos;
+        do {
+            randomPos = new Random().nextInt((max - min) + 1);
+        } while (randomPos == current);
+        return randomPos;
+
     }
 }

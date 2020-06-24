@@ -73,9 +73,8 @@ public class ListViewModel extends ViewModel {
 
     @BindingAdapter("app:load_image_list_artist")
     public static void setImageArtist(ImageView image, String url) {
-        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_ARTIST);
         Glide.with(mContext)
-                .load(finalurl)
+                .load(url)
                 .centerCrop()
                 .fitCenter()
                 .into(image);
@@ -83,9 +82,8 @@ public class ListViewModel extends ViewModel {
 
     @BindingAdapter("app:load_image_list_song")
     public static void setImageSong(ImageView image, String url) {
-        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
         Glide.with(mContext)
-                .load(finalurl)
+                .load(url)
                 .centerCrop()
                 .fitCenter()
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
@@ -94,10 +92,9 @@ public class ListViewModel extends ViewModel {
 
     @BindingAdapter("app:load_background_color")
     public static void setBackgroundColor(CardView view, String url) {
-        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
         Glide.with(mContext)
                 .asBitmap()
-                .load(finalurl)
+                .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new CustomTarget<Bitmap>() {
                     @Override

@@ -5,4 +5,5 @@ public interface Playable {
     void onPlay();
     void onPause();
     void onNext();
+    void onDelete();
 }

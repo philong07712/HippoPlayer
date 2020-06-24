@@ -1,5 +1,13 @@
 package com.example.hippoplayer.utils;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
+import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 public class ConvertHelper {
@@ -13,5 +21,13 @@ public class ConvertHelper {
         stringSecond += seconds;
         String result = minutes + ":" + stringSecond;
         return result;
+    }
+
+    public static String BitmapToString(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] b = byteArrayOutputStream.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
     }
 }

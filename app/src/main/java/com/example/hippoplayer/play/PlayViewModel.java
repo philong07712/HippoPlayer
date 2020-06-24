@@ -11,6 +11,11 @@ import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.ViewModel;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
+import com.example.hippoplayer.R;
 import com.example.hippoplayer.RetrofitHandler;
 import com.example.hippoplayer.models.SongResponse;
 
@@ -23,6 +28,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class PlayViewModel extends ViewModel {
 
@@ -43,7 +49,6 @@ public class PlayViewModel extends ViewModel {
     private Flowable<List<SongResponse>> mSongResponeFlowable;
     // variables
     private List<Song> mSongs = new ArrayList<>();
-
     // Todo: Constructor
     public PlayViewModel() {
         mSongResponeFlowable = mService.getListSongResponsePlay();
@@ -61,22 +66,48 @@ public class PlayViewModel extends ViewModel {
     public Flowable<List<SongResponse>> getmSongResponeFlowable() {
         return mSongResponeFlowable;
     }
-
     @Override
     protected void onCleared() {
         super.onCleared();
         mCompositeDisposal.clear();
     }
-
     @BindingAdapter("app:load_image_play")
-    public static void setImageSongPlay(ImageView image, String url) {
-        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
+    public static void setImage(ImageView image, Song song) {
+        if (song.getThumbnail() != null)
         Glide.with(mContext)
-                .load(finalurl).centerCrop()
+                .load(song.getThumbnail()).centerCrop()
+                .placeholder(R.drawable.ic_baseline_music_note_orange)
                 .fitCenter().into(image);
+        else {
+            Glide.with(mContext)
+                    .load(song.getThumbnailBitmap()).centerCrop()
+                    .placeholder(R.drawable.ic_baseline_music_note_orange)
+                    .fitCenter().into(image);
+        }
     }
 
-//    @BindingAdapter("app:load_image_background_play")
-
-
+    @BindingAdapter("app:load_image_play_bg")
+    public static void setImageBackground(ImageView image, Song song) {
+        DrawableCrossFadeFactory fadeFactory = new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
+        if (song.getThumbnail() != null)
+            Glide.with(mContext)
+                    .load(song.getThumbnail())
+                    .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
+                    .centerCrop()
+                    .placeholder(R.drawable.background_list)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(50 , 5)))
+                    .into(image);
+        else {
+            Glide.with(mContext)
+                    .load(song.getThumbnailBitmap())
+                    .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
+                    .thumbnail(0.7f)
+                    .centerCrop()
+                    .placeholder(R.drawable.background_list)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(50 , 5)))
+                    .into(image);
+        }
+    }
 }

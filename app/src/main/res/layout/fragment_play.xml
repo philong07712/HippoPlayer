@@ -6,33 +6,19 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".play.PlayFragment">
-
-        <ImageView
-            android:id="@+id/image_bg_song"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" />
-
-        <ImageView
-            android:id="@+id/image_bg_play"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/gradient_black"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" />
+        tools:context=".play.PlayFragment"
+        android:background="#ffffff">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_controller"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_play"
                 android:layout_width="408dp"
-                android:layout_height="390dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -68,9 +54,9 @@
                 android:id="@+id/sb_duration_song"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
+                android:indeterminate="false"
                 android:maxHeight="60dp"
                 android:padding="0dp"
-                android:indeterminate="false"
                 android:progressDrawable="@drawable/seek_bar"
                 android:thumb="@drawable/seek_thumb"
                 app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
@@ -93,8 +79,8 @@
                     android:layout_height="65dp"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/button_circle_background"
-                    android:scaleType="centerCrop"
                     android:elevation="15dp"
+                    android:scaleType="centerCrop"
                     app:lottie_fileName="pause.json"
                     app:lottie_loop="false" />
 
@@ -102,9 +88,9 @@
                     android:id="@+id/button_next_song"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
                     android:layout_toRightOf="@+id/button_play_and_pause"
                     android:background="@android:color/transparent"
-                    android:layout_marginHorizontal="15dp"
                     android:src="@drawable/ic_baseline_skip_next_24"
                     app:backgroundTint="@android:color/transparent"
                     app:borderWidth="0dp"
@@ -115,9 +101,10 @@
                     android:id="@+id/button_backward_song"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginRight="82dp"
                     android:layout_toLeftOf="@+id/button_play_and_pause"
                     android:scaleX="-1"
-                    android:layout_marginHorizontal="15dp"
                     android:src="@drawable/ic_baseline_skip_next_24"
                     app:backgroundTint="@android:color/transparent"
                     app:borderWidth="0dp"
@@ -129,8 +116,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/button_backward_song"
-                    android:scaleX="-1"
-                    android:src="@drawable/ic_icon_feather_repeat"
+                    android:src="@drawable/ic_icon_feather_repeat_orange"
                     app:backgroundTint="@android:color/transparent"
                     app:borderWidth="0dp"
                     app:elevation="0dp"
@@ -142,13 +128,87 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/button_next_song"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_icon_open_random"
+                    android:src="@drawable/ic_icon_open_random_white"
                     app:backgroundTint="@android:color/transparent"
                     app:borderWidth="0dp"
                     app:elevation="0dp"
                     app:fabSize="normal" />
 
             </RelativeLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mini_container_controller"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#FFFFFF">
+
+            <ImageView
+                android:id="@+id/img_thumbnail_controller"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/tv_title_controller"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:fontFamily="@font/roboto"
+                android:text="Titanium / Pavane"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                app:layout_constraintEnd_toStartOf="@+id/btn_play_and_pause_controller"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/img_thumbnail_controller"
+                app:layout_constraintTop_toTopOf="@+id/img_thumbnail_controller" />
+
+            <TextView
+                android:id="@+id/tv_artist_controller"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:text="The Piano Guys"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                app:layout_constraintBottom_toBottomOf="@+id/img_thumbnail_controller"
+                app:layout_constraintEnd_toEndOf="@+id/tv_title_controller"
+                app:layout_constraintStart_toStartOf="@+id/tv_title_controller"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_controller" />
+
+            <Button
+                android:id="@+id/btn_skip_next_controller"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/ic_baseline_skip_next_24_orange"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btn_play_and_pause_controller"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/ic_baseline_play_arrow_24_orange"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_skip_next_controller"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
