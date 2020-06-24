@@ -11,15 +11,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.ItemLayoutSearchBinding;
 import com.example.hippoplayer.models.Artist;
-import com.example.hippoplayer.search.event.ItemEvent;
+import com.example.hippoplayer.models.Song;
 
 import java.util.ArrayList;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
-    private ArrayList<Artist> artists = new ArrayList<>();
-
-    public void setArtists(ArrayList<Artist> artists) {
-        this.artists = artists;
+    private ArrayList arrayList = new ArrayList<>();
+    private int index = 0;
+    public void setData(ArrayList arrayList, int index) {
+        this.index = index;
+        this.arrayList = arrayList;
         notifyDataSetChanged();
     }
 
@@ -33,13 +34,23 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Artist artist = artists.get(position);
-        holder.bind(artist);
+        switch (index){
+            case 0:{
+                Artist artist = (Artist) arrayList.get(position);
+                holder.bind(artist);
+                break;
+            }
+            case 1: {
+                Song song = (Song) arrayList.get(position);
+                holder.bind(song);
+                break;
+            }
+        }
     }
 
     @Override
     public int getItemCount() {
-        return artists.size();
+        return arrayList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -48,11 +59,19 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             super(itemLayoutSearchBinding.getRoot());
             this.itemLayoutSearchBinding = itemLayoutSearchBinding;
         }
-        public void bind(Artist artist){
-            itemLayoutSearchBinding.setArtist(artist);
+
+        public void bind(Object object){
+            switch (index){
+                case 0:{
+                    itemLayoutSearchBinding.setArtist((Artist) object);
+                    break;
+                }
+                case 1: {
+                    itemLayoutSearchBinding.setSong((Song) object);
+                    break;
+                }
+            }
             itemLayoutSearchBinding.executePendingBindings();
-            ItemEvent itemEvent = new ItemEvent();
-            itemLayoutSearchBinding.setItemEvents(itemEvent);
         }
     }
 }

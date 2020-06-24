@@ -9,10 +9,10 @@
             type="com.example.hippoplayer.models.Artist" />
 
         <variable
-            name="itemEvents"
-            type="com.example.hippoplayer.search.event.ItemEvent" />
-    </data>
+            name="song"
+            type="com.example.hippoplayer.models.Song" />
 
+    </data>
 
     <ImageView
         android:id="@+id/image_item_search"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:maxHeight="200dp"
         android:minWidth="250dp"
-        app:load_image_item_search="@{artist.id}"
-        android:onClick="@{(v) -> itemEvents.buttonPlayItemList(v, artist.id)}"/>
+        app:load_image_item_artist_search="@{artist.id}"
+        app:load_image_item_song_search="@{song.idSong}" />
 
 </layout>
