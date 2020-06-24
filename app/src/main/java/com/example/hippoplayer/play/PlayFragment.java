@@ -37,6 +37,7 @@ import com.example.hippoplayer.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.bumptech.glide.util.LogTime;
 import com.example.hippoplayer.R;
@@ -61,6 +62,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class PlayFragment extends Fragment {
     // Todo: Constant
@@ -247,6 +249,8 @@ public class PlayFragment extends Fragment {
                 // if the repeat has been choosen
             }
         });
+
+
         fragmentPlayBinding.sbDurationSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
@@ -298,8 +302,6 @@ public class PlayFragment extends Fragment {
         fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(pager2PageChangeCallBack);
 
     }
-
-
 
     private void playCurrentSong(int position) {
         mMediaManager.play(position);
