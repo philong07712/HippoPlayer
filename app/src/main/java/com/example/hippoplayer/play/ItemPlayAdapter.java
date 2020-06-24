@@ -19,10 +19,10 @@ public class ItemPlayAdapter extends RecyclerView.Adapter<ItemPlayAdapter.ViewHo
 
     private List<Song> mSongList = new ArrayList<>();
 
-    public void setmSongList(List<Song> mSongList) {
+    public ItemPlayAdapter(List<Song> mSongList) {
         this.mSongList = mSongList;
-        notifyDataSetChanged();
     }
+
 
     @NonNull
     @Override

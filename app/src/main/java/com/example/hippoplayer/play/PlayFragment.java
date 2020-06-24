@@ -1,6 +1,7 @@
 package com.example.hippoplayer.play;
 
 
+import android.animation.FloatEvaluator;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -99,10 +100,10 @@ public class PlayFragment extends Fragment {
         fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
         fragmentPlayBinding.setLifecycleOwner(this);
 
+        // pass listener from main activity to this fragment
         ((MainActivity) getActivity()).passVal(new PassData() {
             @Override
             public void onChange(List<Song> songs, int position) {
-                Log.d(TAG, "onChange: NameSong " + songs.get(position).getNameSong());
                 setSong(songs, position);
             }
         });
@@ -302,14 +303,14 @@ public class PlayFragment extends Fragment {
 
     private void setSong(List<Song> songs, int position) {
         mSong = songs;
-        ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter();
-        itemPlayAdapter.setmSongList(songs);
+        ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter(mSong);
         fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
         fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         mMediaManager.setSongs(songs);
         // this will init the singleton class notification manager
         SongNotificationManager.getInstance().init(getContext(), songs);
         pager2PageChangeCallBack.onPageSelected(position);
+
     }
 
     @Override
@@ -341,17 +342,16 @@ public class PlayFragment extends Fragment {
         @Override
         public void onPageSelected(int position) {
             super.onPageSelected(position);
+            Log.d(TAG, "onPageSelected() called with: position = [" + position + "]");
             if (position == FLAG_PAGE) {
                 return;
             }
             playCurrentSong(position);
             FLAG_PAGE = position;
-
             fragmentPlayBinding.vpPlay.setCurrentItem(FLAG_PAGE, false);
             // we will set the tittle and artist name to current song
             fragmentPlayBinding.tvTitleController.setText(mSong.get(position).getNameSong());
             fragmentPlayBinding.tvArtistController.setText(mSong.get(position).getNameArtist());
-            Log.d(TAG, "onPageSelected: " + position);
             updateController(mSong.get(position));
             updateTime(0, 0);
             updateSeekBar(0, 0);
