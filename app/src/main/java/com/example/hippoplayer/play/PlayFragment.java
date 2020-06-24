@@ -1,6 +1,7 @@
 package com.example.hippoplayer.play;
 
 
+import android.animation.FloatEvaluator;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentPlayBinding;
 import com.example.hippoplayer.models.Song;
@@ -66,17 +68,14 @@ public class PlayFragment extends Fragment {
 
         @Override
         public void onNext(List<SongResponse> songResponses) {
-            mSong = new ArrayList<>();
+            List<Song> songs = new ArrayList<>();
             for (SongResponse songResponse : songResponses) {
                 Song song = new Song();
                 song.setSongResponse(songResponse);
-                mSong.add(song);
+                songs.add(song);
             }
             // create manager
-            mMediaManager.setSongs(mSong);
-            setSong();
-            // this will init the singleton class notification manager
-            SongNotificationManager.getInstance().init(getContext(), mSong);
+            setSong(songs, 0);
         }
 
         @Override
@@ -100,6 +99,14 @@ public class PlayFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
         fragmentPlayBinding.setLifecycleOwner(this);
+
+        // pass listener from main activity to this fragment
+        ((MainActivity) getActivity()).passVal(new PassData() {
+            @Override
+            public void onChange(List<Song> songs, int position) {
+                setSong(songs, position);
+            }
+        });
 
         return fragmentPlayBinding.getRoot();
     }
@@ -294,12 +301,16 @@ public class PlayFragment extends Fragment {
 
     // Todo: inner classes + interfaces
 
-    private void setSong() {
-        Log.d("TAG", Integer.toString(mSong.size()));
-        ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter();
-        itemPlayAdapter.setmSongList(mSong);
+    private void setSong(List<Song> songs, int position) {
+        mSong = songs;
+        ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter(mSong);
         fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
         fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        mMediaManager.setSongs(songs);
+        // this will init the singleton class notification manager
+        SongNotificationManager.getInstance().init(getContext(), songs);
+        pager2PageChangeCallBack.onPageSelected(position);
+
     }
 
     @Override
@@ -331,17 +342,16 @@ public class PlayFragment extends Fragment {
         @Override
         public void onPageSelected(int position) {
             super.onPageSelected(position);
+            Log.d(TAG, "onPageSelected() called with: position = [" + position + "]");
             if (position == FLAG_PAGE) {
                 return;
             }
             playCurrentSong(position);
             FLAG_PAGE = position;
-
             fragmentPlayBinding.vpPlay.setCurrentItem(FLAG_PAGE, false);
             // we will set the tittle and artist name to current song
             fragmentPlayBinding.tvTitleController.setText(mSong.get(position).getNameSong());
             fragmentPlayBinding.tvArtistController.setText(mSong.get(position).getNameArtist());
-            Log.d(TAG, "onPageSelected: " + position);
             updateController(mSong.get(position));
             updateTime(0, 0);
             updateSeekBar(0, 0);
@@ -350,11 +360,22 @@ public class PlayFragment extends Fragment {
         private void updateController(Song song) {
             fragmentPlayBinding.tvTitleController.setText(song.getNameSong());
             fragmentPlayBinding.tvArtistController.setText(song.getNameArtist());
-            String finalurl = PathHelper.getFullUrl(song.getIdSong(), PathHelper.TYPE_IMAGE);
-            Glide.with(getContext())
-                    .load(finalurl)
-                    .centerCrop()
-                    .into(fragmentPlayBinding.imgThumbnailController);
+            if (song.getThumbnail() != null) {
+                String url = song.getThumbnail();
+                Glide.with(getContext())
+                        .load(url)
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_music_note_orange)
+                        .into(fragmentPlayBinding.imgThumbnailController);
+            }
+            else {
+                Glide.with(getContext())
+                        .load(song.getThumbnailBitmap())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_music_note_orange)
+                        .into(fragmentPlayBinding.imgThumbnailController);
+            }
+
         }
     }
 }

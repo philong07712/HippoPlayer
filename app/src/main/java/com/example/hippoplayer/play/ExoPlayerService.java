@@ -1,9 +1,11 @@
-package com.example.hippoplayer;
+package com.example.hippoplayer.play;
 
 import android.content.Context;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.util.Log;
+
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.hippoplayer.play.notification.SongNotificationManager;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -14,9 +16,11 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-
-import retrofit2.http.Url;
+import com.google.android.exoplayer2.util.Util;
 
 public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener,
         Player.EventListener {
@@ -32,6 +36,7 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
     private Uri mMediaFile;
     private int mPosition = 0;
     private long resumePoint;
+    MutableLiveData<Boolean> stateLiveData = new MutableLiveData<>();
 
     public ExoPlayerService(Context context) {
         mContext = context;
@@ -71,11 +76,13 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
         mPlayer.setPlayWhenReady(true);
         mPosition = position;
         SongNotificationManager.getInstance().createNotification(mPosition, true);
+        stateLiveData.setValue(isPlaying());
     }
 
     public void stopMedia() {
         if (mPlayer == null) return;
         mPlayer.setPlayWhenReady(false);
+        stateLiveData.setValue(isPlaying());
     }
 
     public void pauseMedia() {
@@ -85,6 +92,7 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
             resumePoint = mPlayer.getCurrentPosition();
             // if the service pause then the notificate will create play notification
             SongNotificationManager.getInstance().createNotification(mPosition, false);
+            stateLiveData.setValue(isPlaying());
         }
     }
 
@@ -94,6 +102,7 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
             mPlayer.setPlayWhenReady(true);
             // if the service resume then the notificate will create pause notification
             SongNotificationManager.getInstance().createNotification(mPosition, true);
+            stateLiveData.setValue(isPlaying());
         }
     }
 
@@ -108,8 +117,10 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
 
     private MediaSource buildMediaSource(Uri uri) {
         // build MediaSource from http data source
-        DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_media");
-        MediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory, new DefaultExtractorsFactory(), null, null);
+        DefaultDataSourceFactory dataSource = new DefaultDataSourceFactory(mContext, Util.getUserAgent(mContext, "HippoPlayer"),
+                new DefaultBandwidthMeter());
+//        DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_media");
+        MediaSource mediaSource = new ExtractorMediaSource(uri, dataSource, new DefaultExtractorsFactory(), null, null);
         return mediaSource;
     }
 

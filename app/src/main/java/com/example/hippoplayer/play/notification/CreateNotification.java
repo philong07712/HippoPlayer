@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Path;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -76,20 +77,41 @@ public class CreateNotification  {
         mPosition = pos;
         mSize = size;
         drw_play = drawable;
+        String url = song.getThumbnail();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
                     Looper.prepare();
-                    Glide.with(mContext)
-                            .asBitmap()
-                            .load(PathHelper.getFullUrl(song.getIdSong(), PathHelper.TYPE_IMAGE))
-                            .into(new SimpleTarget<Bitmap>() {
-                                @Override
-                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            create(resource);
-                                }
-                            });
+                    if (song.getThumbnail() != null) {
+                        Glide.with(mContext)
+                                .asBitmap()
+                                .load(url)
+                                .placeholder(R.drawable.ic_baseline_music_note_orange)
+                                .into(new SimpleTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                        create(resource);
+                                    }
+                                });
+                    }
+                    else if (song.getThumbnailBitmap() != null) {
+                        Glide.with(mContext)
+                                .asBitmap()
+                                .load(song.getThumbnailBitmap())
+                                .placeholder(R.drawable.ic_baseline_music_note_orange)
+                                .into(new SimpleTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                        create(resource);
+                                    }
+                                });
+                    }
+                    else {
+                       Bitmap largeImage = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_baseline_music_note_orange);
+                       create(largeImage);
+                    }
+
                 }
             };
             new Thread(runnable).start();
@@ -113,6 +135,7 @@ public class CreateNotification  {
                 .setOnlyAlertOnce(true)
                 .setLargeIcon(largeImage)
                 .setShowWhen(false)
+                .setOngoing(true)
                 .addAction(drw_previous, "Previous", pendingIntentPrevious)
                 .addAction(drw_play, "Play", pendingIntentPlay)
                 .addAction(drw_next, "Next", pendingIntentNext)

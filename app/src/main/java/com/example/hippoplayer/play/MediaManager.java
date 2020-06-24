@@ -8,13 +8,10 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.hippoplayer.ExoPlayerService;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.play.notification.CreateNotification;
 import com.example.hippoplayer.play.notification.NotificationActionService;
 import com.example.hippoplayer.utils.Constants;
-import com.example.hippoplayer.utils.PathHelper;
-import com.google.android.exoplayer2.ExoPlayer;
 
 import java.util.List;
 import java.util.Random;
@@ -31,13 +28,14 @@ public class MediaManager implements Playable {
     List<Song> mSongs;
     private ExoPlayerService mService;
     MutableLiveData<Integer> posLiveData = new MutableLiveData<>();
-    MutableLiveData<Boolean> stateLiveData = new MutableLiveData<>();
+    MutableLiveData<Boolean> stateLiveData;
     int position = 0;
     private int stateFlag = 3;
     private Stack<Integer> previousSongPos = new Stack<>();
     public MediaManager(Context context) {
         mContext = context;
         mService = new ExoPlayerService(context);
+        stateLiveData = mService.stateLiveData;
     }
 
     public BroadcastReceiver broadcastReceiver = new NotificationActionService() {
@@ -75,10 +73,9 @@ public class MediaManager implements Playable {
 
     public void play(int position) {
         this.position = position;
-        String fullUrl = PathHelper.getFullUrl(mSongs.get(position).getIdSong(), PathHelper.TYPE_SONG);
-        mService.setMediaFile(fullUrl);
+        String url = mSongs.get(position).getSong();
+        mService.setMediaFile(url);
         mService.playMedia(position);
-        stateLiveData.setValue(isPlaying());
         // Change avatar in notification manager
 
     }
@@ -86,16 +83,13 @@ public class MediaManager implements Playable {
 
     public void stopMedia() {
         mService.stopMedia();
-        stateLiveData.setValue(isPlaying());
     }
     public void pauseMedia() {
         mService.pauseMedia();
-        stateLiveData.setValue(isPlaying());
     }
 
     public void resumeMedia() {
         mService.resumeMedia();
-        stateLiveData.setValue(isPlaying());
     }
 
     public void seekTo(int progress) {
