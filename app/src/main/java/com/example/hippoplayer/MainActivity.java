@@ -12,6 +12,7 @@ import com.example.hippoplayer.offline.OfflineFragment;
 import com.example.hippoplayer.play.PassData;
 import com.example.hippoplayer.play.ViewPagerAdapter;
 import com.example.hippoplayer.search.SearchFragment;
+import com.example.hippoplayer.utils.Constants;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(offlineFragment, "Offline Fragment");
         viewPagerAdapter.addFragment(listFragment, "List Fragment");
         viewPagerAdapter.addFragment(searchFragment, "Search Fragment");
+        viewPagerMain.setOffscreenPageLimit(Constants.MAX_TAB_VIEWPAGER);
         viewPagerMain.setAdapter(viewPagerAdapter);
     }
 }

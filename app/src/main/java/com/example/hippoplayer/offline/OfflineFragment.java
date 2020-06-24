@@ -76,6 +76,11 @@ public class OfflineFragment extends Fragment {
         super.onStart();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     private void loadAudio() {
         songList = new ArrayList<>();
         ContentResolver contentResolver = getActivity().getContentResolver();
