@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
     private ArrayList arrayList = new ArrayList<>();
     private int index = 0;
+
     public void setData(ArrayList arrayList, int index) {
         this.index = index;
         this.arrayList = arrayList;

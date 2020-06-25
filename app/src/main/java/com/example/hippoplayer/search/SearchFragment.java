@@ -70,7 +70,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
                 artist.setSongResponse(artistResponse);
                 artists.add(artist);
             }
-            setArtist(artists);
+            setArrayList(artists);
         }
 
         @Override
@@ -109,7 +109,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         }
     };
 
-    private void setArtist(ArrayList arrayList) {
+    private void setArrayList(ArrayList arrayList) {
         searchAdapter.setData(arrayList, 0);
         recyclerView = fragmentSearchBinding.recyclerViewSearch;
         recyclerView.setAdapter(searchAdapter);
@@ -148,10 +148,27 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                String text = s.toString();
+                filter(text);
             }
         });
         return fragmentSearchBinding.getRoot();
+    }
+
+    private void filter(String text) {
+        ArrayList<Artist> artistsFilter = new ArrayList<>();
+        ArrayList<Song> songsFilter = new ArrayList<>();
+        for (Artist artist : artists){
+            if(artist.getName().toLowerCase().contains(text.toLowerCase())){
+                artistsFilter.add(artist);
+            }
+        }
+        if(artistsFilter.size() == 1){
+            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL));
+        } else {
+            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
+        }
+        searchAdapter.setData(artistsFilter, ARTIST);
     }
 
     @Override
@@ -177,6 +194,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         switch (position) {
             case INDEXSEARCH : {
                 Log.e(getTag(), "index search");
+                fragmentSearchBinding.textContextSearch.setText("");
                 fragmentSearchBinding.containerContextSearch.animate()
                         .alpha(1f)
                         .translationY(0)
