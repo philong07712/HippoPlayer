@@ -3,6 +3,8 @@ package com.example.hippoplayer.search;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +38,8 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
 
     private SearchViewModel mViewModel;
 
-    private ArrayList<Artist> arrayList = new ArrayList<>();
-    private ArrayList<Song> mSong = new ArrayList<>();
+    private ArrayList<Artist> artists = new ArrayList<>();
+    private ArrayList<Song> songs = new ArrayList<>();
     private ArrayList allData = new ArrayList();
     private ArrayList<String> arrayListItemSearch = new ArrayList<>();
 
@@ -47,6 +49,8 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
     private  SearchAdapter searchAdapter = new SearchAdapter();
     private LinearLayoutManager layoutReyclerTitleSearch;
 
+    private final static int ARTIST = 0;
+    private final static int SONGS = 1;
     private final static int INDEXSEARCH = 2;
 
     public static SearchFragment newInstance() {
@@ -64,9 +68,9 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
             for (ArtistResponse artistResponse : artistResponses) {
                 Artist artist = new Artist();
                 artist.setSongResponse(artistResponse);
-                arrayList.add(artist);
+                artists.add(artist);
             }
-            setArtist(arrayList);
+            setArtist(artists);
         }
 
         @Override
@@ -90,7 +94,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
             for (SongResponse songResponse : songResponses) {
                 Song song = new Song();
                 song.setSongResponse(songResponse);
-                mSong.add(song);
+                songs.add(song);
             }
         }
 
@@ -112,6 +116,13 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
     }
 
+    private void addValueTitleSearch() {
+        arrayListItemSearch.clear();
+        arrayListItemSearch.add("Artists");
+        arrayListItemSearch.add("Songs");
+        arrayListItemSearch.add("Search");
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -124,34 +135,30 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         recyclerViewTitlteSearch.setLayoutManager(layoutReyclerTitleSearch);
         recyclerViewTitlteSearch.scheduleLayoutAnimation();
         recyclerViewTitlteSearch.setAdapter(searchTitleAdapter);
-        eventButtonSearch();
-        return fragmentSearchBinding.getRoot();
-    }
-
-    private void addValueTitleSearch() {
-        arrayListItemSearch.clear();
-        arrayListItemSearch.add("Artists");
-        arrayListItemSearch.add("Songs");
-        arrayListItemSearch.add("Search");
-    }
-
-    private void eventButtonSearch() {
-        fragmentSearchBinding.buttonSearch.setOnClickListener(new View.OnClickListener() {
+        fragmentSearchBinding.textContextSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                String contentTitle = fragmentSearchBinding.textContextSearch.getText().toString().trim();
-                if (contentTitle != null) {
-                    Log.e(getTag(), contentTitle);
-                }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
+        return fragmentSearchBinding.getRoot();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
-        arrayList.clear();
+        artists.clear();
         mViewModel.setContext(getContext());
         // Request data
         mViewModel.getmSongListArtist()
@@ -185,14 +192,14 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
                 showInputTextSearch(position);
                 break;
             }
-            case 0 : {
+            case ARTIST : {
                 hideInputTextSearch(position);
-                searchAdapter.setData(arrayList, position);
+                searchAdapter.setData(artists, position);
                 break;
             }
-            case 1 :{
+            case SONGS :{
                 hideInputTextSearch(position);
-                searchAdapter.setData(mSong, position);
+                searchAdapter.setData(songs, position);
                 break;
             }
         }
