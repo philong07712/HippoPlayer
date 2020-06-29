@@ -26,6 +26,11 @@ public class MainActivity extends AppCompatActivity {
     public PassData mPassData;
     private SearchFragment searchFragment;
 
+    private int[] tabIcons = {
+            R.drawable.ic_baseline_wifi_off_24_black,
+            R.drawable.ic_baseline_view_list_24,
+            R.drawable.ic_baseline_search_24
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         // add new fragment in function setup view pager
         setupViewPager();
         tabLayoutMain.setupWithViewPager(viewPagerMain);
+        setupTabLayout();
         // section for fragment tabLayout.getTabAt(i).setIcon(....);
     }
 
@@ -53,10 +59,16 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(){
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         // add new fragment
-        viewPagerAdapter.addFragment(offlineFragment, "Offline Fragment");
-        viewPagerAdapter.addFragment(listFragment, "List Fragment");
-        viewPagerAdapter.addFragment(searchFragment, "Search Fragment");
+        viewPagerAdapter.addFragment(offlineFragment, null);
+        viewPagerAdapter.addFragment(listFragment, null);
+        viewPagerAdapter.addFragment(searchFragment, null);
         viewPagerMain.setOffscreenPageLimit(Constants.MAX_TAB_VIEWPAGER);
         viewPagerMain.setAdapter(viewPagerAdapter);
+    }
+
+    private void setupTabLayout() {
+        tabLayoutMain.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayoutMain.getTabAt(1).setIcon(tabIcons[1]);
+        tabLayoutMain.getTabAt(2).setIcon(tabIcons[2]);
     }
 }

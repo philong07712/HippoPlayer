@@ -31,11 +31,12 @@
                     android:id="@+id/tl_main"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FFFFFF"
+                    android:background="@drawable/gradient_orange"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:tabGravity="fill"
+                    sothree:tabIconTint="@color/custom_tab_icon"
                     app:tabMode="fixed" />
 
                 <androidx.viewpager.widget.ViewPager

@@ -8,4 +8,10 @@
     <color name="seek_bar_background_opacity">#61F7D98B</color>
     <color name="seek_bar_progress">#ffb600</color>
     <color name="seek_bar_secondary_progress">#3399CC</color>
+
+    <color name="text_bold">#757575</color>
+    <color name="black">#000000</color>
+
+    <color name="icon_enabled">#000000</color>
+    <color name="icon_disabled">#757575</color>
 </resources>

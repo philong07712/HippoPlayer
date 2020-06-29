@@ -301,6 +301,7 @@ public class PlayFragment extends Fragment {
         pager2PageChangeCallBack = new ViewPager2PageChangeCallBack();
         fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(pager2PageChangeCallBack);
 
+        
     }
 
     private void playCurrentSong(int position) {
