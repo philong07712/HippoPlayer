@@ -2,6 +2,7 @@ package com.example.hippoplayer.search;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnticipateOvershootInterpolator;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -184,6 +186,24 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         }
     }
 
+    private void showInputTextSearch(int position){
+        fragmentSearchBinding.recyclerViewSearch.animate()
+                .translationY(80)
+                .setDuration(300)
+                .setInterpolator(new AnticipateOvershootInterpolator()).start();
+        searchTitleAdapter.setIndex(position);
+    }
+
+    private void hideInputTextSearch(int position){
+        fragmentSearchBinding.containerContextSearch.setVisibility(View.GONE);
+        fragmentSearchBinding.containerContextSearch.setTranslationY(-80);
+        fragmentSearchBinding.recyclerViewSearch.animate()
+                .translationY(0)
+                .setDuration(300)
+                .setInterpolator(new AnticipateOvershootInterpolator()).start();
+        searchTitleAdapter.setIndex(position);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -238,23 +258,5 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         recyclerView = fragmentSearchBinding.recyclerViewSearch;
         recyclerView.setAdapter(searchAdapter);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
-    }
-
-    private void showInputTextSearch(int position){
-        fragmentSearchBinding.recyclerViewSearch.animate()
-                .translationY(80)
-                .setDuration(300)
-                .setInterpolator(new AnticipateOvershootInterpolator()).start();
-        searchTitleAdapter.setIndex(position);
-    }
-
-    private void hideInputTextSearch(int position){
-        fragmentSearchBinding.containerContextSearch.setVisibility(View.GONE);
-        fragmentSearchBinding.containerContextSearch.setTranslationY(-80);
-        fragmentSearchBinding.recyclerViewSearch.animate()
-                .translationY(0)
-                .setDuration(300)
-                .setInterpolator(new AnticipateOvershootInterpolator()).start();
-        searchTitleAdapter.setIndex(position);
     }
 }

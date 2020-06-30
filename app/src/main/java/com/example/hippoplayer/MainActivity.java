@@ -4,10 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.hippoplayer.list.ListFragment;
 import com.example.hippoplayer.offline.OfflineFragment;
@@ -41,6 +43,25 @@ public class MainActivity extends AppCompatActivity {
         searchFragment = new SearchFragment();
         // add new fragment in function setup view pager
         setupViewPager();
+        viewPagerMain.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // Hide input text when change page
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         tabLayoutMain.setupWithViewPager(viewPagerMain);
         // section for fragment tabLayout.getTabAt(i).setIcon(....);
     }
@@ -56,5 +77,6 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(listFragment, "List Fragment");
         viewPagerAdapter.addFragment(searchFragment, "Search Fragment");
         viewPagerMain.setAdapter(viewPagerAdapter);
+
     }
 }
