@@ -1,16 +1,22 @@
 package com.example.hippoplayer.search;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.BindingAdapter;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModel;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.hippoplayer.R;
+import com.example.hippoplayer.detail.DetailArtistFragment;
 import com.example.hippoplayer.models.ArtistResponse;
 import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.play.utils.SongService;
@@ -28,6 +34,7 @@ public class SearchViewModel extends ViewModel {
     private SongService mService = new SongService();
     private CompositeDisposable mCompositeDisposal = new CompositeDisposable();
     public static Context mContext;
+    public static Activity mActivity;
 
     public SearchViewModel() {
         mSongListArtist = mService.getListArtistResponse();
@@ -50,6 +57,7 @@ public class SearchViewModel extends ViewModel {
     public void setContext(Context context) {
         this.mContext = context;
     }
+    public void setActivity(Activity activity){this.mActivity = activity;}
 
     @BindingAdapter({"app:load_image_item_artist_search", "app:load_image_item_song_search" })
     public static void setImageItemSearch(ImageView image, String idArtist, String idSong) {
@@ -80,6 +88,14 @@ public class SearchViewModel extends ViewModel {
                     Log.e("Button", "Click" +  idSong);
                 } else if (idArtist != null){
                     Log.e("Button", "Click" +  idArtist);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("idArtist", idArtist);
+                    DetailArtistFragment detailArtistFragment = new DetailArtistFragment();
+                    detailArtistFragment.setArguments(bundle);
+                    ((AppCompatActivity) v.getContext()).getSupportFragmentManager().beginTransaction()
+                            .add(R.id.fragment_search, detailArtistFragment, "Detail Artist")
+                            .addToBackStack(null)
+                            .commit();
                 }
             }
         });
