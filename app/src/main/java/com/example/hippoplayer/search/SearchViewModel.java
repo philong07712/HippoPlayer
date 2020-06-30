@@ -9,14 +9,13 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.BindingAdapter;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModel;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.hippoplayer.R;
-import com.example.hippoplayer.detail.DetailArtistFragment;
+import com.example.hippoplayer.detail.DetailFragment;
 import com.example.hippoplayer.models.ArtistResponse;
 import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.play.utils.SongService;
@@ -68,6 +67,7 @@ public class SearchViewModel extends ViewModel {
                     .load(finalurl)
                     .centerCrop()
                     .fitCenter()
+                    .placeholder(R.drawable.ic_baseline_music_note_orange)
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
                     .into(image);
         } else if(idSong != null){
@@ -76,6 +76,7 @@ public class SearchViewModel extends ViewModel {
                     .load(finalurl)
                     .centerCrop()
                     .fitCenter()
+                    .placeholder(R.drawable.ic_baseline_music_note_orange)
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
                     .into(image);
         }
@@ -86,11 +87,12 @@ public class SearchViewModel extends ViewModel {
             public void onClick(View v) {
                 if(idSong != null){
                     Log.e("Button", "Click" +  idSong);
-                } else if (idArtist != null){
+                }
+                if (idArtist != null){
                     Log.e("Button", "Click" +  idArtist);
                     Bundle bundle = new Bundle();
                     bundle.putString("idArtist", idArtist);
-                    DetailArtistFragment detailArtistFragment = new DetailArtistFragment();
+                    DetailFragment detailArtistFragment = new DetailFragment();
                     detailArtistFragment.setArguments(bundle);
                     ((AppCompatActivity) v.getContext()).getSupportFragmentManager().beginTransaction()
                             .add(R.id.fragment_search, detailArtistFragment, "Detail Artist")

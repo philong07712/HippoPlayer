@@ -209,6 +209,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
         artists.clear();
+        songs.clear();
         mViewModel.setContext(getContext());
         // Request data
         mViewModel.getmSongListArtist()

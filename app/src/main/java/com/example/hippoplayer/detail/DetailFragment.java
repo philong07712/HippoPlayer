@@ -15,18 +15,18 @@ import android.widget.TextView;
 
 import com.example.hippoplayer.R;
 
-public class DetailArtistFragment extends Fragment {
+public class DetailFragment extends Fragment {
 
-    private DetailArtistViewModel mViewModel;
+    private DetailViewModel mViewModel;
 
-    public static DetailArtistFragment newInstance() {
-        return new DetailArtistFragment();
+    public static DetailFragment newInstance() {
+        return new DetailFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_detail_artist, container, false);;
+        View view = inflater.inflate(R.layout.fragment_detail, container, false);;
         Bundle bundle = this.getArguments();
         String idArtist = bundle.getString("idArtist");
         TextView textView = view.findViewById(R.id.textView_detail);
@@ -37,7 +37,7 @@ public class DetailArtistFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(DetailArtistViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
         // TODO: Use the ViewModel
     }
 
