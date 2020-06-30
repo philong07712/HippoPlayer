@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ public class DetailArtistFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.detail_artist_fragment, container, false);;
+        View view = inflater.inflate(R.layout.fragment_detail_artist, container, false);;
         Bundle bundle = this.getArguments();
         String idArtist = bundle.getString("idArtist");
         TextView textView = view.findViewById(R.id.textView_detail);
