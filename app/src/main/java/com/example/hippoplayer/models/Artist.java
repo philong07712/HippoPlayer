@@ -14,7 +14,7 @@ public class Artist {
     public Artist() {
     }
 
-    public void setUpArtist(ArtistResponse artistResponse){
+    public void setArtistResponse(ArtistResponse artistResponse){
         this.name = artistResponse.name;
         this.description = artistResponse.description;
         this.year_of_birth = artistResponse.year_of_birth;
@@ -24,7 +24,7 @@ public class Artist {
 
     public void setSongResponse(ArtistResponse artistResponse) {
         this.artistResponse = artistResponse;
-        setUpArtist(artistResponse);
+        setArtistResponse(artistResponse);
     }
 
     public String getName() {
