@@ -36,7 +36,6 @@ public class PlayViewModel extends ViewModel {
     private static final int BLUR_SAMPLING = 2;
     private static final int BLUR_RADIUS = 20;
     private SongService songService = new SongService();
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public Song song = new Song();
     public static Context mContext;
@@ -54,11 +53,6 @@ public class PlayViewModel extends ViewModel {
     // Todo: Constructor
     public PlayViewModel() {
         mSongResponeFlowable = mService.getListSongResponsePlay();
-    }
-
-
-    // Todo: public method
-    public void init() {
     }
 
     public void setContext(Context context) {

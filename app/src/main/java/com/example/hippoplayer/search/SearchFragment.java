@@ -50,7 +50,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
     private LinearLayoutManager layoutReyclerTitleSearch;
 
     private final static int ARTIST = 0;
-    private final static int SONGS = 1;
+    private final static int SONG = 1;
     private final static int INDEXSEARCH = 2;
 
     public static SearchFragment newInstance() {
@@ -163,12 +163,25 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
                 artistsFilter.add(artist);
             }
         }
-        if(artistsFilter.size() == 1){
+        for (Song song : songs){
+            if (song.getNameSong().toLowerCase().contains(text.toLowerCase())){
+                songsFilter.add(song);
+            }
+        }
+
+        if(artistsFilter.size() == 1 || songsFilter.size() == 1){
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL));
         } else {
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
         }
-        searchAdapter.setData(artistsFilter, ARTIST);
+
+        Log.e(getTag(), artistsFilter.size() + " , " + songsFilter.size());
+        if(artistsFilter.size() != 0){
+            searchAdapter.setData(artistsFilter, ARTIST);
+        }
+        if(songsFilter.size() != 0){
+            searchAdapter.setData(songsFilter, SONG);
+        }
     }
 
     @Override
@@ -215,7 +228,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
                 searchAdapter.setData(artists, position);
                 break;
             }
-            case SONGS :{
+            case SONG:{
                 hideInputTextSearch(position);
                 searchAdapter.setData(songs, position);
                 break;
