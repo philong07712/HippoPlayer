@@ -5,9 +5,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.hippoplayer.list.ListFragment;
 import com.example.hippoplayer.offline.OfflineFragment;
@@ -16,6 +19,7 @@ import com.example.hippoplayer.play.ViewPagerAdapter;
 import com.example.hippoplayer.search.SearchFragment;
 import com.example.hippoplayer.utils.Constants;
 import com.google.android.material.tabs.TabLayout;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
@@ -25,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
     OfflineFragment offlineFragment;
     public PassData mPassData;
     private SearchFragment searchFragment;
+    boolean doubleBackToExitPressedOnce = false;
 
+    SlidingUpPanelLayout.PanelState playPanelState;
     private int[] tabIcons = {
             R.drawable.ic_baseline_wifi_off_24_black,
             R.drawable.ic_baseline_view_list_24,
@@ -70,5 +76,33 @@ public class MainActivity extends AppCompatActivity {
         tabLayoutMain.getTabAt(0).setIcon(tabIcons[0]);
         tabLayoutMain.getTabAt(1).setIcon(tabIcons[1]);
         tabLayoutMain.getTabAt(2).setIcon(tabIcons[2]);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // to determine if the back stack is empty or not
+        if (doubleBackToExitPressedOnce || isPlayPanelExpaned()) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+    }
+
+    private boolean isPlayPanelExpaned() {
+        return playPanelState == SlidingUpPanelLayout.PanelState.EXPANDED;
+    }
+
+
+    public void setPanelState(SlidingUpPanelLayout.PanelState panelState) {
+        this.playPanelState = panelState;
     }
 }

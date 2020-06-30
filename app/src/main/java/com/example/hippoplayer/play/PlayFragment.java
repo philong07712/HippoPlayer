@@ -147,7 +147,7 @@ public class PlayFragment extends Fragment {
     }
 
     private boolean isFullScreen() {
-        return fragmentPlayBinding.miniContainerController.getAlpha() == 0;
+        return panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED;
     }
 
     private void initListener() {
@@ -166,6 +166,7 @@ public class PlayFragment extends Fragment {
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 Log.d(TAG, "onPanelStateChanged: Previous " + previousState.name());
                 Log.d(TAG, "onPanelStateChanged: New " + newState.name());
+                ((MainActivity) getActivity()).setPanelState(newState);
             }
         });
 
