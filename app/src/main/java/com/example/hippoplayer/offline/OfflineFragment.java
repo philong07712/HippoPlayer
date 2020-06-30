@@ -21,9 +21,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
@@ -46,6 +48,8 @@ public class OfflineFragment extends Fragment {
             ((MainActivity) getActivity()).mPassData.onChange(songs, position);
         }
     };
+    private ProgressBar progressBarLoad;
+
     public static OfflineFragment newInstance() {
         return new OfflineFragment();
     }
@@ -55,6 +59,7 @@ public class OfflineFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_offline, container, false);
         recyclerView = view.findViewById(R.id.rv_offline);
+        progressBarLoad = view.findViewById(R.id.pb_load_offline);
         return view;
     }
 
@@ -82,43 +87,66 @@ public class OfflineFragment extends Fragment {
     }
 
     private void loadAudio() {
+        preLoadingView();
+        // create new thread to run the fetch data offline
         songList = new ArrayList<>();
         ContentResolver contentResolver = getActivity().getContentResolver();
 
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selector = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
-        String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
-        Cursor cursor = contentResolver.query(uri, null, selector, null, sortOrder);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "run: Start");
+                Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                String selector = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
+                String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
+                Cursor cursor = contentResolver.query(uri, null, selector, null, sortOrder);
 
-        if (cursor != null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                String idSong = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-                String idArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
-                String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                String thumbnail = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                        String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                        String idSong = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                        String idArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
+                        String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 
-                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                byte[] rawArt;
-                Bitmap thumbnailBitmap = null;
-                BitmapFactory.Options bfo=new BitmapFactory.Options();
+                        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                        byte[] rawArt;
+                        Bitmap thumbnailBitmap = null;
+                        BitmapFactory.Options bfo=new BitmapFactory.Options();
 
-                mmr.setDataSource(getContext(), Uri.parse(data));
-                rawArt = mmr.getEmbeddedPicture();
+                        mmr.setDataSource(getContext(), Uri.parse(data));
+                        rawArt = mmr.getEmbeddedPicture();
 
-                // if rawArt is null then no cover art is embedded in the file or is not
-                // recognized as such.
-                if (null != rawArt) {
-                    thumbnailBitmap = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
+                        // if rawArt is null then no cover art is embedded in the file or is not
+                        // recognized as such.
+                        if (null != rawArt) {
+                            thumbnailBitmap = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
+                        }
+
+                        songList.add(new Song(data, title, idSong, idArtist, artistName, thumbnailBitmap));
+                    }
                 }
-
-                songList.add(new Song(data, title, idSong, idArtist, artistName, thumbnailBitmap));
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateLoadingView();
+                    }
+                });
+                cursor.close();
+                Log.d(TAG, "run: allDone ");
             }
-        }
-        setupRecylerView();
-        cursor.close();
+        };
 
+        new Thread(runnable).start();
+    }
+
+    private void preLoadingView() {
+        progressBarLoad.setVisibility(View.VISIBLE);
+    }
+
+    private void updateLoadingView() {
+        progressBarLoad.setVisibility(View.INVISIBLE);
+        setupRecylerView();
     }
 
     private void setupRecylerView() {

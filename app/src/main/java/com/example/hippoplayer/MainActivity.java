@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayoutMain.getTabAt(0).setIcon(tabIcons[0]);
         tabLayoutMain.getTabAt(1).setIcon(tabIcons[1]);
         tabLayoutMain.getTabAt(2).setIcon(tabIcons[2]);
+        // set default tab to list
+        tabLayoutMain.selectTab(tabLayoutMain.getTabAt(1));
     }
 
     @Override
