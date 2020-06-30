@@ -33,6 +33,7 @@ import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.utils.Constants;
 import com.example.hippoplayer.utils.ConvertHelper;
+import com.example.hippoplayer.utils.SaveHelper;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.reactivestreams.Subscriber;
@@ -59,34 +60,6 @@ public class PlayFragment extends Fragment {
     private PlayViewModel mViewModel;
     private int FLAG_PAGE = -1;
     private ViewPager2PageChangeCallBack pager2PageChangeCallBack;
-    private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
-        @Override
-        public void onSubscribe(Subscription s) {
-            s.request(Long.MAX_VALUE);
-        }
-
-        @Override
-        public void onNext(List<SongResponse> songResponses) {
-            List<Song> songs = new ArrayList<>();
-            for (SongResponse songResponse : songResponses) {
-                Song song = new Song();
-                song.setSongResponse(songResponse);
-                songs.add(song);
-            }
-            // create manager
-            setSong(songs, 0);
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Log.e("SongResponse Fragment", t.getMessage());
-        }
-
-        @Override
-        public void onComplete() {
-            Log.e("onComplete", "Complete");
-        }
-    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,7 +80,7 @@ public class PlayFragment extends Fragment {
                 setSong(songs, position);
             }
         });
-
+        // load previous song list and that position
         return fragmentPlayBinding.getRoot();
     }
 
@@ -117,12 +90,11 @@ public class PlayFragment extends Fragment {
         mMediaManager = new MediaManager(getContext());
         mViewModel = new ViewModelProvider(this).get(PlayViewModel.class);
         mViewModel.setContext(getContext());
-        mViewModel.getmSongResponeFlowable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response);
         initListener();
         initHandler();
+        loadSavedData();
+        SongNotificationManager.getInstance().init(getContext(), new ArrayList<>());
+        mMediaManager.setSongs(new ArrayList<>());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getActivity().registerReceiver(mMediaManager.broadcastReceiver, new IntentFilter(Constants.TRACK_CODE));
             Intent clearService = new Intent(getActivity().getBaseContext(), OnClearFromRecentService.class);
@@ -148,6 +120,15 @@ public class PlayFragment extends Fragment {
 
     private boolean isFullScreen() {
         return panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED;
+    }
+
+    private void loadSavedData() {
+//        List<Song> prevSongs = SaveHelper.loadSong(getActivity());
+//        int prevPos = SaveHelper.loadCurrentSongPosition(getActivity());
+//        if (prevSongs.isEmpty()) {
+//            return;
+//        }
+//        setSong(prevSongs, prevPos);
     }
 
     private void initListener() {
@@ -346,6 +327,8 @@ public class PlayFragment extends Fragment {
     // Todo: inner classes + interfaces
 
     private void setSong(List<Song> songs, int position) {
+        FLAG_PAGE = 0;
+        panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         mSong = songs;
         ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter(mSong);
         fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
@@ -370,6 +353,10 @@ public class PlayFragment extends Fragment {
         super.onDestroy();
         // Remove the loop to update times and seekbar
         mHandler.removeCallbacksAndMessages(null);
+        // save the list and the position of current song for next time use
+        SaveHelper.saveSong(getActivity(), mSong);
+        SaveHelper.saveCurrentSongPosition(getActivity(), fragmentPlayBinding.vpPlay.getCurrentItem());
+
         fragmentPlayBinding.vpPlay.unregisterOnPageChangeCallback(pager2PageChangeCallBack);
         mMediaManager.deleteNotification();
         getActivity().unregisterReceiver(mMediaManager.broadcastReceiver);
