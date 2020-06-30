@@ -36,8 +36,9 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:tabGravity="fill"
+                    app:tabMode="fixed"
                     sothree:tabIconTint="@color/custom_tab_icon"
-                    app:tabMode="fixed" />
+                    sothree:tabIndicatorColor="#00FFFFFF" />
 
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/vp_main"

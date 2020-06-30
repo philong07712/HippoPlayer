@@ -9,6 +9,7 @@ import com.example.hippoplayer.R;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.play.notification.CreateNotification;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SongNotificationManager {
@@ -31,6 +32,9 @@ public class SongNotificationManager {
     }
 
     public void init(Context context, List<Song> songs) {
+        if (songs == null) {
+            songs = new ArrayList<>();
+        }
         mContext = context;
         mSongs = songs;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -45,6 +49,9 @@ public class SongNotificationManager {
     }
 
     public void createNotification(int position, boolean isPause) {
+        if (mSongs.isEmpty() || position >= mSongs.size()) {
+            return;
+        }
         if (isPause) {
             createPauseNotification(position);
         }
