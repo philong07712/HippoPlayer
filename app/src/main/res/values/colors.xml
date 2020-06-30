@@ -13,5 +13,5 @@
     <color name="black">#000000</color>
 
     <color name="icon_enabled">#000000</color>
-    <color name="icon_disabled">#757575</color>
+    <color name="icon_disabled">#ffffff</color>
 </resources>
