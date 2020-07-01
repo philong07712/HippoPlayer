@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="song"
             type="com.example.hippoplayer.models.Song" />
@@ -22,11 +23,12 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            app:load_image_detail_song="@{song.idSong}"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_baseline_music_note_orange"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:load_image_detail_song="@{song.idSong}" />
 
         <TextView
             android:id="@+id/tv_title_item_offline"
@@ -51,9 +53,9 @@
             android:id="@+id/tv_artist_item_offline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:fontFamily="@font/roboto"
             android:maxLines="1"
-            android:ellipsize="end"
             android:text="@{song.nameArtist}"
             app:layout_constraintBottom_toBottomOf="@+id/img_thumbnail_item_offline"
             app:layout_constraintEnd_toEndOf="@+id/tv_title_item_offline"
