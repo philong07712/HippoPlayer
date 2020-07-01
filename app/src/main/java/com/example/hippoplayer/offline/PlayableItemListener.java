@@ -4,6 +4,6 @@ import com.example.hippoplayer.models.Song;
 
 import java.util.List;
 
-public interface OfflineItemListener {
+public interface PlayableItemListener {
     public void onClick(List<Song> songs, int position);
 }

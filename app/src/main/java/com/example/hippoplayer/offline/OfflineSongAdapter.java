@@ -15,13 +15,12 @@ import com.example.hippoplayer.models.Song;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 
 public class OfflineSongAdapter extends RecyclerView.Adapter<OfflineSongAdapter.OfflineViewHolder> {
 
     private List<Song> mSongList = new ArrayList<>();
-    public OfflineItemListener itemListener;
-    public OfflineSongAdapter(List<Song> mSongList, OfflineItemListener itemListener) {
+    public PlayableItemListener itemListener;
+    public OfflineSongAdapter(List<Song> mSongList, PlayableItemListener itemListener) {
         this.mSongList = mSongList;
         this.itemListener = itemListener;
     }
