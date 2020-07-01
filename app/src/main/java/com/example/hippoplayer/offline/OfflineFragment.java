@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,7 +46,7 @@ public class OfflineFragment extends Fragment {
     private OfflineViewModel mViewModel;
     private List<Song> songList;
     private RecyclerView recyclerView;
-
+    private boolean isDupClick = false;
     OfflineItemListener offlineItemListener = new OfflineItemListener() {
         @Override
         public void onClick(List<Song> songs, int position) {

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -60,7 +61,8 @@ public class PlayFragment extends Fragment {
     private PlayViewModel mViewModel;
     private int FLAG_PAGE = -1;
     private ViewPager2PageChangeCallBack pager2PageChangeCallBack;
-
+    private float slideoffset;
+    private boolean isExpanding = false;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +79,21 @@ public class PlayFragment extends Fragment {
         ((MainActivity) getActivity()).passVal(new PassData() {
             @Override
             public void onChange(List<Song> songs, int position) {
+                // If sliding up panel expanding, we will stop receive called
+                if (isExpanding) {
+                    return;
+                }
                 setSong(songs, position, true);
+                isExpanding = true;
+                panelLayout.setTouchEnabled(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isExpanding = false;
+                        Log.d(TAG, "run: ");
+                        panelLayout.setTouchEnabled(true);
+                    }
+                }, 300);
             }
         });
         // load previous song list and that position
@@ -106,7 +122,6 @@ public class PlayFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 if (isFullScreen()) {
-                    Log.d(TAG, "handleOnBackPressed: ");
                     panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 }
                 else {
@@ -133,20 +148,25 @@ public class PlayFragment extends Fragment {
 
     private void initListener() {
         panelLayout = getActivity().findViewById(R.id.sliding_up_panel_main);
+
         panelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                Log.d(TAG, "onPanelSlide: " + slideOffset);
                 fragmentPlayBinding.miniContainerController.setAlpha(1f - slideOffset);
                 // set alpha of the fullscreen
-                fragmentPlayBinding.vpPlay.setAlpha(slideOffset);
-                fragmentPlayBinding.containerController.setAlpha(slideOffset);
+//                fragmentPlayBinding.vpPlay.setAlpha(slideOffset);
+//                fragmentPlayBinding.containerController.setAlpha(slideOffset);
+                slideoffset = slideOffset;
             }
 
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                Log.d(TAG, "onPanelStateChanged: Previous " + previousState.name());
-                Log.d(TAG, "onPanelStateChanged: New " + newState.name());
+                if (slideoffset < 0.2 && previousState == SlidingUpPanelLayout.PanelState.DRAGGING) {
+                    panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                }
+                else if (slideoffset == 1 && previousState == SlidingUpPanelLayout.PanelState.DRAGGING) {
+                    panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                }
                 ((MainActivity) getActivity()).setPanelState(newState);
             }
         });
@@ -328,7 +348,12 @@ public class PlayFragment extends Fragment {
 
     private void setSong(List<Song> songs, int position, boolean isExpanded) {
         FLAG_PAGE = 0;
-        if (isExpanded) panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        if (isExpanded) {
+            // case we click in another song
+            panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            // fix the bug that we choose song too fast
+        }
+
         mSong = songs;
         ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter(mSong);
         fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
@@ -373,7 +398,6 @@ public class PlayFragment extends Fragment {
         @Override
         public void onPageSelected(int position) {
             super.onPageSelected(position);
-            Log.d(TAG, "onPageSelected() called with: position = [" + position + "]");
             if (position == FLAG_PAGE) {
                 return;
             }

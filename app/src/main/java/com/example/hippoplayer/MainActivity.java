@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
     public void setPanelState(SlidingUpPanelLayout.PanelState panelState) {
         this.playPanelState = panelState;
     }
