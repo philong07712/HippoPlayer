@@ -1,6 +1,8 @@
 package com.example.hippoplayer.detail;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.databinding.BindingAdapter;
@@ -9,16 +11,7 @@ import androidx.lifecycle.ViewModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.hippoplayer.models.ArtistResponse;
-import com.example.hippoplayer.models.Song;
-import com.example.hippoplayer.models.SongResponse;
-import com.example.hippoplayer.play.utils.SongService;
 import com.example.hippoplayer.utils.PathHelper;
-
-import java.util.List;
-
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class DetailViewModel extends ViewModel {
 

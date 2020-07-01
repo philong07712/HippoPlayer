@@ -95,14 +95,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.e(getTag(), "Call lai onActivityCreated");
         mViewModel = new ViewModelProvider(this).get(DetailViewModel.class);
         mViewModel.setContext(getContext());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.e(getTag(), "onPause");
     }
 }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.ItemLayoutDetailBinding;
+import com.example.hippoplayer.detail.events.ItemEvent;
 import com.example.hippoplayer.models.Song;
 
 import java.util.ArrayList;
@@ -51,6 +52,8 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         public void bind(Song item){
             itemLayoutDetailBinding.setSong(item);
             itemLayoutDetailBinding.executePendingBindings();
+            ItemEvent itemEvent = new ItemEvent();
+            itemLayoutDetailBinding.setItemEvent(itemEvent);
         }
     }
 }

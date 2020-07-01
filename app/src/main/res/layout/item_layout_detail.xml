@@ -8,11 +8,16 @@
         <variable
             name="song"
             type="com.example.hippoplayer.models.Song" />
+
+        <variable
+            name="itemEvent"
+            type="com.example.hippoplayer.detail.events.ItemEvent" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_item_offline"
         android:layout_width="match_parent"
+        android:onClick="@{(v) -> itemEvent.buttonPlayItemList(v, song.idSong)}"
         android:layout_height="70dp">
 
         <ImageView
