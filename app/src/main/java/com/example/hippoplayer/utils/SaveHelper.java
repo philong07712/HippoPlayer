@@ -15,9 +15,12 @@ import java.util.Map;
 
 public class SaveHelper {
     private static final String OFFLINE_LIST_KEY = "Offline Song List";
-    private static final String OFFLINE_SONG_POS = "Offline Song Position";
 
-    public static void saveSong(Context context, List<Song> songs) {
+    private static final String PREVIOUS_SONG_POS = "Previous Song Position";
+    private static final String PREVIOUS_LIST_KEY = "Previous Song List";
+
+
+    public static void saveOfflineSong(Context context, Map<String, Song> songs) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
@@ -26,11 +29,33 @@ public class SaveHelper {
         editor.apply();
     }
 
+    public static Map<String, Song> loadOfflineSong(Context context) {
+        Map<String, Song> songs = new HashMap<>();
+        SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(OFFLINE_LIST_KEY, null);
+        Type type = new TypeToken<Map<String, Song>>() {}.getType();
+        songs = gson.fromJson(json, type);
+        if (songs == null) {
+            return new HashMap<>();
+        }
+        return songs;
+    }
+
+    public static void saveSong(Context context, List<Song> songs) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(songs);
+        editor.putString(PREVIOUS_LIST_KEY, json);
+        editor.apply();
+    }
+
     public static List<Song> loadSong(Context context) {
         List<Song> songs = new ArrayList<>();
         SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString(OFFLINE_LIST_KEY, null);
+        String json = sharedPreferences.getString(PREVIOUS_LIST_KEY, null);
         Type type = new TypeToken<List<Song>>() {}.getType();
         songs = gson.fromJson(json, type);
         if (songs == null) {
@@ -42,13 +67,13 @@ public class SaveHelper {
     public static void saveCurrentSongPosition(Context context, int position) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(OFFLINE_SONG_POS, position);
+        editor.putInt(PREVIOUS_SONG_POS, position);
         editor.apply();
     }
 
     public static int loadCurrentSongPosition(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
-        return sharedPreferences.getInt(OFFLINE_SONG_POS, 0);
+        return sharedPreferences.getInt(PREVIOUS_SONG_POS, 0);
     }
 
     public static void deleteData(Context context) {

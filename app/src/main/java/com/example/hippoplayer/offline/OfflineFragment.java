@@ -31,9 +31,11 @@ import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.utils.ConvertHelper;
+import com.example.hippoplayer.utils.SaveHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class OfflineFragment extends Fragment {
 
@@ -95,11 +97,11 @@ public class OfflineFragment extends Fragment {
         // create new thread to run the fetch data offline
         songList = new ArrayList<>();
         ContentResolver contentResolver = getActivity().getContentResolver();
-
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "run: Start");
+                Map<String, Song> prevMap = SaveHelper.loadOfflineSong(getContext());
+                boolean isDataChanged = false;
                 Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 String selector = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
                 String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
@@ -107,16 +109,30 @@ public class OfflineFragment extends Fragment {
 
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
-                        String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                        String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                        Song currentSong = new Song();
                         String idSong = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-                        String idArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
-                        String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 
-                        // this will retrieve thumbnail Uri by song data
-                        String thumbnail = retrieveThumbnailSong(data, idSong);
-                        Log.d(TAG, "run() called" + thumbnail);
-                        songList.add(new Song(data, title, idSong, idArtist, artistName, thumbnail));
+                        if (!prevMap.containsKey(idSong)) {
+                            String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                            String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                            String idArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
+                            String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+
+                            // this will retrieve thumbnail Uri by song data
+                            String thumbnail = retrieveThumbnailSong(data, idSong);
+                            currentSong = new Song(data, title, idSong, idArtist, artistName, thumbnail);
+                            // This will identify if offline data has changed
+                            prevMap.put(idSong, currentSong);
+                            isDataChanged = true;
+                            Log.d(TAG, "run: not contains");
+                        }
+
+                        else {
+                            currentSong = prevMap.get(idSong);
+                            Log.d(TAG, "run: contains");
+                        }
+
+                        songList.add(currentSong);
                     }
                 }
                 getActivity().runOnUiThread(new Runnable() {
@@ -126,6 +142,10 @@ public class OfflineFragment extends Fragment {
                     }
                 });
                 cursor.close();
+                // if the data set has been changed, case new song added, we will save map again
+                if (isDataChanged) {
+                    SaveHelper.saveOfflineSong(getContext(), prevMap);
+                }
                 Log.d(TAG, "run: allDone ");
             }
         };
