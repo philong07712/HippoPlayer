@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,10 +22,15 @@ import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentDetailBinding;
 import com.example.hippoplayer.models.Artist;
 import com.example.hippoplayer.models.ArtistResponse;
+import com.example.hippoplayer.models.Song;
+import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.utils.PathHelper;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -33,36 +40,35 @@ public class DetailFragment extends Fragment {
     private DetailViewModel mViewModel;
     private FragmentDetailBinding fragmentDetailBinding;
     private String idArtist;
-    private Artist artist = new Artist();
+    private List<Song> mSong = new ArrayList<>();
+    private List<Artist> mArtists = new ArrayList<>();
 
-    public static DetailFragment newInstance() {
-        return new DetailFragment();
+    private void setListSongs(List<Song> mSong, List<Artist> mArtists, String idArtist) {
+        List<String> idSongs = new ArrayList<>();
+        List<Song> dataSong = new ArrayList<>();
+        for (Artist artist : mArtists){
+            if(artist.getId().equals(idArtist)){
+                for (String idSong : artist.getSongsList()){
+                    idSongs.add(idSong);
+                }
+            }
+        }
+
+        DetailAdapter detailAdapter = new DetailAdapter();
+        for (String idSong : idSongs) {
+            for (Song song : mSong) {
+                if (song.getIdSong().equals(idSong)){
+                    dataSong.add(song);
+                }
+            }
+        }
+        detailAdapter.setSongArrayList(dataSong);
+        fragmentDetailBinding.recyclerViewDetail.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        fragmentDetailBinding.recyclerViewDetail.setHasFixedSize(true);
+        fragmentDetailBinding.recyclerViewDetail.setAdapter(detailAdapter);
     }
 
-    public Subscriber<ArtistResponse> responseArtist = new Subscriber<ArtistResponse>() {
-        @Override
-        public void onSubscribe(Subscription s) {
-            s.request(Long.MAX_VALUE);
-        }
-
-        @Override
-        public void onNext(ArtistResponse artistResponse) {
-            artist.setArtistResponse(artistResponse);
-            setImageHeader();
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Log.e("Detail Fragment", t.getMessage());
-        }
-
-        @Override
-        public void onComplete() {
-            Log.e("Detail Fragment", "onComplete");
-        }
-    };
-
-    private void setImageHeader() {
+    private void setImageHeader(String idArtist) {
         String finalurl = PathHelper.getFullUrl(idArtist, PathHelper.TYPE_ARTIST);
         Glide.with(getContext())
                 .load(finalurl)
@@ -79,18 +85,24 @@ public class DetailFragment extends Fragment {
         fragmentDetailBinding = FragmentDetailBinding.inflate(inflater, container, false);
         Bundle bundle = this.getArguments();
         idArtist = bundle.getString("idArtist");
+        mSong = (List<Song>) bundle.getSerializable("songs");
+        mArtists = (List<Artist>) bundle.getSerializable("artists");
+        setImageHeader(idArtist);
+        setListSongs(mSong, mArtists, idArtist);
         return fragmentDetailBinding.getRoot();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.e(getTag(), "Call lai onActivityCreated");
         mViewModel = new ViewModelProvider(this).get(DetailViewModel.class);
-        mViewModel.setIdArtist(idArtist);
         mViewModel.setContext(getContext());
-        mViewModel.getmArtistResponse()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(responseArtist);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e(getTag(), "onPause");
     }
 }

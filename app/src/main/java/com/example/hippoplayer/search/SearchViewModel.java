@@ -89,9 +89,10 @@ public class SearchViewModel extends ViewModel {
                     Log.e("Button", "Click" +  idSong);
                 }
                 if (idArtist != null){
-                    Log.e("Button", "Click" +  idArtist);
                     Bundle bundle = new Bundle();
                     bundle.putString("idArtist", idArtist);
+                    bundle.putSerializable("songs", SearchFragment.songs);
+                    bundle.putSerializable("artists", SearchFragment.artists);
                     DetailFragment detailArtistFragment = new DetailFragment();
                     detailArtistFragment.setArguments(bundle);
                     ((AppCompatActivity) v.getContext()).getSupportFragmentManager().beginTransaction()

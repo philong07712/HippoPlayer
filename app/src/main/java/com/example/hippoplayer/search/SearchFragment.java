@@ -40,8 +40,8 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
 
     private SearchViewModel mViewModel;
 
-    private ArrayList<Artist> artists = new ArrayList<>();
-    private ArrayList<Song> songs = new ArrayList<>();
+    public static ArrayList<Artist> artists = new ArrayList<>();
+    public static ArrayList<Song> songs = new ArrayList<>();
     private ArrayList allData = new ArrayList();
     private ArrayList<String> arrayListItemSearch = new ArrayList<>();
 
