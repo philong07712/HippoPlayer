@@ -43,6 +43,7 @@ public class SearchViewModel extends ViewModel {
     public Flowable<List<ArtistResponse>> getmSongListArtist() {
         return mSongListArtist;
     }
+
     public Flowable<List<SongResponse>> getmSongResponeFlowable() {
         return mSongResponeFlowable;
     }
@@ -56,12 +57,15 @@ public class SearchViewModel extends ViewModel {
     public void setContext(Context context) {
         this.mContext = context;
     }
-    public void setActivity(Activity activity){this.mActivity = activity;}
 
-    @BindingAdapter({"app:load_image_item_artist_search", "app:load_image_item_song_search" })
+    public void setActivity(Activity activity) {
+        this.mActivity = activity;
+    }
+
+    @BindingAdapter({"app:load_image_item_artist_search", "app:load_image_item_song_search"})
     public static void setImageItemSearch(ImageView image, String idArtist, String idSong) {
         Log.d("TAG", idArtist != null ? idArtist : idSong);
-        if(idArtist != null){
+        if (idArtist != null) {
             String finalurl = PathHelper.getFullUrl(idArtist, PathHelper.TYPE_ARTIST);
             Glide.with(mContext)
                     .load(finalurl)
@@ -70,7 +74,7 @@ public class SearchViewModel extends ViewModel {
                     .placeholder(R.drawable.ic_baseline_music_note_orange)
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
                     .into(image);
-        } else if(idSong != null){
+        } else if (idSong != null) {
             String finalurl = PathHelper.getFullUrl(idSong, PathHelper.TYPE_IMAGE);
             Glide.with(mContext)
                     .load(finalurl)
@@ -85,17 +89,19 @@ public class SearchViewModel extends ViewModel {
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(idSong != null){
-                    Log.e("Button", "Click" +  idSong);
+                if (idSong != null) {
+                    Log.e("Button", "Click" + idSong);
                 }
-                if (idArtist != null){
+                if (idArtist != null) {
                     Bundle bundle = new Bundle();
                     bundle.putString("idArtist", idArtist);
                     bundle.putSerializable("songs", SearchFragment.songs);
                     bundle.putSerializable("artists", SearchFragment.artists);
                     DetailFragment detailArtistFragment = new DetailFragment();
                     detailArtistFragment.setArguments(bundle);
-                    ((AppCompatActivity) v.getContext()).getSupportFragmentManager().beginTransaction()
+                    ((AppCompatActivity) v.getContext()).getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_bottom, R.anim.enter_from_bottom, R.anim.exit_to_bottom)
                             .add(R.id.fragment_search, detailArtistFragment, "Detail Artist")
                             .addToBackStack(null)
                             .commit();
