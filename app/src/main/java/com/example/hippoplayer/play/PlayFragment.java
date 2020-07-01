@@ -351,7 +351,6 @@ public class PlayFragment extends Fragment {
         // this will init the singleton class notification manager
         SongNotificationManager.getInstance().init(getContext(), songs);
         pager2PageChangeCallBack.onPageSelected(position);
-
     }
 
     @Override
