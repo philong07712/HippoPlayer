@@ -172,7 +172,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         }
 
         if(artistsFilter.size() == 1 || songsFilter.size() == 1){
-            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL));
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         } else {
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
         }

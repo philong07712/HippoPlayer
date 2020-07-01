@@ -41,11 +41,11 @@ public class DetailFragment extends Fragment {
     private FragmentDetailBinding fragmentDetailBinding;
     private String idArtist;
     private List<Song> mSong = new ArrayList<>();
+    private List<Song> dataSong = new ArrayList<>();
     private List<Artist> mArtists = new ArrayList<>();
 
     private void setListSongs(List<Song> mSong, List<Artist> mArtists, String idArtist) {
         List<String> idSongs = new ArrayList<>();
-        List<Song> dataSong = new ArrayList<>();
         for (Artist artist : mArtists){
             if(artist.getId().equals(idArtist)){
                 for (String idSong : artist.getSongsList()){
@@ -89,6 +89,13 @@ public class DetailFragment extends Fragment {
         mArtists = (List<Artist>) bundle.getSerializable("artists");
         setImageHeader(idArtist);
         setListSongs(mSong, mArtists, idArtist);
+        // event for button play all song of artist
+        fragmentDetailBinding.buttonRandomSongArtistDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(getTag(), String.valueOf(dataSong.size()) + dataSong.get(0).getNameSong());
+            }
+        });
         return fragmentDetailBinding.getRoot();
     }
 

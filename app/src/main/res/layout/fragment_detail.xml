@@ -56,29 +56,30 @@
             </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.core.widget.NestedScrollView
-                android:layout_marginTop="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="50dp"
                 android:clipToPadding="false"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:overScrollMode="never"
                     android:id="@+id/recycler_view_detail"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never" />
 
             </androidx.core.widget.NestedScrollView>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/button_next_song"
+                android:id="@+id/button_random_song_artist_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
+                android:backgroundTint="@color/colorPrimaryDark"
                 android:scaleType="center"
                 android:src="@drawable/ic_baseline_play_arrow_24_white"
                 app:borderWidth="0dp"
-                app:elevation="10dp"
+                app:elevation="15dp"
                 app:fabCustomSize="70dp"
                 app:fabSize="auto"
                 app:layout_anchor="@+id/appBarLayout"
