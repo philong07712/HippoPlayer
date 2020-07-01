@@ -109,7 +109,6 @@ public class PlayFragment extends Fragment {
         initListener();
         initHandler();
         loadSavedData();
-        SongNotificationManager.getInstance().init(getContext(), new ArrayList<>());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getActivity().registerReceiver(mMediaManager.broadcastReceiver, new IntentFilter(Constants.TRACK_CODE));
             Intent clearService = new Intent(getActivity().getBaseContext(), OnClearFromRecentService.class);
@@ -140,7 +139,7 @@ public class PlayFragment extends Fragment {
         List<Song> prevSongs = SaveHelper.loadSong(getActivity());
         int prevPos = SaveHelper.loadCurrentSongPosition(getActivity());
         if (prevSongs.isEmpty()) {
-            mSong = new ArrayList<>();
+            setSong(new ArrayList<>(), 0, false);
             return;
         }
         setSong(prevSongs, prevPos, false);
