@@ -15,19 +15,19 @@ public class Song {
     private String thumbnail;
     private String imgArtist;
     private String song;
-    private Bitmap thumbnailBitmap;
     private SongResponse songResponse;
 
     public Song() {
     }
 
-    public Song(String song, String nameSong, String idSong, String idArtist, String nameArtist, Bitmap thumbnailBitmap) {
+
+    public Song(String song, String nameSong, String idSong, String idArtist, String nameArtist, String thumbnailUri) {
         this.song = song;
         this.nameSong = nameSong;
         this.idSong = idSong;
         this.idArtist = idArtist;
         this.nameArtist = nameArtist;
-        this.thumbnailBitmap = thumbnailBitmap;
+        this.thumbnail = thumbnailUri;
     }
 
     public void setUpSong(SongResponse songResponse) {
@@ -79,7 +79,4 @@ public class Song {
         return song;
     }
 
-    public Bitmap getThumbnailBitmap() {
-        return thumbnailBitmap;
-    }
 }

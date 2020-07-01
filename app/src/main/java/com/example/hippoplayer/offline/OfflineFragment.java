@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.models.Song;
+import com.example.hippoplayer.utils.ConvertHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ public class OfflineFragment extends Fragment {
 
     private static final int READ_STORAGE_REQUEST_CODE = 111;
     private static final String TAG = OfflineFragment.class.getSimpleName();
+    private static final int WRITE_STORAGE_REQUEST_CODE = 112;
     private OfflineViewModel mViewModel;
     private List<Song> songList;
     private RecyclerView recyclerView;
@@ -73,6 +75,8 @@ public class OfflineFragment extends Fragment {
         else {
             requestPermissionForReadExternalStorage();
         }
+
+        if (!checkPermissionForWriteExternalStorage()) requestPermissionForWriteExternalStorage();
         // TODO: Use the ViewModel
     }
 
@@ -109,21 +113,10 @@ public class OfflineFragment extends Fragment {
                         String idArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
                         String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 
-                        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                        byte[] rawArt;
-                        Bitmap thumbnailBitmap = null;
-                        BitmapFactory.Options bfo=new BitmapFactory.Options();
-
-                        mmr.setDataSource(getContext(), Uri.parse(data));
-                        rawArt = mmr.getEmbeddedPicture();
-
-                        // if rawArt is null then no cover art is embedded in the file or is not
-                        // recognized as such.
-                        if (null != rawArt) {
-                            thumbnailBitmap = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
-                        }
-
-                        songList.add(new Song(data, title, idSong, idArtist, artistName, thumbnailBitmap));
+                        // this will retrieve thumbnail Uri by song data
+                        String thumbnail = retrieveThumbnailSong(data, idSong);
+                        Log.d(TAG, "run() called" + thumbnail);
+                        songList.add(new Song(data, title, idSong, idArtist, artistName, thumbnail));
                     }
                 }
                 getActivity().runOnUiThread(new Runnable() {
@@ -138,6 +131,30 @@ public class OfflineFragment extends Fragment {
         };
 
         new Thread(runnable).start();
+    }
+
+    private String retrieveThumbnailSong(String data, String title) {
+        String path = null;
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        byte[] rawArt;
+        Bitmap thumbnailBitmap = null;
+        BitmapFactory.Options bfo=new BitmapFactory.Options();
+
+        mmr.setDataSource(getContext(), Uri.parse(data));
+        rawArt = mmr.getEmbeddedPicture();
+
+        // if rawArt is null then no cover art is embedded in the file or is not
+        // recognized as such.
+        if (null != rawArt) {
+            thumbnailBitmap = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
+        }
+
+        // Convert that bitmap to uri
+        if (thumbnailBitmap != null) {
+            Uri uri = ConvertHelper.getImageUri(getActivity(), thumbnailBitmap, title);
+            if (uri != null) path = uri.toString();
+        }
+        return path;
     }
 
     private void preLoadingView() {
@@ -171,6 +188,25 @@ public class OfflineFragment extends Fragment {
         try {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     READ_STORAGE_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean checkPermissionForWriteExternalStorage() {
+        // this will check if user granted permission for the app
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int result = getActivity().getApplicationContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            return result == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
+    }
+
+    private void requestPermissionForWriteExternalStorage() {
+        // request user to give permission to app
+        try {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_STORAGE_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }

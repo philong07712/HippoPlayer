@@ -95,18 +95,6 @@ public class CreateNotification  {
                                     }
                                 });
                     }
-                    else if (song.getThumbnailBitmap() != null) {
-                        Glide.with(mContext)
-                                .asBitmap()
-                                .load(song.getThumbnailBitmap())
-                                .placeholder(R.drawable.ic_baseline_music_note_orange)
-                                .into(new SimpleTarget<Bitmap>() {
-                                    @Override
-                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                        create(resource);
-                                    }
-                                });
-                    }
                     else {
                        Bitmap largeImage = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_baseline_music_note_orange);
                        create(largeImage);

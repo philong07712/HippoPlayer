@@ -73,41 +73,22 @@ public class PlayViewModel extends ViewModel {
     }
     @BindingAdapter("app:load_image_play")
     public static void setImage(ImageView image, Song song) {
-        if (song.getThumbnail() != null)
         Glide.with(mContext)
                 .load(song.getThumbnail()).centerCrop()
                 .placeholder(R.drawable.ic_baseline_music_note_orange)
                 .fitCenter().into(image);
-        else {
-            Glide.with(mContext)
-                    .load(song.getThumbnailBitmap()).centerCrop()
-                    .placeholder(R.drawable.ic_baseline_music_note_orange)
-                    .fitCenter().into(image);
-        }
     }
 
     @BindingAdapter("app:load_image_play_bg")
     public static void setImageBackground(ImageView image, Song song) {
         DrawableCrossFadeFactory fadeFactory = new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
-        if (song.getThumbnail() != null)
-            Glide.with(mContext)
-                    .load(song.getThumbnail())
-                    .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
-                    .centerCrop()
-                    .placeholder(R.drawable.background_list)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(BLUR_RADIUS , BLUR_SAMPLING)))
-                    .into(image);
-        else {
-            Glide.with(mContext)
-                    .load(song.getThumbnailBitmap())
-                    .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
-                    .thumbnail(0.7f)
-                    .centerCrop()
-                    .placeholder(R.drawable.background_list)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(BLUR_RADIUS , BLUR_SAMPLING)))
-                    .into(image);
-        }
+        Glide.with(mContext)
+                .load(song.getThumbnail())
+                .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
+                .centerCrop()
+                .placeholder(R.drawable.background_list)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .apply(RequestOptions.bitmapTransform(new BlurTransformation(BLUR_RADIUS , BLUR_SAMPLING)))
+                .into(image);
     }
 }

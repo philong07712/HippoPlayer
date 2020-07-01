@@ -77,7 +77,7 @@ public class PlayFragment extends Fragment {
         ((MainActivity) getActivity()).passVal(new PassData() {
             @Override
             public void onChange(List<Song> songs, int position) {
-                setSong(songs, position);
+                setSong(songs, position, true);
             }
         });
         // load previous song list and that position
@@ -123,12 +123,12 @@ public class PlayFragment extends Fragment {
     }
 
     private void loadSavedData() {
-//        List<Song> prevSongs = SaveHelper.loadSong(getActivity());
-//        int prevPos = SaveHelper.loadCurrentSongPosition(getActivity());
-//        if (prevSongs.isEmpty()) {
-//            return;
-//        }
-//        setSong(prevSongs, prevPos);
+        List<Song> prevSongs = SaveHelper.loadSong(getActivity());
+        int prevPos = SaveHelper.loadCurrentSongPosition(getActivity());
+        if (prevSongs.isEmpty()) {
+            return;
+        }
+        setSong(prevSongs, prevPos, false);
     }
 
     private void initListener() {
@@ -326,9 +326,9 @@ public class PlayFragment extends Fragment {
 
     // Todo: inner classes + interfaces
 
-    private void setSong(List<Song> songs, int position) {
+    private void setSong(List<Song> songs, int position, boolean isExpanded) {
         FLAG_PAGE = 0;
-        panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        if (isExpanded) panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         mSong = songs;
         ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter(mSong);
         fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
@@ -391,21 +391,12 @@ public class PlayFragment extends Fragment {
         private void updateController(Song song) {
             fragmentPlayBinding.tvTitleController.setText(song.getNameSong());
             fragmentPlayBinding.tvArtistController.setText(song.getNameArtist());
-            if (song.getThumbnail() != null) {
-                String url = song.getThumbnail();
-                Glide.with(getContext())
-                        .load(url)
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_baseline_music_note_orange)
-                        .into(fragmentPlayBinding.imgThumbnailController);
-            }
-            else {
-                Glide.with(getContext())
-                        .load(song.getThumbnailBitmap())
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_baseline_music_note_orange)
-                        .into(fragmentPlayBinding.imgThumbnailController);
-            }
+            String url = song.getThumbnail();
+            Glide.with(getContext())
+                    .load(url)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_baseline_music_note_orange)
+                    .into(fragmentPlayBinding.imgThumbnailController);
         }
 
     }
