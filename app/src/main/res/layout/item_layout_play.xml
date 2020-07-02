@@ -20,9 +20,9 @@
             android:id="@+id/image_bg_song"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/background_list"
             app:load_image_play_bg="@{song}"
             android:scaleType="centerCrop"
+            android:background="#ffffff"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp" />
 

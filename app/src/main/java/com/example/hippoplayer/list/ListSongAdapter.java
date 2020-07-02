@@ -15,6 +15,7 @@ import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.ItemLayoutListBinding;
 import com.example.hippoplayer.list.events.ItemEvent;
 import com.example.hippoplayer.models.Song;
+import com.example.hippoplayer.offline.PlayableItemListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,11 @@ public class ListSongAdapter extends RecyclerView.Adapter<ListSongAdapter.ViewHo
 
     private List<Song> mSongList = new ArrayList<>();
 
-    public void setmSongList(List<Song> mSongList) {
+    private PlayableItemListener listener;
+
+    public ListSongAdapter(List<Song> mSongList, PlayableItemListener listener) {
         this.mSongList = mSongList;
-        notifyDataSetChanged();
+        this.listener = listener;
     }
 
     @NonNull
@@ -40,6 +43,12 @@ public class ListSongAdapter extends RecyclerView.Adapter<ListSongAdapter.ViewHo
     public void onBindViewHolder(@NonNull ListSongAdapter.ViewHolder holder, int position) {
         Song song = mSongList.get(position);
         holder.bind(song);
+        holder.itemLayoutListBinding.cardviewItemList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(mSongList, position);
+            }
+        });
     }
 
     @Override
@@ -56,8 +65,6 @@ public class ListSongAdapter extends RecyclerView.Adapter<ListSongAdapter.ViewHo
         public void bind(Song item){
             itemLayoutListBinding.setSong(item);
             itemLayoutListBinding.executePendingBindings();
-            ItemEvent itemEvent = new ItemEvent();
-            itemLayoutListBinding.setButtonEvents(itemEvent);
         }
     }
 }

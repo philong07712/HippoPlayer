@@ -42,7 +42,9 @@ public class MediaManager implements Playable {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getExtras().getString(CreateNotification.ACTION_NAME);
-
+            if (mSongs.isEmpty()) {
+                return;
+            }
             switch (action) {
                 case CreateNotification.ACTION_PREVIOUS:
                     onPrevious();
@@ -133,6 +135,7 @@ public class MediaManager implements Playable {
 
     @Override
     public void onPrevious() {
+        if (mSongs.isEmpty()) return;
         Log.d(TAG, "onPrevious: " + previousSongPos.toString());
         if (previousSongPos.isEmpty()) {
             return;
@@ -144,16 +147,19 @@ public class MediaManager implements Playable {
 
     @Override
     public void onPlay() {
+        if (mSongs.isEmpty()) return;
         resumeMedia();
     }
 
     @Override
     public void onPause() {
+        if (mSongs.isEmpty()) return;
         pauseMedia();
     }
 
     @Override
     public void onNext() {
+        if (mSongs.isEmpty()) return;
         // when we press next
         switch (stateFlag) {
             case STATE_NON_REPEAT:
@@ -179,6 +185,7 @@ public class MediaManager implements Playable {
     }
 
     public void playNextSong() {
+        if (mSongs.isEmpty()) return;
         // when finish the song
         switch (stateFlag) {
             case STATE_NON_REPEAT:
