@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         searchFragment = new SearchFragment();
         // add new fragment in function setup view pager
         setupViewPager();
+        tabLayoutMain.setupWithViewPager(viewPagerMain);
+        setupTabLayout();
         viewPagerMain.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -64,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 // Hide input text when change page
-//                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
 
             }
 
@@ -74,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        tabLayoutMain.setupWithViewPager(viewPagerMain);
-        setupTabLayout();
         // section for fragment tabLayout.getTabAt(i).setIcon(....);
     }
 

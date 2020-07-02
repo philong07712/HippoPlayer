@@ -107,7 +107,6 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
 
         @Override
         public void onComplete() {
-            Log.e("onComplete List", "Complete List");
         }
     };
 
@@ -177,7 +176,6 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
         }
 
-        Log.e(getTag(), artistsFilter.size() + " , " + songsFilter.size());
         if(artistsFilter.size() != 0){
             searchAdapter.setData(artistsFilter, ARTIST);
         }
@@ -225,9 +223,10 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
 
     @Override
     public void searchTitleClicked(int position) {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
         switch (position) {
             case INDEXSEARCH : {
-                Log.e(getTag(), "index search");
                 fragmentSearchBinding.textContextSearch.setText("");
                 fragmentSearchBinding.containerContextSearch.animate()
                         .alpha(1f)

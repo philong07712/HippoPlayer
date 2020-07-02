@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,19 +20,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentDetailBinding;
 import com.example.hippoplayer.models.Artist;
-import com.example.hippoplayer.models.ArtistResponse;
 import com.example.hippoplayer.models.Song;
-import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.utils.PathHelper;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DetailFragment extends Fragment {
 
@@ -84,12 +75,12 @@ public class DetailFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         fragmentDetailBinding = FragmentDetailBinding.inflate(inflater, container, false);
         Bundle bundle = this.getArguments();
-        idArtist = bundle.getString("idArtist");
-        mSong = (List<Song>) bundle.getSerializable("songs");
-        mArtists = (List<Artist>) bundle.getSerializable("artists");
+        DetailSerializable songSerializable = (DetailSerializable) bundle.getSerializable("serializable");
+        idArtist = songSerializable.getIdArtist();
+        mArtists = songSerializable.getArtistList();
+        mSong = songSerializable.getSongList();
         setImageHeader(idArtist);
         setListSongs(mSong, mArtists, idArtist);
-        // event for button play all song of artist
         fragmentDetailBinding.buttonRandomSongArtistDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
