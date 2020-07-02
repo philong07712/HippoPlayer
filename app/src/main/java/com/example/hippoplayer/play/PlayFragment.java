@@ -139,7 +139,7 @@ public class PlayFragment extends Fragment {
         List<Song> prevSongs = SaveHelper.loadSong(getActivity());
         int prevPos = SaveHelper.loadCurrentSongPosition(getActivity());
         if (prevSongs.isEmpty()) {
-            setSong(new ArrayList<>(), 0, false);
+            setSong(new ArrayList<>(), -1, false);
             return;
         }
         setSong(prevSongs, prevPos, false);
@@ -361,7 +361,7 @@ public class PlayFragment extends Fragment {
         mMediaManager.setSongs(songs);
         // this will init the singleton class notification manager
         SongNotificationManager.getInstance().init(getContext(), songs);
-        pager2PageChangeCallBack.onPageSelected(position);
+        if (position != -1) pager2PageChangeCallBack.onPageSelected(position);
     }
 
     @Override

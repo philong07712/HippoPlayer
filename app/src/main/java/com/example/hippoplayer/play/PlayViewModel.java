@@ -81,6 +81,7 @@ public class PlayViewModel extends ViewModel {
 
     @BindingAdapter("app:load_image_play_bg")
     public static void setImageBackground(ImageView image, Song song) {
+        if (song == null) return;
         DrawableCrossFadeFactory fadeFactory = new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
         Glide.with(mContext)
                 .load(song.getThumbnail())
