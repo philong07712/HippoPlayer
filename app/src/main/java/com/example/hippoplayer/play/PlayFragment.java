@@ -256,6 +256,7 @@ public class PlayFragment extends Fragment {
         fragmentPlayBinding.sbDurationSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                updateTime(progressValue * 100, mMediaManager.getDuration());
                 if (fromUser) {
                     mMediaManager.seekTo(progressValue * 100);
                 }
@@ -406,8 +407,13 @@ public class PlayFragment extends Fragment {
             fragmentPlayBinding.tvTitleController.setText(mSong.get(position).getNameSong());
             fragmentPlayBinding.tvArtistController.setText(mSong.get(position).getNameArtist());
             updateController(mSong.get(position));
+            updateBackground(mSong.get(position));
             updateTime(0, 0);
             updateSeekBar(0, 0);
+        }
+
+        private void updateBackground(Song song) {
+            fragmentPlayBinding.setSong(song);
         }
 
         private void updateController(Song song) {
