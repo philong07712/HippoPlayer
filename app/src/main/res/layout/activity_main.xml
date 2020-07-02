@@ -26,7 +26,6 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tl_main"
                     android:layout_width="match_parent"
@@ -37,6 +36,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:tabGravity="fill"
                     app:tabMode="fixed"
+                    app:layout_scrollFlags="scroll|enterAlways"
                     sothree:tabIconTint="@color/custom_tab_icon"
                     sothree:tabIndicatorColor="#00FFFFFF" />
 

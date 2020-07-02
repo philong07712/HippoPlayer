@@ -55,6 +55,10 @@ public class ListFragment extends Fragment {
         }
     };
 
+    public static ListFragment newInstance() {
+        return new ListFragment();
+    }
+
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
         public void onSubscribe(Subscription s) {
@@ -127,10 +131,6 @@ public class ListFragment extends Fragment {
         });
 
 
-    }
-
-    public static ListFragment newInstance() {
-        return new ListFragment();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

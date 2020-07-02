@@ -33,4 +33,6 @@ public class SongService {
     public Flowable<List<ArtistResponse>> getListArtistResponse(){
         return api.getListArtist();
     }
+
+    public Flowable<ArtistResponse> getArtistResponse(String id) {return api.getArtist(id);}
 }
