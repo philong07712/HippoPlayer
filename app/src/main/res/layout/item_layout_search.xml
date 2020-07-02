@@ -23,7 +23,7 @@
         android:maxHeight="250dp"
         android:minHeight="300dp"
         android:scaleType="centerCrop"
-        app:load_image_item_artist_search="@{artist.id}"
-        app:load_image_item_song_search="@{song.idSong}" />
+        app:load_image_item_artist_search="@{artist}"
+        app:load_image_item_song_search="@{song}" />
 
 </layout>

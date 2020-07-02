@@ -44,6 +44,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
 
     public static ArrayList<Artist> artists = new ArrayList<>();
     public static ArrayList<Song> songs = new ArrayList<>();
+    public static ArrayList<Song> songOfflineList = new ArrayList<>();
     private ArrayList allData = new ArrayList();
     private ArrayList<String> arrayListItemSearch = new ArrayList<>();
 
@@ -100,6 +101,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
                 song.setSongResponse(songResponse);
                 songs.add(song);
             }
+            songs.addAll(songOfflineList);
         }
 
         @Override
@@ -141,7 +143,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         ((MainActivity) getActivity()).passOfflineList(new PassData() {
             @Override
             public void onChange(List<Song> songOffline, int position) {
-                songs.addAll(songOffline);
+                songOfflineList.addAll(songOffline);
             }
         });
         fragmentSearchBinding.textContextSearch.addTextChangedListener(new TextWatcher() {
