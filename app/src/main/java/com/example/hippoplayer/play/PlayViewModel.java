@@ -87,6 +87,7 @@ public class PlayViewModel extends ViewModel {
                 .load(song.getThumbnail())
                 .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
                 .centerCrop()
+                .placeholder(image.getDrawable())
                 .error(R.drawable.background_list)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(BLUR_RADIUS , BLUR_SAMPLING)))
