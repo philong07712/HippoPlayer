@@ -12,6 +12,6 @@
     <color name="text_bold">#757575</color>
     <color name="black">#000000</color>
 
-    <color name="icon_enabled">#000000</color>
-    <color name="icon_disabled">#ffffff</color>
+    <color name="icon_enabled">#ffffff</color>
+    <color name="icon_disabled">#757575</color>
 </resources>
