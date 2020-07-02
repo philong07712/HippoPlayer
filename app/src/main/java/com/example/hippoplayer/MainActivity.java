@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                 // Hide input text when change page
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
-
             }
 
             @Override
@@ -77,6 +76,5 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(listFragment, "List Fragment");
         viewPagerAdapter.addFragment(searchFragment, "Search Fragment");
         viewPagerMain.setAdapter(viewPagerAdapter);
-
     }
 }

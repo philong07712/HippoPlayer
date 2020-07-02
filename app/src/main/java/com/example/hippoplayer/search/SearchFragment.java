@@ -225,6 +225,8 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
 
     @Override
     public void searchTitleClicked(int position) {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
         switch (position) {
             case INDEXSEARCH : {
                 Log.e(getTag(), "index search");
