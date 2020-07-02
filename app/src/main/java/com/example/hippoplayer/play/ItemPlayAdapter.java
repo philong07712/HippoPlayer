@@ -55,6 +55,8 @@ public class ItemPlayAdapter extends RecyclerView.Adapter<ItemPlayAdapter.ViewHo
 
         public void bind(Song item) {
             itemLayoutPlayBinding.setSong(item);
+            itemLayoutPlayBinding.textTitleSong.setSelected(true);
+            itemLayoutPlayBinding.textArtistSong.setSelected(true);
             itemLayoutPlayBinding.executePendingBindings();
         }
     }

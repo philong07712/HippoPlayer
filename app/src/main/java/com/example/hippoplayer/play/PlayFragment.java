@@ -406,8 +406,13 @@ public class PlayFragment extends Fragment {
             fragmentPlayBinding.tvTitleController.setText(mSong.get(position).getNameSong());
             fragmentPlayBinding.tvArtistController.setText(mSong.get(position).getNameArtist());
             updateController(mSong.get(position));
+            updateBackground(mSong.get(position));
             updateTime(0, 0);
             updateSeekBar(0, 0);
+        }
+
+        private void updateBackground(Song song) {
+            fragmentPlayBinding.setSong(song);
         }
 
         private void updateController(Song song) {
