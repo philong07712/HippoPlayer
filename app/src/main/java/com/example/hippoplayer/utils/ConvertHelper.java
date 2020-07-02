@@ -3,9 +3,13 @@ package com.example.hippoplayer.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
+
+import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
@@ -40,5 +44,17 @@ public class ConvertHelper {
             return null;
         }
         return Uri.parse(path);
+    }
+
+    public static Drawable copy(Drawable drawable) {
+        Bitmap bitmap = null;
+        if (drawable instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) drawable).getBitmap();
+        }
+        if (bitmap != null) {
+            bitmap = bitmap.copy(bitmap.getConfig(), bitmap.isMutable());
+            return new BitmapDrawable(bitmap);
+        }
+        return null;
     }
 }
