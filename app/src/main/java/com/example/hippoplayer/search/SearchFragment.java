@@ -21,11 +21,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.databinding.FragmentSearchBinding;
 import com.example.hippoplayer.models.Artist;
 import com.example.hippoplayer.models.ArtistResponse;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
+import com.example.hippoplayer.play.PassData;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -136,6 +138,12 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         recyclerViewTitlteSearch.setLayoutManager(layoutReyclerTitleSearch);
         recyclerViewTitlteSearch.scheduleLayoutAnimation();
         recyclerViewTitlteSearch.setAdapter(searchTitleAdapter);
+        ((MainActivity) getActivity()).passOfflineList(new PassData() {
+            @Override
+            public void onChange(List<Song> songOffline, int position) {
+                songs.addAll(songOffline);
+            }
+        });
         fragmentSearchBinding.textContextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
