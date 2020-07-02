@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="song"
+            type="com.example.hippoplayer.models.Song" />
+
+        <variable
+            name="itemEvent"
+            type="com.example.hippoplayer.detail.events.ItemEvent" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_item_offline"
+        android:layout_width="match_parent"
+        android:onClick="@{(v) -> itemEvent.buttonPlayItemList(v, song.idSong)}"
+        android:layout_height="70dp">
+
+        <ImageView
+            android:id="@+id/img_thumbnail_item_offline"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_baseline_music_note_orange"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:load_image_detail_song="@{song.idSong}" />
+
+        <TextView
+            android:id="@+id/tv_title_item_offline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto"
+            android:maxLines="1"
+            android:text="@{song.nameSong}"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_thumbnail_item_offline"
+            app:layout_constraintTop_toTopOf="@+id/img_thumbnail_item_offline" />
+
+        <TextView
+            android:id="@+id/tv_artist_item_offline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto"
+            android:maxLines="1"
+            android:text="@{song.nameArtist}"
+            app:layout_constraintBottom_toBottomOf="@+id/img_thumbnail_item_offline"
+            app:layout_constraintEnd_toEndOf="@+id/tv_title_item_offline"
+            app:layout_constraintStart_toStartOf="@+id/tv_title_item_offline"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title_item_offline" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

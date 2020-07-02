@@ -33,8 +33,9 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 public class PlayViewModel extends ViewModel {
 
 
+    private static final int BLUR_SAMPLING = 2;
+    private static final int BLUR_RADIUS = 20;
     private SongService songService = new SongService();
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public Song song = new Song();
     public static Context mContext;
@@ -52,11 +53,6 @@ public class PlayViewModel extends ViewModel {
     // Todo: Constructor
     public PlayViewModel() {
         mSongResponeFlowable = mService.getListSongResponsePlay();
-    }
-
-
-    // Todo: public method
-    public void init() {
     }
 
     public void setContext(Context context) {
@@ -96,7 +92,7 @@ public class PlayViewModel extends ViewModel {
                     .centerCrop()
                     .placeholder(R.drawable.background_list)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(50 , 5)))
+                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(BLUR_RADIUS , BLUR_SAMPLING)))
                     .into(image);
         else {
             Glide.with(mContext)
@@ -106,7 +102,7 @@ public class PlayViewModel extends ViewModel {
                     .centerCrop()
                     .placeholder(R.drawable.background_list)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(50 , 5)))
+                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(BLUR_RADIUS , BLUR_SAMPLING)))
                     .into(image);
         }
     }
