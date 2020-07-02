@@ -257,7 +257,6 @@ public class PlayFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                 updateTime(progressValue * 100, mMediaManager.getDuration());
-                Log.d(TAG, "onProgressChanged: " + progressValue);
                 if (fromUser) {
                     mMediaManager.seekTo(progressValue * 100);
                 }
@@ -265,7 +264,6 @@ public class PlayFragment extends Fragment {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                Log.d(TAG, "onStartTrackingTouch: " + seekBar.getProgress());
                 seekBar.animate()
                         .setDuration(500)
                         .setInterpolator(new AccelerateInterpolator())
