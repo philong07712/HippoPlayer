@@ -347,7 +347,7 @@ public class PlayFragment extends Fragment {
     // Todo: inner classes + interfaces
 
     private void setSong(List<Song> songs, int position, boolean isExpanded) {
-        FLAG_PAGE = 0;
+        FLAG_PAGE = -1;
         if (isExpanded) {
             // case we click in another song
             panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);

@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.IBinder;
 import android.widget.ImageView;
 
@@ -21,6 +23,7 @@ import com.example.hippoplayer.models.SongResponse;
 
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.play.utils.SongService;
+import com.example.hippoplayer.utils.ConvertHelper;
 import com.example.hippoplayer.utils.PathHelper;
 
 import java.util.ArrayList;
@@ -83,11 +86,12 @@ public class PlayViewModel extends ViewModel {
     public static void setImageBackground(ImageView image, Song song) {
         if (song == null) return;
         DrawableCrossFadeFactory fadeFactory = new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
+        Drawable preImage = image.getDrawable();
         Glide.with(mContext)
                 .load(song.getThumbnail())
                 .transition(new DrawableTransitionOptions().crossFade(fadeFactory))
                 .centerCrop()
-                .placeholder(image.getDrawable())
+//                .placeholder(preImage)
                 .error(R.drawable.background_list)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(BLUR_RADIUS , BLUR_SAMPLING)))
