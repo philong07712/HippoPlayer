@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.detail.DetailFragment;
+import com.example.hippoplayer.detail.DetailSerializable;
 import com.example.hippoplayer.models.ArtistResponse;
 import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.play.utils.SongService;
@@ -93,16 +94,15 @@ public class SearchViewModel extends ViewModel {
                     Log.e("Button", "Click" + idSong);
                 }
                 if (idArtist != null) {
+                    DetailSerializable songSerializable = new DetailSerializable(idArtist, SearchFragment.songs, SearchFragment.artists);
                     Bundle bundle = new Bundle();
-                    bundle.putString("idArtist", idArtist);
-                    bundle.putSerializable("songs", SearchFragment.songs);
-                    bundle.putSerializable("artists", SearchFragment.artists);
+                    bundle.putSerializable("serializable", songSerializable);
                     DetailFragment detailArtistFragment = new DetailFragment();
                     detailArtistFragment.setArguments(bundle);
                     ((AppCompatActivity) v.getContext()).getSupportFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_bottom, R.anim.enter_from_bottom, R.anim.exit_to_bottom)
-                            .add(R.id.fragment_search, detailArtistFragment, "Detail Artist")
+                            .add(R.id.fragment_search, detailArtistFragment, "Detail")
                             .addToBackStack(null)
                             .commit();
                 }
