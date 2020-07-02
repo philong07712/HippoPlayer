@@ -8,6 +8,7 @@
         <variable
             name="artist"
             type="com.example.hippoplayer.models.Artist" />
+
     </data>
 
     <FrameLayout
@@ -42,7 +43,7 @@
                         android:layout_height="0dp"
                         app:layout_collapseMode="pin"
                         app:layout_scrollFlags="scroll|enterAlways" />
-
+                    
                     <ImageView
                         android:id="@+id/image_background_header_detail"
                         android:layout_width="match_parent"
