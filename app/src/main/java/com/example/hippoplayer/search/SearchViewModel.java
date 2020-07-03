@@ -89,7 +89,7 @@ public class SearchViewModel extends ViewModel {
             String finalurl = PathHelper.getFullUrl(song.getIdSong(), PathHelper.TYPE_IMAGE);
             Glide.with(mContext)
                     .load(finalurl)
-                    .error(Glide.with(mContext).load(song.getThumbnail()))
+                    .error(Glide.with(mContext).load(song.getThumbnail()).placeholder(R.drawable.ic_baseline_music_note_orange))
                     .centerCrop()
                     .fitCenter()
                     .placeholder(R.drawable.ic_baseline_music_note_orange)

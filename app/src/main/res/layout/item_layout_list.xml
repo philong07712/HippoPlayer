@@ -16,8 +16,8 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardview_item_list"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:layout_marginHorizontal="15dp"
+        android:layout_height="360dp"
+        android:layout_marginHorizontal="25dp"
         android:layout_marginVertical="10dp"
         android:background="@android:color/white"
         android:scaleX="0.95"
@@ -30,39 +30,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:id="@+id/header_item_artist_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/image_avatar_artist"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:civ_border_color="#FF000000"
-                    app:civ_border_width="2dp"
-                    app:load_image_list_artist="@{song.imgArtist}" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/image_avatar_artist"
-                    android:paddingLeft="5dp"
-                    android:text="@{song.nameArtist}"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-
             <TextView
                 android:id="@+id/text_title_song_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/text_description_song_list"
-                android:layout_below="@+id/header_item_artist_list"
                 android:gravity="center"
                 android:text="@{song.nameSong}"
                 android:textColor="@android:color/white"
@@ -70,6 +42,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:layout_marginVertical="5dp"
                 android:id="@+id/text_description_song_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,21 +59,6 @@
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
                 app:load_image_list_song="@{song.thumbnail}" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/button_play_and_pause"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_below="@id/image_song_list"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_circle_background"
-                android:elevation="15dp"
-                app:lottie_progress="1"
-                android:onClick="@{(v) -> buttonEvents.buttonPlayItemList(v, song.idSong)}"
-                android:scaleType="centerCrop"
-                app:lottie_fileName="pause.json"
-                app:lottie_loop="false" />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
