@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="song"
             type="com.example.hippoplayer.models.Song" />
@@ -16,7 +17,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardview_item_list"
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="350dp"
         android:layout_marginHorizontal="25dp"
         android:layout_marginVertical="10dp"
         android:background="@android:color/white"
@@ -26,27 +27,27 @@
         app:cardElevation="10dp"
         app:load_background_color="@{song.thumbnail}">
 
-        <RelativeLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
+                android:layout_marginTop="20dp"
                 android:id="@+id/text_title_song_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/text_description_song_list"
                 android:gravity="center"
                 android:text="@{song.nameSong}"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
             <TextView
-                android:layout_marginVertical="5dp"
                 android:id="@+id/text_description_song_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/image_song_list"
+                android:layout_above="@+id/text_title_song_list"
+                android:layout_marginVertical="5dp"
                 android:gravity="center"
                 android:text="@{song.description}"
                 android:textColor="@android:color/white" />
@@ -55,11 +56,10 @@
                 android:id="@+id/image_song_list"
                 android:layout_width="240dp"
                 android:layout_height="240dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="center_horizontal"
                 android:scaleType="centerCrop"
                 app:load_image_list_song="@{song.thumbnail}" />
 
-        </RelativeLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 </layout>
