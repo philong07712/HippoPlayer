@@ -7,9 +7,6 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.DragEvent;
-import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -32,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public PassData mPassData;
     private SearchFragment searchFragment;
     boolean doubleBackToExitPressedOnce = false;
+    public PassData passDataOffline;
 
     SlidingUpPanelLayout.PanelState playPanelState;
     private int[] tabIcons = {
@@ -81,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void passVal(PassData passData) {
         this.mPassData = passData;
+    }
+
+    public void passOfflineList(PassData passData) {
+        this.passDataOffline = passData;
     }
 
     private void setupViewPager(){

@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.models.Song;
+import com.example.hippoplayer.play.PassData;
 import com.example.hippoplayer.utils.ConvertHelper;
 import com.example.hippoplayer.utils.SaveHelper;
 
@@ -183,6 +184,8 @@ public class OfflineFragment extends Fragment {
 
     private void updateLoadingView() {
         progressBarLoad.setVisibility(View.INVISIBLE);
+        // pass data to main
+        ((MainActivity) getActivity()).passDataOffline.onChange(songList, 0);
         setupRecylerView();
     }
 

@@ -21,11 +21,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.databinding.FragmentSearchBinding;
 import com.example.hippoplayer.models.Artist;
 import com.example.hippoplayer.models.ArtistResponse;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
+import com.example.hippoplayer.play.PassData;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -42,6 +44,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
 
     public static ArrayList<Artist> artists = new ArrayList<>();
     public static ArrayList<Song> songs = new ArrayList<>();
+    public static ArrayList<Song> songOfflineList = new ArrayList<>();
     private ArrayList allData = new ArrayList();
     private ArrayList<String> arrayListItemSearch = new ArrayList<>();
 
@@ -98,6 +101,7 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
                 song.setSongResponse(songResponse);
                 songs.add(song);
             }
+            songs.addAll(songOfflineList);
         }
 
         @Override
@@ -136,6 +140,12 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         recyclerViewTitlteSearch.setLayoutManager(layoutReyclerTitleSearch);
         recyclerViewTitlteSearch.scheduleLayoutAnimation();
         recyclerViewTitlteSearch.setAdapter(searchTitleAdapter);
+        ((MainActivity) getActivity()).passOfflineList(new PassData() {
+            @Override
+            public void onChange(List<Song> songOffline, int position) {
+                songOfflineList.addAll(songOffline);
+            }
+        });
         fragmentSearchBinding.textContextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
