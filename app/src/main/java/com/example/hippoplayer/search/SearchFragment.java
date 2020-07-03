@@ -229,6 +229,8 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseSong);
+
+        mViewModel.setActivity(getActivity());
     }
 
     @Override

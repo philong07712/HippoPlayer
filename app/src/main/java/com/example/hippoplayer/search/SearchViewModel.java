@@ -21,6 +21,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.detail.DetailFragment;
 import com.example.hippoplayer.detail.DetailSerializable;
@@ -31,6 +32,7 @@ import com.example.hippoplayer.models.SongResponse;
 import com.example.hippoplayer.play.utils.SongService;
 import com.example.hippoplayer.utils.PathHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -113,6 +115,11 @@ public class SearchViewModel extends ViewModel {
                             .add(R.id.fragment_search, detailArtistFragment, "Detail")
                             .addToBackStack(null)
                             .commit();
+                }
+                else {
+                    List<Song> songs = new ArrayList<>();
+                    songs.add(song);
+                    ((MainActivity) mActivity).mPassData.onChange(songs, 0);
                 }
             }
         });
