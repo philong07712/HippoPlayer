@@ -91,7 +91,6 @@ public class SearchViewModel extends ViewModel {
             @Override
             public void onClick(View v) {
                 if (idSong != null) {
-                    Log.e("Button", "Click" + idSong);
                 }
                 if (idArtist != null) {
                     DetailSerializable songSerializable = new DetailSerializable(idArtist, SearchFragment.songs, SearchFragment.artists);

@@ -17,11 +17,13 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.hippoplayer.MainActivity;
 import com.example.hippoplayer.R;
 import com.example.hippoplayer.databinding.FragmentDetailBinding;
 import com.example.hippoplayer.models.Artist;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.utils.PathHelper;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +86,6 @@ public class DetailFragment extends Fragment {
         fragmentDetailBinding.buttonRandomSongArtistDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e(getTag(), String.valueOf(dataSong.size()) + dataSong.get(0).getNameSong());
             }
         });
         return fragmentDetailBinding.getRoot();
@@ -95,5 +96,12 @@ public class DetailFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(DetailViewModel.class);
         mViewModel.setContext(getContext());
+        ((MainActivity) getActivity()).setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((MainActivity) getActivity()).setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 }
