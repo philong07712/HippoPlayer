@@ -303,6 +303,7 @@ public class PlayFragment extends Fragment {
         // create pager 2 listener
         pager2PageChangeCallBack = new ViewPager2PageChangeCallBack();
         fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(pager2PageChangeCallBack);
+        fragmentPlayBinding.vpPlay.setOffscreenPageLimit(20);
 
         
     }
