@@ -2,7 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <data>
 
         <variable
@@ -16,70 +15,66 @@
         android:layout_height="match_parent"
         tools:context=".play.PlayFragment">
 
-        <ImageView
-            android:id="@+id/image_bg_song"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/background_list"
-            app:load_image_play_bg="@{song}"
-            android:scaleType="centerCrop"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" />
-
-        <ImageView
-            android:id="@+id/image_bg_play"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/gradient_black"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/image_song"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:layout_marginTop="60dp"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/img_shadow_black_play"
                 android:elevation="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_baseline_music_note_orange"
                 app:layout_constraintBottom_toTopOf="@+id/text_title_song"
-                app:load_image_play="@{song}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5" />
+                app:layout_constraintVertical_bias="0.5"
+                app:load_image_play="@{song}" />
 
             <TextView
                 android:id="@+id/text_title_song"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/roboto_mono"
-                android:maxLines="1"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:ellipsize="marquee"
+                android:fontFamily="@font/roboto"
+                android:gravity="center"
+                android:marqueeRepeatLimit="marquee_forever"
                 android:paddingHorizontal="30dp"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
                 android:text="@{song.nameSong}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/image_song"
-                app:layout_constraintStart_toStartOf="@+id/image_song"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_song" />
 
             <TextView
                 android:id="@+id/text_artist_song"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_mono"
+                android:layout_marginTop="16dp"
+                android:ellipsize="marquee"
+                android:fontFamily="@font/roboto"
+                android:gravity="center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
                 android:text="@{song.nameArtist}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textColor="@android:color/white"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="@+id/text_title_song"
                 app:layout_constraintStart_toStartOf="@+id/text_title_song"
                 app:layout_constraintTop_toBottomOf="@+id/text_title_song" />

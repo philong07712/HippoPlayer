@@ -16,12 +16,14 @@
 
     <ImageView
         android:id="@+id/image_item_search"
-        android:layout_margin="5dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="200dp"
-        android:minWidth="250dp"
-        app:load_image_item_artist_search="@{artist.id}"
-        app:load_image_item_song_search="@{song.idSong}" />
+        android:layout_margin="5dp"
+        android:adjustViewBounds="true"
+        android:maxHeight="250dp"
+        android:minHeight="300dp"
+        android:scaleType="centerCrop"
+        app:load_image_item_artist_search="@{artist}"
+        app:load_image_item_song_search="@{song}" />
 
 </layout>

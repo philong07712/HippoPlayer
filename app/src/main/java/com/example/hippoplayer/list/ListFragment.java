@@ -2,7 +2,6 @@ package com.example.hippoplayer.list;
 
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.SharedElementCallback;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Build;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import android.os.Handler;
-import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,13 +28,13 @@ import com.example.hippoplayer.databinding.FragmentListBinding;
 import com.example.hippoplayer.list.events.ItemEvent;
 import com.example.hippoplayer.models.Song;
 import com.example.hippoplayer.models.SongResponse;
+import com.example.hippoplayer.offline.PlayableItemListener;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -50,6 +48,16 @@ public class ListFragment extends Fragment {
     private SnapHelper snapHelper = new LinearSnapHelper();
     private LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
     private ItemEvent buttonEvent;
+    private PlayableItemListener playableItemListener = new PlayableItemListener() {
+        @Override
+        public void onClick(List<Song> songs, int position) {
+            ((MainActivity) getActivity()).mPassData.onChange(songs, position);
+        }
+    };
+
+    public static ListFragment newInstance() {
+        return new ListFragment();
+    }
 
     private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
         @Override
@@ -80,8 +88,7 @@ public class ListFragment extends Fragment {
 
     private void setSong() {
         Log.d("TAG", Integer.toString(mSong.size()));
-        ListSongAdapter listSongAdapter = new ListSongAdapter();
-        listSongAdapter.setmSongList(mSong);
+        ListSongAdapter listSongAdapter = new ListSongAdapter(mSong, playableItemListener);
         recyclerView = fragmentListBinding.rvList;
         recyclerView.setAdapter(listSongAdapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -124,10 +131,6 @@ public class ListFragment extends Fragment {
         });
 
 
-    }
-
-    public static ListFragment newInstance() {
-        return new ListFragment();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

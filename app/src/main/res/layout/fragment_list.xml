@@ -3,23 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
-        android:background="@drawable/background_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#ffffff"
         tools:context=".list.ListFragment">
 
-        <RelativeLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                tools:listitem="@layout/item_layout_list"
-                android:background="@android:color/transparent"
-                android:id="@+id/rv_list"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/text_title_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
+                    android:paddingHorizontal="20dp"
+                    android:text="Feature"
+                    android:textSize="50sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/text_title_list"
+                    android:nestedScrollingEnabled="false"
+                    android:background="@android:color/transparent"
+                    tools:listitem="@layout/item_layout_list" />
+
+            </RelativeLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
 
     </FrameLayout>

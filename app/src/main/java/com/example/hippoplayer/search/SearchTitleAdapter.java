@@ -108,4 +108,6 @@ public class SearchTitleAdapter extends RecyclerView.Adapter<SearchTitleAdapter.
     public interface SearchTiltleListener{
         void searchTitleClicked(int position);
     }
+
+
 }

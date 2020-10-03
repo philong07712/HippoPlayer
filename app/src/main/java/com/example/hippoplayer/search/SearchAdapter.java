@@ -18,6 +18,9 @@ import java.util.ArrayList;
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
     private ArrayList arrayList = new ArrayList<>();
     private int index = 0;
+    private final static int ARTIST = 0;
+    private final static int SONG = 1;
+
     public void setData(ArrayList arrayList, int index) {
         this.index = index;
         this.arrayList = arrayList;
@@ -35,12 +38,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         switch (index){
-            case 0:{
+            case ARTIST:{
                 Artist artist = (Artist) arrayList.get(position);
                 holder.bind(artist);
                 break;
             }
-            case 1: {
+            case SONG: {
                 Song song = (Song) arrayList.get(position);
                 holder.bind(song);
                 break;
